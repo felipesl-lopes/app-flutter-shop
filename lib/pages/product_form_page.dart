@@ -1,5 +1,9 @@
+import 'package:appshop/components/input_decoration.dart';
 import 'package:appshop/models/product.dart';
+import 'package:appshop/models/product_list.dart';
+import 'package:appshop/utils/validators.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -10,50 +14,135 @@ class ProductFormPage extends StatefulWidget {
 
 class _ProductFormPageState extends State<ProductFormPage> {
   final _imageUrlController = TextEditingController();
+  final _nameFocus = FocusNode();
+  final _priceFocus = FocusNode();
+  final _descriptionFocus = FocusNode();
+  final _imageUrlFocus = FocusNode();
+
+  final _formKey = GlobalKey<FormState>();
+  final _formData = Map<String, Object>();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nameFocus.dispose();
+    _priceFocus.dispose();
+    _descriptionFocus.dispose();
+    _imageUrlFocus.dispose();
+    _imageUrlFocus.removeListener(updateImage);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _imageUrlFocus.addListener(updateImage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_formData.isEmpty) {
+      final arg = ModalRoute.of(context)!.settings.arguments;
+      if (arg != null) {
+        final product = arg as Product;
+        _formData["id"] = product.id;
+        _formData["name"] = product.name;
+        _formData["price"] = product.price;
+        _formData["description"] = product.description;
+        _formData["imageUrl"] = product.imageUrl;
+
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
+  }
+
+  void updateImage() {
+    setState(() {});
+  }
+
+  void _submitForm() {
+    final isValidy = _formKey.currentState?.validate() ?? false;
+    if (!isValidy) {
+      return;
+    }
+
+    _formKey.currentState?.save();
+
+    Provider.of<ProductList>(context, listen: false)
+        .addProductFromData(_formData);
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments;
-    final product = args != null ? args as Product : null;
-
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          "Formulário de produto",
+          "Adicionar produto",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.purple,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
+              SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(labelText: "Nome"),
+                decoration: getAuthInputDecoration("Nome"),
+                initialValue: _formData["name"]?.toString(),
+                focusNode: _nameFocus,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_nameFocus),
                 textInputAction: TextInputAction.next,
+                onSaved: (name) => _formData["name"] = name ?? "",
+                validator: (value) => isValidName(value ?? ""),
               ),
+              SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(labelText: "Preço"),
+                decoration: getAuthInputDecoration("Preço"),
+                initialValue: _formData["price"]?.toString(),
                 textInputAction: TextInputAction.next,
+                focusNode: _priceFocus,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_priceFocus),
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSaved: (price) =>
+                    _formData["price"] = double.parse(price ?? "0"),
+                validator: (value) => isValidPrice(value ?? ""),
               ),
+              SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(labelText: "Descrição"),
+                decoration: getAuthInputDecoration("Descrição"),
+                initialValue: _formData["description"]?.toString(),
                 keyboardType: TextInputType.multiline,
+                focusNode: _descriptionFocus,
                 maxLines: 5,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_descriptionFocus),
                 textInputAction: TextInputAction.next,
+                onSaved: (description) =>
+                    _formData["description"] = description ?? "",
+                validator: (value) => isValidDescription(value ?? ""),
               ),
+              SizedBox(height: 20),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(labelText: "URL da imagem"),
+                      decoration: getAuthInputDecoration("URL da imagem"),
                       textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.url,
                       controller: _imageUrlController,
+                      focusNode: _imageUrlFocus,
+                      onSaved: (imageUrl) =>
+                          _formData["imageUrl"] = imageUrl ?? "",
+                      validator: (value) => isValidImageUrl(value ?? ""),
                     ),
                   ),
                   Container(
@@ -61,6 +150,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                       border: Border.all(color: Colors.grey, width: 1),
                     ),
                     child: _imageUrlController.text.isEmpty
@@ -73,13 +163,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () => print("Enviar"),
-                child: Text("Enviar", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-              )
+              SizedBox(height: 80),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _submitForm,
+        backgroundColor: Colors.purple,
+        label: Text(
+          "Salvar",
+          style: TextStyle(color: Colors.white, fontSize: 16),
         ),
       ),
     );

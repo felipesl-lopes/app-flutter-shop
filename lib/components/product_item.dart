@@ -1,6 +1,8 @@
 import 'package:appshop/models/product.dart';
+import 'package:appshop/models/product_list.dart';
 import 'package:appshop/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -19,10 +21,44 @@ class ProductItem extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(AppRoutes.PRODUCT_FORM, arguments: product),
-                icon: Icon(Icons.edit)),
-            IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  AppRoutes.PRODUCT_FORM,
+                  arguments: product,
+                );
+              },
+              icon: Icon(Icons.edit, color: Colors.purple),
+            ),
+            IconButton(
+              onPressed: () => {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text("Confirmar exclusão"),
+                    content: Text("Deseja excluir o produto ${product.name}?"),
+                    actions: [
+                      TextButton(
+                        child: Text("Cancelar"),
+                        onPressed: () => {
+                          Navigator.of(ctx).pop(),
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Confirmar"),
+                        onPressed: () => {
+                          Navigator.of(ctx).pop(),
+                          Provider.of<ProductList>(
+                            context,
+                            listen: false,
+                          ).deleteProduct(product),
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              },
+              icon: Icon(Icons.delete),
+            ),
           ],
         ),
       ),

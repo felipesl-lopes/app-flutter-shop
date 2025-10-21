@@ -11,7 +11,7 @@ class AppDrawer extends StatelessWidget {
             automaticallyImplyLeading: false,
             backgroundColor: Colors.purple,
             iconTheme: IconThemeData(color: Colors.white),
-            title: Text("Bem vindo usuário",
+            title: Text("Bem vindo Felipe",
                 style: TextStyle(color: Colors.white)),
           ),
           Divider(),
