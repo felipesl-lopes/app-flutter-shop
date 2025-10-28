@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductsPage extends StatelessWidget {
+  Future<void> _refreshProducts(BuildContext context) {
+    return Provider.of<ProductList>(context, listen: false).loadProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProductList product = Provider.of(context);
@@ -29,15 +33,18 @@ class ProductsPage extends StatelessWidget {
         backgroundColor: Colors.purple,
       ),
       drawer: AppDrawer(),
-      body: Padding(
-        padding: EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: product.itemsCount,
-          itemBuilder: (ctx, index) => Column(
-            children: [
-              ProductItem(product.items[index]),
-              Divider(),
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: product.itemsCount,
+            itemBuilder: (ctx, index) => Column(
+              children: [
+                ProductItem(product.items[index]),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),

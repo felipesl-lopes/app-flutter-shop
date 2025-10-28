@@ -1,3 +1,4 @@
+import 'package:appshop/exceptions/http_exception.dart';
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/routes/app_routes.dart';
@@ -9,6 +10,7 @@ class ProductGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context);
+    final msg = ScaffoldMessenger.of(context);
 
     void _selectPage(BuildContext context) {
       Navigator.of(context)
@@ -25,8 +27,13 @@ class ProductGridItem extends StatelessWidget {
           backgroundColor: Colors.black54,
           title: Text(product.name, textAlign: TextAlign.center),
           leading: IconButton(
-              onPressed: () {
-                product.toggleFavorite();
+              onPressed: () async {
+                try {
+                  await product.toggleFavorite();
+                } on HttpExceptionMsg catch (error) {
+                  msg.showSnackBar(SnackBar(content: Text(error.toString())));
+                }
+                ;
               },
               icon: product.isFavorite
                   ? Icon(

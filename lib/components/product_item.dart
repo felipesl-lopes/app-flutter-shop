@@ -1,3 +1,4 @@
+import 'package:appshop/exceptions/http_exception.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/models/product_list.dart';
 import 'package:appshop/routes/app_routes.dart';
@@ -11,6 +12,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final msg = ScaffoldMessenger.of(context);
     return ListTile(
       title: Text(product.name),
       leading: CircleAvatar(
@@ -45,12 +47,17 @@ class ProductItem extends StatelessWidget {
                       ),
                       TextButton(
                         child: Text("Confirmar"),
-                        onPressed: () => {
-                          Navigator.of(ctx).pop(),
-                          Provider.of<ProductList>(
-                            context,
-                            listen: false,
-                          ).deleteProduct(product),
+                        onPressed: () async {
+                          try {
+                            Navigator.of(ctx).pop();
+                            await Provider.of<ProductList>(
+                              context,
+                              listen: false,
+                            ).deleteProduct(product);
+                          } on HttpExceptionMsg catch (error) {
+                            msg.showSnackBar(
+                                SnackBar(content: Text(error.toString())));
+                          }
                         },
                       ),
                     ],

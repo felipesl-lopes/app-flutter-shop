@@ -2,6 +2,7 @@ import 'package:appshop/components/app_drawer.dart';
 import 'package:appshop/components/badgee.dart';
 import 'package:appshop/components/product_grid.dart';
 import 'package:appshop/models/cart.dart';
+import 'package:appshop/models/product_list.dart';
 import 'package:appshop/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,19 @@ enum FilterOptions {
 
 class _ProductsOverviewState extends State<ProductsOverview> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(context, listen: false)
+        .loadProducts()
+        .then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +82,12 @@ class _ProductsOverviewState extends State<ProductsOverview> {
           )
         ],
       ),
-      body: ProductGrid(_showFavoriteOnly),
       drawer: AppDrawer(),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductGrid(_showFavoriteOnly),
     );
   }
 }
