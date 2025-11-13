@@ -1,12 +1,13 @@
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/order_list.dart';
 import 'package:appshop/models/product_list.dart';
+import 'package:appshop/pages/authentication/auth_login.dart';
 import 'package:appshop/pages/cart_page.dart';
 import 'package:appshop/pages/orders_page.dart';
 import 'package:appshop/pages/product_detail.dart';
 import 'package:appshop/pages/product_form_page.dart';
-import 'package:appshop/pages/products_page.dart';
 import 'package:appshop/pages/products_overview.dart';
+import 'package:appshop/pages/products_page.dart';
 import 'package:appshop/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +34,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Shopp",
         theme: ThemeData(primarySwatch: Colors.purple, fontFamily: "Lato"),
-        home: ProductsOverview(),
         debugShowCheckedModeBanner: false,
         routes: {
+          AppRoutes.AUTH_LOGIN: (ctx) => AuthLogin(),
           AppRoutes.HOME: (ctx) => ProductsOverview(),
           AppRoutes.DETAILS_PRODUCT: (ctx) => ProductDetail(),
           AppRoutes.CART: (ctx) => CartPage(),

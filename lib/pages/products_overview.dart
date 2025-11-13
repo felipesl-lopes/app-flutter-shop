@@ -87,7 +87,7 @@ class _ProductsOverviewState extends State<ProductsOverview> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : ProductGrid(_showFavoriteOnly),
+      : ProductGrid(_showFavoriteOnly),
     );
   }
 }
