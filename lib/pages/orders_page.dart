@@ -31,24 +31,34 @@ class _OrdersPageState extends State<OrdersPage> {
       body: FutureBuilder(
         future: _refreshOrders(context),
         builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else {
-            return Consumer<OrderList>(
-              builder: (ctx, orders, child) => RefreshIndicator(
-                onRefresh: () => _refreshOrders(context),
-                child: ListView.builder(
-                  padding: EdgeInsets.all(10),
-                  itemCount: orders.itemsCount,
-                  itemBuilder: (ctx, index) => OrderWidget(
-                    order: orders.items[index],
-                  ),
+
+          if (snapshot.hasError)
+            return Center(
+              child: Text("Não foi possível carregar os pedidos."),
+            );
+
+          return Consumer<OrderList>(builder: (ctx, orders, child) {
+            if (orders.itemsCount == 0) {
+              return Center(
+                child: Text("Nenhum pedido encontrado."),
+              );
+            }
+
+            return RefreshIndicator(
+              onRefresh: () => _refreshOrders(context),
+              child: ListView.builder(
+                padding: EdgeInsets.all(10),
+                itemCount: orders.itemsCount,
+                itemBuilder: (ctx, index) => OrderWidget(
+                  order: orders.items[index],
                 ),
               ),
             );
-          }
+          });
         },
       ),
     );

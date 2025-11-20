@@ -1,6 +1,8 @@
+import 'package:appshop/models/auth/auth.dart';
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/order_list.dart';
 import 'package:appshop/models/product_list.dart';
+import 'package:appshop/pages/auth_or_home_page.dart';
 import 'package:appshop/pages/authentication/auth_login.dart';
 import 'package:appshop/pages/cart_page.dart';
 import 'package:appshop/pages/orders_page.dart';
@@ -22,13 +24,24 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (_) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, ProductList>(
           create: (_) => ProductList(),
+          update: (ctx, auth, previous) {
+            return ProductList(
+                auth.token ?? "", auth.userId ?? "", previous?.items ?? []);
+          },
+        ),
+        ChangeNotifierProxyProvider<Auth, OrderList>(
+          create: (_) => OrderList(),
+          update: (ctx, auth, previous) {
+            return OrderList(
+                auth.token ?? "", auth.userId ?? "", previous?.items ?? []);
+          },
         ),
         ChangeNotifierProvider(
           create: (_) => Cart(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => OrderList(),
         ),
       ],
       child: MaterialApp(
@@ -36,6 +49,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.purple, fontFamily: "Lato"),
         debugShowCheckedModeBanner: false,
         routes: {
+          AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
           AppRoutes.AUTH_LOGIN: (ctx) => AuthLogin(),
           AppRoutes.HOME: (ctx) => ProductsOverview(),
           AppRoutes.DETAILS_PRODUCT: (ctx) => ProductDetail(),

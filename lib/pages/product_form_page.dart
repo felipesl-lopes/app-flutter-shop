@@ -1,7 +1,7 @@
 import 'package:appshop/components/input_decoration.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/models/product_list.dart';
-import 'package:appshop/utils/validators.dart';
+import 'package:appshop/utils/product_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

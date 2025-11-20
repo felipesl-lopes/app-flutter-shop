@@ -1,6 +1,5 @@
 import 'package:appshop/components/auth_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AuthLogin extends StatelessWidget {
   @override

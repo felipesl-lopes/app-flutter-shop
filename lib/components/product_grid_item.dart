@@ -1,4 +1,5 @@
 import 'package:appshop/exceptions/http_exception.dart';
+import 'package:appshop/models/auth/auth.dart';
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/routes/app_routes.dart';
@@ -11,6 +12,7 @@ class ProductGridItem extends StatelessWidget {
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context);
     final msg = ScaffoldMessenger.of(context);
+    final auth = Provider.of<Auth>(context, listen: false);
 
     void _selectPage(BuildContext context) {
       Navigator.of(context)
@@ -29,7 +31,7 @@ class ProductGridItem extends StatelessWidget {
           leading: IconButton(
               onPressed: () async {
                 try {
-                  await product.toggleFavorite();
+                  await product.toggleFavorite(auth.token ?? "", auth.userId ?? "", auth.email ?? "");
                 } on HttpExceptionMsg catch (error) {
                   msg.showSnackBar(SnackBar(content: Text(error.toString())));
                 }

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "875116164593",
+    "firebase_url": "https://shop-df68d-default-rtdb.firebaseio.com",
+    "project_id": "shop-df68d",
+    "storage_bucket": "shop-df68d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875116164593:android:1c88fe7680248224dd8050",
+        "android_client_info": {
+          "package_name": "com.example.appshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2S4rurD7248aMRdxhlpLjsYWsywe2qec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
