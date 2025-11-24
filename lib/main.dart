@@ -3,7 +3,7 @@ import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/order_list.dart';
 import 'package:appshop/models/product_list.dart';
 import 'package:appshop/pages/auth_or_home_page.dart';
-import 'package:appshop/pages/authentication/auth_login.dart';
+import 'package:appshop/pages/authentication/auth_page.dart';
 import 'package:appshop/pages/cart_page.dart';
 import 'package:appshop/pages/orders_page.dart';
 import 'package:appshop/pages/product_detail.dart';

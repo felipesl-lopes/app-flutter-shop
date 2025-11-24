@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:appshop/data/preferencies_values.dart';
+import 'package:appshop/data/secure_storage.dart';
 import 'package:appshop/exceptions/auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +13,8 @@ class Auth with ChangeNotifier {
   String? _userId;
   DateTime? _expiryDate;
   Timer? _logoutTimer;
-  // final secureStorage = SecureStorage();
+  final _prefs = PreferenciesValues();
+  final _storage = SecureStorage();
 
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
@@ -52,6 +55,15 @@ class Auth with ChangeNotifier {
       _expiryDate = DateTime.now().add(
         Duration(seconds: int.parse(body['expiresIn'])),
       );
+
+      final bool keepLogged = await _prefs.getKeepLogged();
+
+      if (urlFragment == 'signInWithPassword' &&
+          keepLogged &&
+          response.statusCode == 200) {
+        await _storage.saveCredentials(email, password);
+      }
+
       _autoLogout();
       notifyListeners();
     }
@@ -65,11 +77,13 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, "signInWithPassword");
   }
 
-  void logout() {
+  Future<void> logout() async {
     _token = null;
     _email = null;
     _userId = null;
     _expiryDate = null;
+    await _prefs.deleteKeepLogged();
+    await _storage.deleteCredentials();
     _clearLogoutTimer();
     notifyListeners();
   }

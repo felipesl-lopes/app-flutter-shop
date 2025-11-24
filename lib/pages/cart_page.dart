@@ -54,6 +54,30 @@ class CartPage extends StatelessWidget {
               ),
             ),
           ),
+          if (items.length == 0)
+            Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Icon(Icons.remove_shopping_cart,
+                          color: Colors.black45, size: 60),
+                      SizedBox(height: 16),
+                      Text(
+                        textAlign: TextAlign.center,
+                        "Nenhum item encontrado no carrinho.",
+                        style: TextStyle(color: Colors.black45, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: Text("Começe a comprar"),
+                ),
+              ],
+            ),
           Expanded(
             child: ListView.builder(
               itemCount: items.length,

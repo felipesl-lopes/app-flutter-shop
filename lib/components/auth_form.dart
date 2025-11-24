@@ -86,6 +86,7 @@ class _AuthFormState extends State<AuthForm> {
       _showErrorDialog("Erro inesperado. Tente novamente.");
     }
 
+    if (!mounted) return;
     setState(() => _isLoading = false);
   }
 
@@ -248,8 +249,22 @@ class _AuthFormState extends State<AuthForm> {
             SizedBox(height: 4),
 
             if (_isLogin())
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  GestureDetector(
+                    onTap: _toggleKeepLogged,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            value: _keepLogged,
+                            onChanged: (_) => _toggleKeepLogged(),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap),
+                        Text("Permanecer conectado"),
+                      ],
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: TextButton(
@@ -264,19 +279,6 @@ class _AuthFormState extends State<AuthForm> {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: _toggleKeepLogged,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                            value: _keepLogged,
-                            onChanged: (_) => _toggleKeepLogged(),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap),
-                        Text("Permanecer conectado"),
-                      ],
-                    ),
-                  )
                 ],
               ),
 

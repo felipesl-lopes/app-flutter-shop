@@ -14,21 +14,11 @@ class AuthLogin extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 30),
-                child: Text(
-                  textAlign: TextAlign.center,
-                  "Mobile\nShop",
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontFamily: "Anton",
-                    letterSpacing: 2.0,
-                    height: 1.2,
-                    color: Colors.purple,
-                  ),
-                ),
+              Image.asset(
+                'assets/images/teste-logo.png',
+                width: MediaQuery.of(context).size.width * 0.25,
               ),
-              SizedBox(height: 36),
+              SizedBox(height: 28),
               AuthForm(),
             ],
           ),
