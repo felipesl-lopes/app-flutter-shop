@@ -1,15 +1,15 @@
 import 'package:appshop/components/app_drawer.dart';
 import 'package:appshop/components/badgee.dart';
-import 'package:appshop/components/product_grid.dart';
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/product_list.dart';
+import 'package:appshop/pages/home/widgets/product_grid.dart';
 import 'package:appshop/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProductsOverview extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  State<ProductsOverview> createState() => _ProductsOverviewState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 enum FilterOptions {
@@ -17,7 +17,7 @@ enum FilterOptions {
   All,
 }
 
-class _ProductsOverviewState extends State<ProductsOverview> {
+class _HomePageState extends State<HomePage> {
   bool _showFavoriteOnly = false;
   bool _isLoading = true;
 
@@ -38,12 +38,11 @@ class _ProductsOverviewState extends State<ProductsOverview> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Produtos",
-          style: TextStyle(color: Colors.white),
+          "Mobile Shop",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         backgroundColor: Colors.purple,
         iconTheme: IconThemeData(color: Colors.white),
-        centerTitle: true,
         actions: [
           PopupMenuButton(
             icon: Icon(Icons.more_vert, color: Colors.white),
@@ -79,7 +78,7 @@ class _ProductsOverviewState extends State<ProductsOverview> {
               value: cart.itemsCount.toString(),
               child: child!,
             ),
-          )
+          ),
         ],
       ),
       drawer: AppDrawer(),
@@ -87,7 +86,7 @@ class _ProductsOverviewState extends State<ProductsOverview> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-      : ProductGrid(_showFavoriteOnly),
+          : ProductGrid(_showFavoriteOnly),
     );
   }
 }

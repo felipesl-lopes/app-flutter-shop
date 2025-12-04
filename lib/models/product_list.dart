@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:appshop/exceptions/http_exception.dart';
+import 'package:appshop/exceptions/exception.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +56,7 @@ class ProductList with ChangeNotifier {
           price: productData["price"],
           imageUrl: productData["imageUrl"],
           isFavorite: isFavorite,
+          userId: productData["userId"],
         ),
       );
     });
@@ -71,6 +72,7 @@ class ProductList with ChangeNotifier {
       description: data["description"] as String,
       price: data["price"] as double,
       imageUrl: data["imageUrl"] as String,
+      userId: _userId,
     );
 
     if (hasId) {
@@ -84,6 +86,7 @@ class ProductList with ChangeNotifier {
     final response = await http.post(
         Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$_token"),
         body: jsonEncode({
+          "userId": _userId,
           "name": product.name,
           "description": product.description,
           "price": product.price,
@@ -93,6 +96,7 @@ class ProductList with ChangeNotifier {
     final _data = jsonDecode(response.body);
     _items.add(
       Product(
+        userId: _userId,
         id: _data["name"],
         name: product.name,
         description: product.description,
@@ -116,6 +120,7 @@ class ProductList with ChangeNotifier {
             "description": product.description,
             "price": product.price,
             "imageUrl": product.imageUrl,
+            "userId": _userId,
           }));
 
       _items[index] = product;
@@ -128,8 +133,12 @@ class ProductList with ChangeNotifier {
 
     if (index >= 0) {
       final product = _items[index];
-      _items.remove(product);
-      notifyListeners();
+
+      if (product.userId != _userId) {
+        throw ExceptionMsg.ExceptionMsg(
+            msg: "Você não tem permissão para excluir o produto",
+            statusCode: 403);
+      }
 
       final response = await http.delete(
         Uri.parse(
@@ -137,13 +146,14 @@ class ProductList with ChangeNotifier {
       );
 
       if (response.statusCode >= 400) {
-        _items.insert(index, product);
-        notifyListeners();
-        throw HttpExceptionMsg(
+        throw ExceptionMsg.ExceptionMsg(
           msg: "Não foi possivel excluir o produto.",
           statusCode: response.statusCode,
         );
       }
+
+      _items.remove(product);
+      notifyListeners();
     }
   }
 }

@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
+    final user = auth.user;
+
     return Drawer(
       child: Column(
         children: [
@@ -13,13 +16,13 @@ class AppDrawer extends StatelessWidget {
             automaticallyImplyLeading: false,
             backgroundColor: Colors.purple,
             iconTheme: IconThemeData(color: Colors.white),
-            title:
-                Text("Bem vindo Felipe", style: TextStyle(color: Colors.white)),
+            title: Text("Bem vindo ${user?.name}",
+                style: TextStyle(color: Colors.white)),
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.shop),
-            title: Text("Loja"),
+            leading: Icon(Icons.home),
+            title: Text("Início"),
             onTap: () => Navigator.of(context).pushReplacementNamed(
               AppRoutes.HOME,
             ),
@@ -27,7 +30,7 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.payment),
-            title: Text("Pedidos"),
+            title: Text("Meus pedidos"),
             onTap: () => Navigator.of(context).pushReplacementNamed(
               AppRoutes.ORDERS,
             ),
@@ -38,6 +41,14 @@ class AppDrawer extends StatelessWidget {
             title: Text("Gerenciar produtos"),
             onTap: () => Navigator.of(context).pushReplacementNamed(
               AppRoutes.PRODUCTS,
+            ),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text("Meu perfil"),
+            onTap: () => Navigator.of(context).pushReplacementNamed(
+              AppRoutes.PROFILE,
             ),
           ),
           Divider(),

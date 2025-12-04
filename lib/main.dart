@@ -4,12 +4,13 @@ import 'package:appshop/models/order_list.dart';
 import 'package:appshop/models/product_list.dart';
 import 'package:appshop/pages/auth_or_home_page.dart';
 import 'package:appshop/pages/authentication/auth_page.dart';
-import 'package:appshop/pages/cart_page.dart';
-import 'package:appshop/pages/orders_page.dart';
-import 'package:appshop/pages/product_detail.dart';
-import 'package:appshop/pages/product_form_page.dart';
-import 'package:appshop/pages/products_overview.dart';
-import 'package:appshop/pages/products_page.dart';
+import 'package:appshop/pages/cart/cart_page.dart';
+import 'package:appshop/pages/home/home_page.dart';
+import 'package:appshop/pages/orders/orders_page.dart';
+import 'package:appshop/pages/products/product_detail.dart';
+import 'package:appshop/pages/products/product_form_page.dart';
+import 'package:appshop/pages/products/products_page.dart';
+import 'package:appshop/pages/profile/profile_page.dart';
 import 'package:appshop/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,12 +52,13 @@ class MyApp extends StatelessWidget {
         routes: {
           AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
           AppRoutes.AUTH_LOGIN: (ctx) => AuthLogin(),
-          AppRoutes.HOME: (ctx) => ProductsOverview(),
+          AppRoutes.HOME: (ctx) => HomePage(),
           AppRoutes.DETAILS_PRODUCT: (ctx) => ProductDetail(),
           AppRoutes.CART: (ctx) => CartPage(),
           AppRoutes.ORDERS: (ctx) => OrdersPage(),
           AppRoutes.PRODUCTS: (ctx) => ProductsPage(),
           AppRoutes.PRODUCT_FORM: (ctx) => ProductFormPage(),
+          AppRoutes.PROFILE: (ctx) => ProfilePage(),
         },
       ),
     );

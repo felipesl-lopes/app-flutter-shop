@@ -1,4 +1,4 @@
-import 'package:appshop/exceptions/http_exception.dart';
+import 'package:appshop/exceptions/exception.dart';
 import 'package:appshop/models/auth/auth.dart';
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/product.dart';
@@ -31,8 +31,9 @@ class ProductGridItem extends StatelessWidget {
           leading: IconButton(
               onPressed: () async {
                 try {
-                  await product.toggleFavorite(auth.token ?? "", auth.userId ?? "", auth.email ?? "");
-                } on HttpExceptionMsg catch (error) {
+                  await product.toggleFavorite(
+                      auth.token ?? "", auth.userId ?? "", auth.email ?? "");
+                } on ExceptionMsg catch (error) {
                   msg.showSnackBar(SnackBar(content: Text(error.toString())));
                 }
                 ;

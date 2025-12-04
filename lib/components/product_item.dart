@@ -1,4 +1,4 @@
-import 'package:appshop/exceptions/http_exception.dart';
+import 'package:appshop/exceptions/exception.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/models/product_list.dart';
 import 'package:appshop/routes/app_routes.dart';
@@ -54,7 +54,7 @@ class ProductItem extends StatelessWidget {
                               context,
                               listen: false,
                             ).deleteProduct(product);
-                          } on HttpExceptionMsg catch (error) {
+                          } on ExceptionMsg catch (error) {
                             msg.showSnackBar(
                                 SnackBar(content: Text(error.toString())));
                           }

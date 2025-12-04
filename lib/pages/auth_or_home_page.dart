@@ -2,7 +2,7 @@ import 'package:appshop/data/preferencies_values.dart';
 import 'package:appshop/data/secure_storage.dart';
 import 'package:appshop/models/auth/auth.dart';
 import 'package:appshop/pages/authentication/auth_page.dart';
-import 'package:appshop/pages/products_overview.dart';
+import 'package:appshop/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,6 +65,6 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
         ),
       );
 
-    return auth.isAuth ? ProductsOverview() : AuthLogin();
+    return auth.isAuth ? HomePage() : AuthLogin();
   }
 }

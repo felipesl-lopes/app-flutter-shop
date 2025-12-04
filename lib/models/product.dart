@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:appshop/exceptions/http_exception.dart';
+import 'package:appshop/exceptions/exception.dart';
 import 'package:appshop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +11,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
+  final String userId;
   bool isFavorite;
 
   Product({
@@ -19,6 +20,7 @@ class Product with ChangeNotifier {
     required this.description,
     required this.price,
     required this.imageUrl,
+    required this.userId,
     this.isFavorite = false,
   });
 
@@ -29,16 +31,27 @@ class Product with ChangeNotifier {
 
   Future<void> toggleFavorite(String token, String userId, String email) async {
     _toggleFavorite();
-    print(userId);
 
-    final response = await http.put(
-        Uri.parse("${Constants.USER_FAVORITES_URL}/$userId/${id}.json?auth=$token"),
-        body: jsonEncode(isFavorite));
+    final url =
+        "${Constants.USER_FAVORITES_URL}/$userId/${id}.json?auth=$token";
+
+    http.Response response;
+
+    if (isFavorite) {
+      response = await http.put(Uri.parse(url), body: jsonEncode(true));
+    } else {
+      response = await http.delete(Uri.parse(url));
+    }
 
     if (response.statusCode >= 400) {
       _toggleFavorite();
+      if (isFavorite) {
+        response = await http.put(Uri.parse(url), body: jsonEncode(true));
+      } else {
+        response = await http.delete(Uri.parse(url));
+      }
 
-      throw HttpExceptionMsg(
+      throw ExceptionMsg.ExceptionMsg(
         msg: isFavorite
             ? "Não foi possível desfavoritar o produto."
             : "Não foi possível favoritar o produto.",

@@ -47,13 +47,13 @@ class _AuthFormState extends State<AuthForm> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("Ocorreu um erro."),
+        title: const Text("Ocorreu um erro."),
         content: Text(msg),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text("Ok"),
-          )
+            child: const Text("Ok"),
+          ),
         ],
       ),
     );
@@ -71,15 +71,14 @@ class _AuthFormState extends State<AuthForm> {
 
     try {
       if (_isLogin()) {
-        print("Login data $_authFormLogin");
         await auth.signIn(
             _authFormLogin['email']!, _authFormLogin['password']!);
       } else {
-        print("Register data $_authFormRegister");
-        await auth.signUp(
-            _authFormRegister['email']!, _authFormRegister['password']!);
+        await auth.signUp(_authFormRegister['email']!,
+            _authFormRegister['password']!, _authFormRegister['name']!);
       }
     } on AuthException catch (error) {
+      print(error.toString());
       _showErrorDialog(error.toString());
     } catch (error) {
       print(error);

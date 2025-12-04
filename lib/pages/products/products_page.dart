@@ -1,5 +1,6 @@
 import 'package:appshop/components/app_drawer.dart';
 import 'package:appshop/components/product_item.dart';
+import 'package:appshop/models/auth/auth.dart';
 import 'package:appshop/models/product_list.dart';
 import 'package:appshop/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,10 @@ class ProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductList product = Provider.of(context);
+    final _userId = Provider.of<Auth>(context).userId;
+    final product = Provider.of<ProductList>(context).items;
+    final _productList =
+        product.where((item) => item.userId == _userId).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -38,10 +42,10 @@ class ProductsPage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(8),
           child: ListView.builder(
-            itemCount: product.itemsCount,
+            itemCount: _productList.length,
             itemBuilder: (ctx, index) => Column(
               children: [
-                ProductItem(product.items[index]),
+                ProductItem(_productList[index]),
                 Divider(),
               ],
             ),
