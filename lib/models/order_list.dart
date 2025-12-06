@@ -45,10 +45,10 @@ class OrderList with ChangeNotifier {
             (item) {
               return CartItem(
                 id: item["id"],
-                productId: item["productId"],
                 name: item["name"],
                 quantity: item["quantity"],
                 price: item["price"],
+                imageUrl: item["imageUrl"] ?? "",
               );
             },
           ).toList(),
@@ -73,10 +73,10 @@ class OrderList with ChangeNotifier {
               .map(
                 (cartItem) => {
                   "id": cartItem.id,
-                  "productId": cartItem.productId,
                   "name": cartItem.name,
                   "quantity": cartItem.quantity,
                   "price": cartItem.price,
+                  "imageUrl": cartItem.imageUrl,
                 },
               )
               .toList(),

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:appshop/models/cart_item.dart';
 import 'package:appshop/models/product.dart';
 import 'package:flutter/material.dart';
@@ -28,22 +26,22 @@ class Cart with ChangeNotifier {
       _items.update(
         product.id,
         (existingItem) => CartItem(
-          id: existingItem.id,
-          productId: existingItem.productId,
-          name: existingItem.name,
-          quantity: existingItem.quantity + 1,
-          price: existingItem.price,
-        ),
+            id: existingItem.id,
+            name: existingItem.name,
+            quantity: existingItem.quantity + 1,
+            price: existingItem.price,
+            imageUrl: product.imageUrl),
       );
     } else {
       _items.putIfAbsent(
         product.id,
         () => CartItem(
-            id: Random().nextDouble().toString(),
-            productId: product.id,
-            name: product.name,
-            quantity: 1,
-            price: product.price),
+          id: product.id,
+          name: product.name,
+          quantity: 1,
+          price: product.price,
+          imageUrl: product.imageUrl,
+        ),
       );
     }
     notifyListeners();
@@ -66,10 +64,10 @@ class Cart with ChangeNotifier {
         productId,
         (existingItem) => CartItem(
           id: existingItem.id,
-          productId: existingItem.productId,
           name: existingItem.name,
           quantity: existingItem.quantity - 1,
           price: existingItem.price,
+          imageUrl: existingItem.imageUrl,
         ),
       );
     }

@@ -1,6 +1,10 @@
+import 'package:appshop/models/cart_item.dart';
 import 'package:appshop/models/order.dart';
+import 'package:appshop/models/product_list.dart';
+import 'package:appshop/pages/products/product_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class OrderWidget extends StatefulWidget {
   final Order order;
@@ -16,6 +20,26 @@ class _OrderWidgetState extends State<OrderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    void _selectPage(BuildContext context, CartItem item) {
+      final productList =
+          Provider.of<ProductList>(context, listen: false).items;
+
+      final product = productList.where((p) => p.id == item.id).firstOrNull;
+      if (product == null) {
+        print("Produto indisponível.");
+        return;
+      }
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider.value(
+            value: product,
+            child: ProductDetail(),
+          ),
+        ),
+      );
+    }
+
     return Card(
       child: Column(
         children: [
@@ -37,24 +61,27 @@ class _OrderWidgetState extends State<OrderWidget> {
               padding: EdgeInsets.all(16),
               child: Column(
                 children: widget.order.products.map((product) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        product.name,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                  return InkWell(
+                    onTap: () => {_selectPage(context, product)},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          product.name,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "${product.quantity}x R\$${product.price}",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black54,
-                        ),
-                      )
-                    ],
+                        Text(
+                          "${product.quantity}x R\$${product.price}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black54,
+                          ),
+                        )
+                      ],
+                    ),
                   );
                 }).toList(),
               ),

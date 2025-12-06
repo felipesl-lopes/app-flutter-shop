@@ -16,7 +16,8 @@ class CartItemWidget extends StatelessWidget {
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text("Excluir"),
-            content: Text("Deseja excluir o produto ${cartItem.name} do carrinho?"),
+            content:
+                Text("Deseja excluir o produto ${cartItem.name} do carrinho?"),
             actions: [
               TextButton(
                 child: Text("Não"),
@@ -36,7 +37,7 @@ class CartItemWidget extends StatelessWidget {
       },
       onDismissed: (_) {
         Provider.of<Cart>(context, listen: false)
-            .removeItem(cartItem.productId);
+            .removeItem(cartItem.id);
       },
       key: ValueKey(cartItem.id),
       direction: DismissDirection.endToStart,
@@ -51,12 +52,7 @@ class CartItemWidget extends StatelessWidget {
         margin: EdgeInsets.fromLTRB(20, 0, 20, 12),
         child: ListTile(
           leading: CircleAvatar(
-            child: Padding(
-              padding: EdgeInsets.all(4),
-              child: FittedBox(
-                child: Text("${cartItem.price}"),
-              ),
-            ),
+            backgroundImage: NetworkImage(cartItem.imageUrl),
           ),
           title: Text(cartItem.name),
           subtitle: Text(
