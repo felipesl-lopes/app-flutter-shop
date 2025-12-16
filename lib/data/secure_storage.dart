@@ -4,23 +4,11 @@ class SecureStorage {
   final _storage = FlutterSecureStorage();
 
   Future<void> saveCredentials(String email, String password) async {
-    await _saveCredentials(email, password);
-  }
-
-  Future<Map<String, String>?> getCredentials() async {
-    return await _getCredentials();
-  }
-
-  Future<void> deleteCredentials() async {
-    await _deleteCredentials();
-  }
-
-  Future<void> _saveCredentials(String email, String password) async {
     await _storage.write(key: 'email', value: email);
     await _storage.write(key: 'password', value: password);
   }
 
-  Future<Map<String, String>?> _getCredentials() async {
+  Future<Map<String, String>?> getCredentials() async {
     final email = await _storage.read(key: 'email');
     final password = await _storage.read(key: 'password');
 
@@ -32,8 +20,19 @@ class SecureStorage {
     };
   }
 
-  Future<void> _deleteCredentials() async {
+  Future<void> deleteCredentials() async {
     await _storage.delete(key: 'email');
     await _storage.delete(key: 'password');
+  }
+
+  Future<void> saveRefreshToken(String refreshToken) async {
+    await _storage.write(key: 'refreshToken', value: refreshToken);
+  }
+
+  Future<Map<String, String>?> getRefreshToken() async {
+    final refreshToken = await _storage.read(key: 'refreshToken');
+    if (refreshToken == null) return null;
+
+    return {'refreshToken': refreshToken};
   }
 }

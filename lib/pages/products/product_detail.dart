@@ -5,6 +5,7 @@ import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/product.dart';
 import 'package:appshop/pages/products/product_ui_actions.dart';
 import 'package:appshop/routes/app_routes.dart';
+import 'package:appshop/utils/formatters.dart';
 import 'package:appshop/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -97,12 +98,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 ],
               ),
               SizedBox(height: 16),
-              Text(
-                "R\$${product.price.toStringAsFixed(2)}",
-                style: TextStyle(
-                  fontSize: 24,
-                ),
-              ),
+              Text(formatPrice(product.price), style: TextStyle(fontSize: 24)),
               SizedBox(height: 20),
               Container(
                 width: double.infinity,

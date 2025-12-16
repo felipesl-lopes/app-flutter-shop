@@ -1,6 +1,7 @@
 import 'package:appshop/components/cart_item_widget.dart';
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/order_list.dart';
+import 'package:appshop/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,7 @@ class CartPage extends StatelessWidget {
                     padding: EdgeInsets.all(4),
                     backgroundColor: Colors.purple,
                     label: Text(
-                      "R\$${cart.totalAmount.toStringAsFixed(2)}",
+                      formatPrice(cart.totalAmount),
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

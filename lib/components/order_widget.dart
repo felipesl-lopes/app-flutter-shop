@@ -2,6 +2,8 @@ import 'package:appshop/models/cart_item.dart';
 import 'package:appshop/models/order.dart';
 import 'package:appshop/models/product_list.dart';
 import 'package:appshop/pages/products/product_detail.dart';
+import 'package:appshop/utils/flushbar_helper.dart';
+import 'package:appshop/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +28,11 @@ class _OrderWidgetState extends State<OrderWidget> {
 
       final product = productList.where((p) => p.id == item.id).firstOrNull;
       if (product == null) {
-        print("Produto indisponível.");
+        showAppFlushbar(
+          context,
+          message: "Produto indisponível!",
+          type: FlushType.error,
+        );
         return;
       }
 
@@ -44,7 +50,7 @@ class _OrderWidgetState extends State<OrderWidget> {
       child: Column(
         children: [
           ListTile(
-            title: Text("R\$${widget.order.total.toStringAsFixed(2)}"),
+            title: Text(formatPrice(widget.order.total)),
             subtitle: Text(
               DateFormat("dd/MM/yyyy hh:mm").format(widget.order.date),
             ),
@@ -60,28 +66,35 @@ class _OrderWidgetState extends State<OrderWidget> {
             Container(
               padding: EdgeInsets.all(16),
               child: Column(
-                children: widget.order.products.map((product) {
-                  return InkWell(
-                    onTap: () => {_selectPage(context, product)},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          product.name,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                children: widget.order.products.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final product = entry.value;
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () => _selectPage(context, product),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              product.name,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              "${product.quantity}x ${formatPrice(product.price)}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          "${product.quantity}x R\$${product.price}",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54,
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                      if (index < widget.order.products.length - 1) Divider(),
+                    ],
                   );
                 }).toList(),
               ),

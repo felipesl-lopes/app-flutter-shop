@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
   String? _token;
+  String? _refreshToken;
   String? _email;
   String? _userId;
   DateTime? _expiryDate;
@@ -82,6 +83,7 @@ class Auth with ChangeNotifier {
     }
 
     if (dbResponse.body.isNotEmpty) {
+      _refreshToken = body['refreshToken'];
       _token = body['idToken'];
       _email = body['email'];
       _userId = body['localId'];
@@ -94,7 +96,7 @@ class Auth with ChangeNotifier {
     final user = UserModel.fromMap(userData);
     _user = user;
 
-    _autoLogout();
+    _generateNewToken();
     notifyListeners();
   }
 
@@ -122,9 +124,54 @@ class Auth with ChangeNotifier {
     _logoutTimer = null;
   }
 
-  void _autoLogout() {
+  void _generateNewToken() {
     _clearLogoutTimer();
-    final _timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
-    _logoutTimer = Timer(Duration(seconds: _timeToLogout ?? 0), logout);
+
+    final secondsToExpiry =
+        _expiryDate?.difference(DateTime.now()).inSeconds ?? 0;
+
+    _logoutTimer = Timer(
+      Duration(seconds: secondsToExpiry),
+      refreshAuthToken,
+    );
+  }
+
+  Future<void> refreshAuthToken() async {
+    if (_refreshToken == null) {
+      throw AuthException();
+    }
+
+    final url =
+        'https://securetoken.googleapis.com/v1/token?key=AIzaSyB2S4rurD7248aMRdxhlpLjsYWsywe2qec';
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'grant_type': 'refresh_token',
+        'refresh_token': _refreshToken!,
+      },
+    );
+
+    final body = jsonDecode(response.body);
+
+    if (response.statusCode != 200) {
+      await logout();
+      throw AuthException();
+    }
+    ;
+
+    _token = body['id_token'];
+    _refreshToken = body['refresh_token'];
+    _expiryDate = DateTime.now().add(
+      Duration(seconds: int.parse(body['expires_in'])),
+    );
+
+    print("Disparou o refresh token");
+
+    await _storage.saveRefreshToken(jsonEncode(_refreshToken));
+
+    _generateNewToken();
+    notifyListeners();
   }
 }

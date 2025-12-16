@@ -1,5 +1,6 @@
 import 'package:appshop/models/cart.dart';
 import 'package:appshop/models/cart_item.dart';
+import 'package:appshop/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,8 +37,7 @@ class CartItemWidget extends StatelessWidget {
         );
       },
       onDismissed: (_) {
-        Provider.of<Cart>(context, listen: false)
-            .removeItem(cartItem.id);
+        Provider.of<Cart>(context, listen: false).removeItem(cartItem.id);
       },
       key: ValueKey(cartItem.id),
       direction: DismissDirection.endToStart,
@@ -54,10 +54,21 @@ class CartItemWidget extends StatelessWidget {
           leading: CircleAvatar(
             backgroundImage: NetworkImage(cartItem.imageUrl),
           ),
-          title: Text(cartItem.name),
-          subtitle: Text(
-              "Total: R\$${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}"),
-          trailing: Text("${cartItem.quantity}x"),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(cartItem.name,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("${cartItem.quantity.toString()}x"),
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(formatPrice(cartItem.price)),
+              Text("Total: ${formatPrice(cartItem.price * cartItem.quantity)}"),
+            ],
+          ),
         ),
       ),
     );

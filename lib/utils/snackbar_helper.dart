@@ -10,7 +10,7 @@ class SnackbarHelper {
     messenger.showSnackBar(
       SnackBar(
         content: Text("Produto $productName adicionado ao carrinho!"),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 4),
         action: SnackBarAction(
           label: "DESFAZER",
           textColor: Colors.orangeAccent,
