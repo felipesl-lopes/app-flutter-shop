@@ -41,7 +41,7 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Auth auth = Provider.of(context);
+    // final auth = context.read<Auth>();
 
     if (_isLoading)
       return Scaffold(
@@ -65,6 +65,10 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
         ),
       );
 
-    return auth.isAuth ? HomePage() : AuthLogin();
+    return Consumer<Auth>(
+      builder: (ctx, auth, _) {
+        return auth.isAuth ? HomePage() : AuthLogin();
+      },
+    );
   }
 }

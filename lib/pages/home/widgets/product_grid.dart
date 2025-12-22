@@ -14,6 +14,7 @@ class ProductGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final _userId = Provider.of<Auth>(context).userId;
     final provider = Provider.of<ProductList>(context);
+
     final List<Product> _loadedProducts =
         showFavoriteOnly ? provider.favoriteItems : provider.items;
 
@@ -23,8 +24,14 @@ class ProductGrid extends StatelessWidget {
     if (_listProduct.isEmpty) {
       return Container(
           alignment: Alignment.topCenter,
-          padding: EdgeInsets.all(20),
-          child: Text("Nenhum produto para venda encontrado."));
+          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+          child: Text(
+            showFavoriteOnly
+                ? "Nenhum produto favorito encontrado."
+                : "Nenhum produto para venda encontrado.",
+            style: TextStyle(fontSize: 17),
+            textAlign: TextAlign.center,
+          ));
     }
 
     return GridView.builder(

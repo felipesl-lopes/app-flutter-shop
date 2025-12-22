@@ -44,4 +44,24 @@ class UserModel {
       'avatarUrl': avatarUrl,
     };
   }
+
+  UserModel copyWith({
+    String? name,
+    int? phoneNumber,
+    String? city,
+    String? country,
+    String? address,
+    DateTime? birthDate,
+    String? avatarUrl,
+  }) {
+    return UserModel(
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      city: city ?? this.city,
+      country: country ?? this.country,
+      address: address ?? this.address,
+      birthDate: birthDate ?? this.birthDate,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+    );
+  }
 }

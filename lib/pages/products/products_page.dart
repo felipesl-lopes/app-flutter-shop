@@ -40,17 +40,41 @@ class ProductsPage extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () => _refreshProducts(context),
         child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: _productList.length,
-            itemBuilder: (ctx, index) => Column(
-              children: [
-                ProductItem(_productList[index]),
-                Divider(),
-              ],
-            ),
-          ),
-        ),
+            padding: EdgeInsets.all(12),
+            child: _productList.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Você ainda não possui nenhum produto cadastrado.",
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 24),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                          ),
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(AppRoutes.PRODUCT_FORM),
+                          child: Text("Cadastre agora",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16)),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _productList.length,
+                    itemBuilder: (ctx, index) => Column(
+                      children: [
+                        ProductItem(_productList[index]),
+                        Divider(),
+                      ],
+                    ),
+                  )),
       ),
     );
   }

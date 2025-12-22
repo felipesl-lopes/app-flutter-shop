@@ -13,15 +13,29 @@ class AppProviders {
     ChangeNotifierProxyProvider<Auth, ProductList>(
       create: (_) => ProductList(),
       update: (ctx, auth, previous) {
+        if (!auth.isAuth) {
+          return ProductList();
+        }
+
         return ProductList(
-            auth.token ?? "", auth.userId ?? "", previous?.items ?? []);
+          auth.token ?? "",
+          auth.userId ?? "",
+          previous?.items ?? [],
+        );
       },
     ),
     ChangeNotifierProxyProvider<Auth, OrderList>(
       create: (_) => OrderList(),
       update: (ctx, auth, previous) {
+        if (!auth.isAuth) {
+          return OrderList();
+        }
+
         return OrderList(
-            auth.token ?? "", auth.userId ?? "", previous?.items ?? []);
+          auth.token ?? "",
+          auth.userId ?? "",
+          previous?.items ?? [],
+        );
       },
     ),
     ChangeNotifierProvider(

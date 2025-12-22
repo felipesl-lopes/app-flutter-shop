@@ -167,8 +167,6 @@ class Auth with ChangeNotifier {
       Duration(seconds: int.parse(body['expires_in'])),
     );
 
-    print("Disparou o refresh token");
-
     await _storage.saveRefreshToken(jsonEncode(_refreshToken));
 
     _generateNewToken();

@@ -22,6 +22,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
   bool _isLoading = false;
+  Product? _editedProduct;
 
   @override
   void dispose() {
@@ -43,17 +44,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_formData.isEmpty) {
+    if (_editedProduct == null) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       if (arg != null) {
-        final product = arg as Product;
-        _formData["id"] = product.id;
-        _formData["name"] = product.name;
-        _formData["price"] = product.price;
-        _formData["description"] = product.description;
-        _formData["imageUrl"] = product.imageUrl;
+        _editedProduct = arg as Product;
+        _formData["id"] = _editedProduct!.id;
+        _formData["name"] = _editedProduct!.name;
+        _formData["price"] = _editedProduct!.price;
+        _formData["description"] = _editedProduct!.description;
+        _formData["imageUrl"] = _editedProduct!.imageUrl;
 
-        _imageUrlController.text = product.imageUrl;
+        _imageUrlController.text = _editedProduct!.imageUrl;
       }
     }
   }
@@ -101,7 +102,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          "Adicionar produto",
+          _editedProduct == null ? "Adicionar produto" : "Editar produto",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.purple,
