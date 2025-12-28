@@ -1,7 +1,7 @@
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/cart/Widgets/cart_item_widget.dart';
-import 'package:appshop/features/order/Provider/order_list.dart';
+import 'package:appshop/features/order/Provider/order_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,7 +111,7 @@ class _CartButtonState extends State<CartButton> {
   Widget build(BuildContext context) {
     Future<void> handleBuy() async {
       setState(() => _isLoading = true);
-      await Provider.of<OrderList>(context, listen: false).addOrder(
+      await Provider.of<OrderListProvider>(context, listen: false).addOrder(
         widget.cart,
       );
       widget.cart.clear();

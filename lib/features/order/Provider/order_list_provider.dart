@@ -1,18 +1,16 @@
-import 'dart:convert';
-
-import 'package:appshop/core/utils/constants.dart';
 import 'package:appshop/features/cart/Models/cart_item_model.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/order/Provider/order.dart';
+import 'package:appshop/features/order/Models/order.dart';
+import 'package:appshop/features/order/Repository/order_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-class OrderList with ChangeNotifier {
+class OrderListProvider with ChangeNotifier {
   final String _token;
   final String _userId;
   List<Order> _items = [];
+  final _repository = OrderRepository();
 
-  OrderList([
+  OrderListProvider([
     this._token = "",
     this._userId = "",
     this._items = const [],
@@ -27,13 +25,10 @@ class OrderList with ChangeNotifier {
   }
 
   Future<void> loadOrders() async {
+    final data =
+        await _repository.loadOrdersRepository(userId: _userId, token: _token);
+
     List<Order> items = [];
-    final response = await http.get(
-        Uri.parse("${Constants.ORDERS_BASE_URL}/$_userId.json?auth=$_token"));
-
-    if (response.body == "null") return;
-
-    Map<String, dynamic> data = jsonDecode(response.body);
 
     data.forEach(
       (orderId, orderData) {
@@ -63,32 +58,28 @@ class OrderList with ChangeNotifier {
   Future<void> addOrder(CartProvider cart) async {
     final date = DateTime.now();
 
-    final response = await http.post(
-      Uri.parse("${Constants.ORDERS_BASE_URL}/$_userId.json?auth=$_token"),
-      body: jsonEncode(
-        {
-          "total": cart.totalAmount,
-          "date": date.toIso8601String(),
-          "products": cart.items.values
-              .map(
-                (cartItem) => {
-                  "id": cartItem.id,
-                  "name": cartItem.name,
-                  "quantity": cartItem.quantity,
-                  "price": cartItem.price,
-                  "imageUrl": cartItem.imageUrl,
-                },
-              )
-              .toList(),
-        },
-      ),
+    final products = cart.items.values
+        .map((cartItem) => {
+              'id': cartItem.id,
+              'name': cartItem.name,
+              'quantity': cartItem.quantity,
+              'price': cartItem.price,
+              'imageUrl': cartItem.imageUrl,
+            })
+        .toList();
+
+    final orderId = await _repository.addOrderRepository(
+      userId: _userId,
+      token: _token,
+      total: cart.totalAmount,
+      date: date,
+      products: products,
     );
 
-    final id = jsonDecode(response.body)["name"];
     _items.insert(
       0,
       Order(
-        id: id,
+        id: orderId,
         total: cart.totalAmount,
         date: date,
         products: cart.items.values.toList(),

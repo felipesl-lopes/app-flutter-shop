@@ -1,7 +1,7 @@
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Models/cart_item_model.dart';
-import 'package:appshop/features/order/Provider/order.dart';
+import 'package:appshop/features/order/Models/order.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:flutter/material.dart';

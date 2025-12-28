@@ -1,5 +1,5 @@
-import 'package:appshop/features/auth/Provider/auth.dart';
-import 'package:appshop/features/product/Provider/product.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
 import 'package:appshop/features/product/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +12,10 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _userId = Provider.of<Auth>(context).userId;
+    final _userId = Provider.of<AuthProvider>(context).userId;
     final provider = Provider.of<ProductList>(context);
 
-    final List<Product> _loadedProducts =
+    final List<ProductProvider> _loadedProducts =
         showFavoriteOnly ? provider.favoriteItems : provider.items;
 
     final _listProduct =

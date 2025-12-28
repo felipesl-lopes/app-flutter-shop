@@ -1,15 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:appshop/core/constants/url_config.dart';
 import 'package:appshop/core/errors/auth_exception.dart';
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/services/secure_storage.dart';
-import 'package:appshop/core/utils/constants.dart';
+import 'package:appshop/features/auth/Repository/auth_repository.dart';
 import 'package:appshop/shared/Models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-class Auth with ChangeNotifier {
+enum AuthMode {
+  signIn,
+  signUp,
+}
+
+class AuthProvider with ChangeNotifier {
   String? _token;
   String? _refreshToken;
   String? _email;
@@ -18,6 +23,7 @@ class Auth with ChangeNotifier {
   Timer? _logoutTimer;
   final _prefs = PreferenciesValues();
   final _storage = SecureStorage();
+  final _repository = AuthRepository();
 
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
@@ -31,81 +37,60 @@ class Auth with ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
 
-  Future<void> _authenticate(String email, String password, String urlFragment,
+  Future<void> _authenticate(String email, String password, AuthMode mode,
       {String? name}) async {
-    final url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=AIzaSyB2S4rurD7248aMRdxhlpLjsYWsywe2qec";
-
-    final Map<String, dynamic> authBody = {
+    final authBody = {
       'email': email,
       'password': password,
       'returnSecureToken': true,
     };
 
-    final response = await http.post(
-      Uri.parse(url),
-      body: jsonEncode(authBody),
-    );
-
-    final body = jsonDecode(response.body);
-
-    if (body['error'] != null) {
-      throw AuthException();
-    }
+    final authData =
+        await _repository.authenticate(mode: mode, authBody: authBody);
 
     final _urlResponse =
-        "${Constants.USERS_URL}/${body['localId']}.json?auth=${body['idToken']}";
+        "${USERS_BASE_URL}/${authData['localId']}.json?auth=${authData['idToken']}";
 
-    final dbResponse = urlFragment != "signUp"
-        ? await http.get(Uri.parse(_urlResponse))
-        : await http.put(
-            Uri.parse(_urlResponse),
-            body: jsonEncode({
-              "name": name,
-              "phoneNumber": 0,
-              "city": "",
-              "country": "",
-              "address": "",
-              "birthDate": "",
-              "avatarUrl": "",
-            }),
-          );
+    final userJson = UserModel(
+      name: name.toString(),
+      phoneNumber: 0,
+      city: '',
+      country: '',
+      address: '',
+      birthDate: null,
+      avatarUrl: '',
+    );
 
-    if (dbResponse.statusCode >= 400) {
-      throw AuthException();
-    }
+    final userData = await _repository.fetchOrCreateUser(
+        mode: mode, url: _urlResponse, userMap: userJson.toMap());
 
     final bool keepLogged = await _prefs.getKeepLogged();
-    if (urlFragment == 'signInWithPassword' &&
-        keepLogged &&
-        response.statusCode == 200) {
+    if (mode == AuthMode.signIn && keepLogged) {
       await _storage.saveCredentials(email, password);
     }
 
-    if (dbResponse.body.isNotEmpty) {
-      _refreshToken = body['refreshToken'];
-      _token = body['idToken'];
-      _email = body['email'];
-      _userId = body['localId'];
+    if (userData.isNotEmpty) {
+      _refreshToken = authData['refreshToken'];
+      _token = authData['idToken'];
+      _email = authData['email'];
+      _userId = authData['localId'];
       _expiryDate = DateTime.now().add(
-        Duration(seconds: int.parse(body['expiresIn'])),
+        Duration(seconds: int.parse(authData['expiresIn'])),
       );
     }
 
-    final userData = jsonDecode(dbResponse.body);
-    final user = UserModel.fromMap(userData);
-    _user = user;
+    _user = UserModel.fromMap(userData);
 
     _generateNewToken();
     notifyListeners();
   }
 
   Future<void> signUp(String email, String password, String name) async {
-    return _authenticate(email, password, "signUp", name: name);
+    return _authenticate(email, password, AuthMode.signUp, name: name);
   }
 
   Future<void> signIn(String email, String password) async {
-    return _authenticate(email, password, "signInWithPassword");
+    return _authenticate(email, password, AuthMode.signIn);
   }
 
   Future<void> logout() async {
@@ -141,25 +126,8 @@ class Auth with ChangeNotifier {
       throw AuthException();
     }
 
-    final url =
-        'https://securetoken.googleapis.com/v1/token?key=AIzaSyB2S4rurD7248aMRdxhlpLjsYWsywe2qec';
-
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'grant_type': 'refresh_token',
-        'refresh_token': _refreshToken!,
-      },
-    );
-
-    final body = jsonDecode(response.body);
-
-    if (response.statusCode != 200) {
-      await logout();
-      throw AuthException();
-    }
-    ;
+    final body = await _repository.refreshToken(
+        refreshToken: _refreshToken, logout: logout);
 
     _token = body['id_token'];
     _refreshToken = body['refresh_token'];

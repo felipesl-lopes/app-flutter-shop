@@ -1,12 +1,12 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/errors/generic_exception.dart';
-import 'package:appshop/features/product/Provider/product.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ManageProductGrid extends StatelessWidget {
-  final Product product;
+  final ProductProvider product;
 
   ManageProductGrid(this.product);
 

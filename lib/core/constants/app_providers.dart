@@ -1,6 +1,6 @@
-import 'package:appshop/features/auth/Provider/auth.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/order/Provider/order_list.dart';
+import 'package:appshop/features/order/Provider/order_list_provider.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -8,9 +8,9 @@ import 'package:provider/single_child_widget.dart';
 class AppProviders {
   static List<SingleChildWidget> providers = [
     ChangeNotifierProvider(
-      create: (_) => Auth(),
+      create: (_) => AuthProvider(),
     ),
-    ChangeNotifierProxyProvider<Auth, ProductList>(
+    ChangeNotifierProxyProvider<AuthProvider, ProductList>(
       create: (_) => ProductList(),
       update: (ctx, auth, previous) {
         if (!auth.isAuth) {
@@ -24,14 +24,14 @@ class AppProviders {
         );
       },
     ),
-    ChangeNotifierProxyProvider<Auth, OrderList>(
-      create: (_) => OrderList(),
+    ChangeNotifierProxyProvider<AuthProvider, OrderListProvider>(
+      create: (_) => OrderListProvider(),
       update: (ctx, auth, previous) {
         if (!auth.isAuth) {
-          return OrderList();
+          return OrderListProvider();
         }
 
-        return OrderList(
+        return OrderListProvider(
           auth.token ?? "",
           auth.userId ?? "",
           previous?.items ?? [],

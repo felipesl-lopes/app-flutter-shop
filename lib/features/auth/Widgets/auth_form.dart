@@ -1,7 +1,6 @@
-import 'package:appshop/core/errors/auth_exception.dart';
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/utils/auth_validators.dart';
-import 'package:appshop/features/auth/Provider/auth.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,12 +42,13 @@ class _AuthFormState extends State<AuthForm> {
     _loadKeepLogged();
   }
 
-  void _showErrorDialog(String msg) {
+  void _showErrorDialog(dynamic msg) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text("Ocorreu um erro."),
-        content: Text(msg),
+        content:
+            Text(msg is Exception ? msg.toString().split(': ').last : 'Erro'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -67,7 +67,7 @@ class _AuthFormState extends State<AuthForm> {
     setState(() => _isLoading = true);
 
     _formKey.currentState?.save();
-    Auth auth = Provider.of(context, listen: false);
+    AuthProvider auth = Provider.of(context, listen: false);
 
     try {
       if (_isLogin()) {
@@ -77,12 +77,8 @@ class _AuthFormState extends State<AuthForm> {
         await auth.signUp(_authFormRegister['email']!,
             _authFormRegister['password']!, _authFormRegister['name']!);
       }
-    } on AuthException catch (error) {
-      print(error.toString());
-      _showErrorDialog(error.toString());
-    } catch (error) {
-      print(error);
-      _showErrorDialog("Erro inesperado. Tente novamente.");
+    } catch (e) {
+      _showErrorDialog(e);
     }
 
     if (!mounted) return;

@@ -1,4 +1,4 @@
-import 'package:appshop/features/order/Provider/order_list.dart';
+import 'package:appshop/features/order/Provider/order_list_provider.dart';
 import 'package:appshop/features/order/Widgets/order_widget.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   Future<void> _refreshOrders(BuildContext context) {
-    return Provider.of<OrderList>(context, listen: false).loadOrders();
+    return Provider.of<OrderListProvider>(context, listen: false).loadOrders();
   }
 
   @override
@@ -41,7 +41,7 @@ class _OrdersPageState extends State<OrdersPage> {
               child: Text("Não foi possível carregar os pedidos."),
             );
 
-          return Consumer<OrderList>(builder: (ctx, orders, child) {
+          return Consumer<OrderListProvider>(builder: (ctx, orders, child) {
             if (orders.itemsCount == 0) {
               return Center(
                 child: Text("Nenhum pedido encontrado."),

@@ -1,9 +1,9 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/utils/snackbar_helper.dart';
-import 'package:appshop/features/auth/Provider/auth.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/product/Provider/product.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/actions/product_actions.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
@@ -18,8 +18,8 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-    final auth = Provider.of<Auth>(context, listen: false);
+    final product = Provider.of<ProductProvider>(context);
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     final cart = Provider.of<CartProvider>(context);
 
     void handleBuy() {
@@ -84,7 +84,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           splashColor: Colors.redAccent.withOpacity(0.2),
                           child: Padding(
                             padding: EdgeInsets.all(6),
-                            child: Consumer<Product>(
+                            child: Consumer<ProductProvider>(
                               builder: (ctx, product, _) => product.isFavorite
                                   ? Icon(Icons.favorite,
                                       color: Colors.redAccent)

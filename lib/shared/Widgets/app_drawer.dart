@@ -1,12 +1,12 @@
 import 'package:appshop/core/constants/app_routes.dart';
-import 'package:appshop/features/auth/Provider/auth.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context);
+    final auth = Provider.of<AuthProvider>(context);
     final user = auth.user;
 
     return Drawer(
@@ -67,7 +67,7 @@ class AppDrawer extends StatelessWidget {
                         child: Text("Cancelar")),
                     TextButton(
                         onPressed: () {
-                          Provider.of<Auth>(context, listen: false).logout();
+                          Provider.of<AuthProvider>(context, listen: false).logout();
                           Navigator.of(context).pushReplacementNamed(
                             AppRoutes.AUTH_OR_HOME,
                           );

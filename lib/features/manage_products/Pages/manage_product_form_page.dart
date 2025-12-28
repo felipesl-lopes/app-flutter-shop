@@ -1,5 +1,5 @@
 import 'package:appshop/core/utils/product_validators.dart';
-import 'package:appshop/features/product/Provider/product.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
   bool _isLoading = false;
-  Product? _editedProduct;
+  ProductProvider? _editedProduct;
 
   @override
   void dispose() {
@@ -47,7 +47,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     if (_editedProduct == null) {
       final arg = ModalRoute.of(context)!.settings.arguments;
       if (arg != null) {
-        _editedProduct = arg as Product;
+        _editedProduct = arg as ProductProvider;
         _formData["id"] = _editedProduct!.id;
         _formData["name"] = _editedProduct!.name;
         _formData["price"] = _editedProduct!.price;

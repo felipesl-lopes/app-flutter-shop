@@ -1,7 +1,7 @@
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/services/secure_storage.dart';
 import 'package:appshop/features/auth/Pages/auth_page.dart';
-import 'package:appshop/features/auth/Provider/auth.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/home/Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,7 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
   }
 
   Future<void> _tryAuthLogin() async {
-    final auth = Provider.of<Auth>(context, listen: false);
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     final storage = SecureStorage();
     final creds = await storage.getCredentials();
     final prefs = await PreferenciesValues();
@@ -65,7 +65,7 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
         ),
       );
 
-    return Consumer<Auth>(
+    return Consumer<AuthProvider>(
       builder: (ctx, auth, _) {
         return auth.isAuth ? HomePage() : AuthLogin();
       },

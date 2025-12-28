@@ -5,7 +5,7 @@ import 'package:appshop/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class Product with ChangeNotifier {
+class ProductProvider with ChangeNotifier {
   final String id;
   final String name;
   final String description;
@@ -14,7 +14,7 @@ class Product with ChangeNotifier {
   final String userId;
   bool isFavorite;
 
-  Product({
+  ProductProvider({
     required this.id,
     required this.name,
     required this.description,
