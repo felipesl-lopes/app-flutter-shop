@@ -1,6 +1,7 @@
 import 'package:appshop/features/auth/Provider/auth_provider.dart';
-import 'package:appshop/features/product/Provider/product_provider.dart';
+import 'package:appshop/features/product/Models/product_model.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class ProductGrid extends StatelessWidget {
     final _userId = Provider.of<AuthProvider>(context).userId;
     final provider = Provider.of<ProductList>(context);
 
-    final List<ProductProvider> _loadedProducts =
+    final List<ProductModel> _loadedProducts =
         showFavoriteOnly ? provider.favoriteItems : provider.items;
 
     final _listProduct =
@@ -43,8 +44,8 @@ class ProductGrid extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
-        value: _listProduct[index],
+      itemBuilder: (ctx, index) => ChangeNotifierProvider(
+        create: (_) => ProductProvider(_listProduct[index]),
         child: ProductGridItem(),
       ),
     );

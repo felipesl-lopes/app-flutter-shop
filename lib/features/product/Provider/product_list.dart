@@ -3,17 +3,17 @@ import 'dart:math';
 
 import 'package:appshop/core/errors/generic_exception.dart';
 import 'package:appshop/core/utils/constants.dart';
-import 'package:appshop/features/product/Provider/product_provider.dart';
+import 'package:appshop/features/product/Models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ProductList with ChangeNotifier {
-  List<ProductProvider> _items = [];
+  List<ProductModel> _items = [];
   final String _userId;
   final String _token;
 
-  List<ProductProvider> get items => [..._items];
-  List<ProductProvider> get favoriteItems =>
+  List<ProductModel> get items => [..._items];
+  List<ProductModel> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
 
   ProductList([
@@ -49,7 +49,7 @@ class ProductList with ChangeNotifier {
     data.forEach((productId, productData) {
       final isFavorite = favData[productId] ?? false;
       _items.add(
-        ProductProvider(
+        ProductModel(
           id: productId,
           name: productData["name"],
           description: productData["description"],
@@ -66,7 +66,7 @@ class ProductList with ChangeNotifier {
   Future<void> saveProduct(Map<String, Object> data) {
     bool hasId = data["id"] != null;
 
-    final newProduct = new ProductProvider(
+    final newProduct = new ProductModel(
       id: hasId ? data["id"].toString() : Random().nextDouble().toString(),
       name: data["name"] as String,
       description: data["description"] as String,
@@ -82,7 +82,7 @@ class ProductList with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(ProductProvider product) async {
+  Future<void> addProduct(ProductModel product) async {
     final response = await http.post(
         Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$_token"),
         body: jsonEncode({
@@ -95,7 +95,7 @@ class ProductList with ChangeNotifier {
 
     final _data = jsonDecode(response.body);
     _items.add(
-      ProductProvider(
+      ProductModel(
         userId: _userId,
         id: _data["name"],
         name: product.name,
@@ -108,7 +108,7 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProduct(ProductProvider product) async {
+  Future<void> updateProduct(ProductModel product) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     if (index >= 0) {
@@ -128,7 +128,7 @@ class ProductList with ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(ProductProvider product) async {
+  Future<void> deleteProduct(ProductModel product) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     if (index >= 0) {

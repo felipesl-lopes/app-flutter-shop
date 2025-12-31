@@ -1,5 +1,5 @@
 import 'package:appshop/features/cart/Models/cart_item_model.dart';
-import 'package:appshop/features/product/Provider/product_provider.dart';
+import 'package:appshop/features/product/Models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {
@@ -21,7 +21,7 @@ class CartProvider with ChangeNotifier {
     return total;
   }
 
-  void addItem(ProductProvider product) {
+  void addItem(ProductModel product) {
     if (_items.containsKey(product.id)) {
       _items.update(
         product.id,

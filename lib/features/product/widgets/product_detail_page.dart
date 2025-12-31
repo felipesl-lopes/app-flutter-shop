@@ -23,7 +23,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final cart = Provider.of<CartProvider>(context);
 
     void handleBuy() {
-      cart.addItem(product);
+      cart.addItem(product.product);
       SnackbarHelper.showAddToCartMessage(
           context, product.name, () => cart.removeSingleItem(product.id));
       Navigator.of(context).pushNamed(AppRoutes.CART);
@@ -123,7 +123,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                 ),
                 onPressed: () {
-                  cart.addItem(product);
+                  cart.addItem(product.product);
                   SnackbarHelper.showAddToCartMessage(context, product.name,
                       () => cart.removeSingleItem(product.id));
                 },

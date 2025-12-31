@@ -2,30 +2,25 @@ import 'dart:convert';
 
 import 'package:appshop/core/errors/generic_exception.dart';
 import 'package:appshop/core/utils/constants.dart';
+import 'package:appshop/features/product/Models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ProductProvider with ChangeNotifier {
-  final String id;
-  final String name;
-  final String description;
-  final double price;
-  final String imageUrl;
-  final String userId;
-  bool isFavorite;
+  final ProductModel _product;
 
-  ProductProvider({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.imageUrl,
-    required this.userId,
-    this.isFavorite = false,
-  });
+  ProductProvider(this._product);
+
+  String get id => _product.id;
+  String get name => _product.name;
+  String get imageUrl => _product.imageUrl;
+  bool get isFavorite => _product.isFavorite;
+  ProductModel get product => _product;
+  double get price => _product.price;
+  String get description => _product.description;
 
   void _toggleFavorite() {
-    isFavorite = !isFavorite;
+    _product.isFavorite = !_product.isFavorite;
     notifyListeners();
   }
 
@@ -33,11 +28,11 @@ class ProductProvider with ChangeNotifier {
     _toggleFavorite();
 
     final url =
-        "${Constants.USER_FAVORITES_URL}/$userId/${id}.json?auth=$token";
+        "${Constants.USER_FAVORITES_URL}/$userId/${_product.id}.json?auth=$token";
 
     http.Response response;
 
-    if (isFavorite) {
+    if (_product.isFavorite) {
       response = await http.put(Uri.parse(url), body: jsonEncode(true));
     } else {
       response = await http.delete(Uri.parse(url));
@@ -45,14 +40,14 @@ class ProductProvider with ChangeNotifier {
 
     if (response.statusCode >= 400) {
       _toggleFavorite();
-      if (isFavorite) {
+      if (_product.isFavorite) {
         response = await http.put(Uri.parse(url), body: jsonEncode(true));
       } else {
         response = await http.delete(Uri.parse(url));
       }
 
       throw GenericExeption.ExceptionMsg(
-        msg: isFavorite
+        msg: _product.isFavorite
             ? "Não foi possível desfavoritar o produto."
             : "Não foi possível favoritar o produto.",
         statusCode: response.statusCode,

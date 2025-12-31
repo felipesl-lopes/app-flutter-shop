@@ -46,7 +46,7 @@ class ProductGridItem extends StatelessWidget {
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              cart.addItem(product);
+              cart.addItem(product.product);
               SnackbarHelper.showAddToCartMessage(context, product.name,
                   () => cart.removeSingleItem(product.id));
             },

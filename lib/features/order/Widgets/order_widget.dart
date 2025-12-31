@@ -3,6 +3,7 @@ import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Models/cart_item_model.dart';
 import 'package:appshop/features/order/Models/order.dart';
 import 'package:appshop/features/product/Provider/product_list.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,8 +39,8 @@ class _OrderWidgetState extends State<OrderWidget> {
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider.value(
-            value: product,
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => ProductProvider(product),
             child: ProductDetailPage(),
           ),
         ),
