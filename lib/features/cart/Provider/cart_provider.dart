@@ -1,5 +1,5 @@
-import 'package:appshop/features/cart/Models/cart_item_model.dart';
-import 'package:appshop/features/product/Models/product_model.dart';
+import 'package:appshop/core/models/cart_item_model.dart';
+import 'package:appshop/core/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {

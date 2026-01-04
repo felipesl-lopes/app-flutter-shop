@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:appshop/core/errors/generic_exception.dart';
+import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/constants.dart';
-import 'package:appshop/features/product/Models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

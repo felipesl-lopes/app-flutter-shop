@@ -1,6 +1,7 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/product/Provider/product_list.dart';
+import 'package:appshop/features/home/widgets/banner_carousel.dart';
+import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ProductList>(context, listen: false)
+    Provider.of<ProductListProvider>(context, listen: false)
         .loadProducts()
         .then((value) {
       setState(() {
@@ -86,7 +87,28 @@ class _HomePageState extends State<HomePage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : ProductGrid(_showFavoriteOnly),
+          : Container(
+              color: Colors.grey.shade100,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    BannerCarousel(),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          ProductGrid(
+                            _showFavoriteOnly,
+                            "Produtos para você",
+                            4,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:appshop/core/errors/generic_exception.dart';
+import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/constants.dart';
-import 'package:appshop/features/product/Models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ProductList with ChangeNotifier {
+class ProductListProvider with ChangeNotifier {
   List<ProductModel> _items = [];
   final String _userId;
   final String _token;
@@ -16,7 +16,7 @@ class ProductList with ChangeNotifier {
   List<ProductModel> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
 
-  ProductList([
+  ProductListProvider([
     this._token = "",
     this._userId = "",
     this._items = const [],

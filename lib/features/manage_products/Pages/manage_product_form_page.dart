@@ -1,6 +1,6 @@
+import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/product_validators.dart';
-import 'package:appshop/features/product/Models/product_model.dart';
-import 'package:appshop/features/product/Provider/product_list.dart';
+import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +72,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() => _isLoading = true);
 
     try {
-      await Provider.of<ProductList>(
+      await Provider.of<ProductListProvider>(
         context,
         listen: false,
       ).saveProduct(_formData);

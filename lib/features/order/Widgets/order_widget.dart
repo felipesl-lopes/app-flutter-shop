@@ -1,8 +1,8 @@
+import 'package:appshop/core/models/cart_item_model.dart';
+import 'package:appshop/core/models/order.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/formatters.dart';
-import 'package:appshop/features/cart/Models/cart_item_model.dart';
-import 'package:appshop/features/order/Models/order.dart';
-import 'package:appshop/features/product/Provider/product_list.dart';
+import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _OrderWidgetState extends State<OrderWidget> {
   Widget build(BuildContext context) {
     void _selectPage(BuildContext context, CartItemModel item) {
       final productList =
-          Provider.of<ProductList>(context, listen: false).items;
+          Provider.of<ProductListProvider>(context, listen: false).items;
 
       final product = productList.where((p) => p.id == item.id).firstOrNull;
       if (product == null) {

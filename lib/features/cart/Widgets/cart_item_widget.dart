@@ -1,5 +1,5 @@
+import 'package:appshop/core/models/cart_item_model.dart';
 import 'package:appshop/core/utils/formatters.dart';
-import 'package:appshop/features/cart/Models/cart_item_model.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +37,8 @@ class CartItemWidget extends StatelessWidget {
         );
       },
       onDismissed: (_) {
-        Provider.of<CartProvider>(context, listen: false).removeItem(cartItem.id);
+        Provider.of<CartProvider>(context, listen: false)
+            .removeItem(cartItem.id);
       },
       key: ValueKey(cartItem.id),
       direction: DismissDirection.endToStart,

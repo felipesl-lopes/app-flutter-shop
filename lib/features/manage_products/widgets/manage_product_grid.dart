@@ -1,7 +1,7 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/errors/generic_exception.dart';
-import 'package:appshop/features/product/Models/product_model.dart';
-import 'package:appshop/features/product/Provider/product_list.dart';
+import 'package:appshop/core/models/product_model.dart';
+import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +50,7 @@ class ManageProductGrid extends StatelessWidget {
                         onPressed: () async {
                           try {
                             Navigator.of(ctx).pop();
-                            await Provider.of<ProductList>(
+                            await Provider.of<ProductListProvider>(
                               context,
                               listen: false,
                             ).deleteProduct(product);

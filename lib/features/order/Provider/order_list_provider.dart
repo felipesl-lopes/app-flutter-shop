@@ -1,6 +1,6 @@
-import 'package:appshop/features/cart/Models/cart_item_model.dart';
+import 'package:appshop/core/models/cart_item_model.dart';
+import 'package:appshop/core/models/order.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/order/Models/order.dart';
 import 'package:appshop/features/order/Repository/order_repository.dart';
 import 'package:flutter/material.dart';
 
