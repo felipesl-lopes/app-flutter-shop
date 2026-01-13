@@ -21,7 +21,7 @@ class CartProvider with ChangeNotifier {
     return total;
   }
 
-  void addItem(ProductModel product) {
+  void addItem(dynamic product) {
     if (_items.containsKey(product.id)) {
       _items.update(
         product.id,
@@ -44,6 +44,25 @@ class CartProvider with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
+  }
+
+  void removerItem(dynamic product) {
+    if (!_items.containsKey(product.id)) return;
+
+    final existingItem = _items[product.id]!;
+
+    _items.update(
+      product.id,
+      (_) => CartItemModel(
+        id: existingItem.id,
+        name: existingItem.name,
+        quantity: existingItem.quantity - 1,
+        price: existingItem.price,
+        imageUrl: existingItem.imageUrl,
+      ),
+    );
+
     notifyListeners();
   }
 

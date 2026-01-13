@@ -21,6 +21,7 @@ enum FilterOptions {
 class _HomePageState extends State<HomePage> {
   bool _showFavoriteOnly = false;
   bool _isLoading = true;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -35,38 +36,53 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _searchProduct() {
+    // TODO: IMPLEMENTAR A BUSCA DE PRODUTO
+
+    final query = _searchController.text.trim();
+    if (query.isEmpty) return;
+
+    print(query);
+    FocusScope.of(context).unfocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Mobile Shop",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        title: TextField(
+          controller: _searchController,
+          autofocus: false,
+          onSubmitted: (_) => FocusScope.of(context).unfocus(),
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            hintText: "Buscar produto",
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: BorderSide.none,
+            ),
+            suffixIcon: IconButton(
+              onPressed: _searchProduct,
+              icon: Icon(Icons.search),
+            ),
+          ),
         ),
         backgroundColor: Colors.purple,
         iconTheme: IconThemeData(color: Colors.white),
         actions: [
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text("Favoritos"),
-                value: FilterOptions.Favorite,
-              ),
-              PopupMenuItem(
-                child: Text("Todos"),
-                value: FilterOptions.All,
-              ),
-            ],
-            onSelected: (FilterOptions selectedValue) {
-              setState(() {
-                if (selectedValue == FilterOptions.Favorite) {
-                  _showFavoriteOnly = true;
-                } else {
-                  _showFavoriteOnly = false;
-                }
-              });
-            },
-          ),
           Consumer<CartProvider>(
             child: IconButton(
                 onPressed: () =>
@@ -83,32 +99,35 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: AppDrawer(),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              color: Colors.grey.shade100,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    BannerCarousel(),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          ProductGrid(
-                            _showFavoriteOnly,
-                            "Produtos para você",
-                            4,
-                          ),
-                        ],
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                color: Colors.grey.shade100,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      BannerCarousel(),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          children: [
+                            ProductGrid(
+                              _showFavoriteOnly,
+                              "Produtos para você",
+                              4,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

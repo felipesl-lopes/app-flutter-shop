@@ -30,23 +30,16 @@ class CartPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Total",
+                    "Valor total",
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(width: 10),
-                  Chip(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(
-                        width: 0,
-                        color: Colors.transparent,
-                      ),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    backgroundColor: Colors.purple,
-                    label: Text(
-                      formatPrice(cart.totalAmount),
-                      style: TextStyle(color: Colors.white),
+                  Text(
+                    formatPrice(cart.totalAmount),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.purple,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Spacer(),
@@ -126,14 +119,19 @@ class _CartButtonState extends State<CartButton> {
             width: 26,
             child: CircularProgressIndicator(strokeWidth: 3),
           )
-        : TextButton(
-            onPressed: widget.cart.itemsCount == 0 ? null : handleBuy,
-            child: Text(
-              "COMPRAR",
-              style: TextStyle(
-                  color: widget.cart.itemsCount == 0
-                      ? Colors.grey
-                      : Colors.purple),
+        : Container(
+            decoration: BoxDecoration(
+              color: widget.cart.itemsCount == 0
+                  ? Colors.grey.withOpacity(0.6)
+                  : Colors.purple,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextButton(
+              onPressed: widget.cart.itemsCount == 0 ? null : handleBuy,
+              child: Text(
+                "COMPRAR",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           );
   }
