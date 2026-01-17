@@ -52,9 +52,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _formData["name"] = _editedProduct!.name;
         _formData["price"] = _editedProduct!.price;
         _formData["description"] = _editedProduct!.description;
-        _formData["imageUrl"] = _editedProduct!.imageUrl;
+        _formData["imageUrls"] = _editedProduct!.imageUrls;
 
-        _imageUrlController.text = _editedProduct!.imageUrl;
+        _imageUrlController.text = _editedProduct!.imageUrls.isNotEmpty
+            ? _editedProduct!.imageUrls.first
+            : '';
       }
     }
   }
@@ -167,8 +169,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             keyboardType: TextInputType.url,
                             controller: _imageUrlController,
                             focusNode: _imageUrlFocus,
-                            onSaved: (imageUrl) =>
-                                _formData["imageUrl"] = imageUrl ?? "",
+                            onSaved: (imageUrls) => _formData["imageUrls"] =
+                                imageUrls == null || imageUrls.isEmpty
+                                    ? <String>[]
+                                    : [imageUrls],
                             validator: (value) => isValidImageUrl(value ?? ""),
                           ),
                         ),

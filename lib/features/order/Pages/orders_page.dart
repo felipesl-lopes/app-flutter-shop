@@ -21,7 +21,7 @@ class _OrdersPageState extends State<OrdersPage> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          "Meus pedidos",
+          "Minhas compras",
           style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
         ),

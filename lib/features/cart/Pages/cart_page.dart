@@ -68,7 +68,7 @@ class CartPage extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: Text("Começe a comprar"),
+                  child: Text("Comece a comprar"),
                 ),
               ],
             ),

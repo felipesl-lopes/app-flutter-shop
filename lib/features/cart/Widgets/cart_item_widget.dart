@@ -45,8 +45,26 @@ class CartItemWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(cartItem.imageUrl),
+            Container(
+              width: 40,
+              height: 40,
+              decoration: cartItem.imageUrl.isNotEmpty
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(cartItem.imageUrl),
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : null,
+              child: cartItem.imageUrl.isNotEmpty
+                  ? null
+                  : Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(40)),
+                      child:
+                          Icon(Icons.image_not_supported, color: Colors.grey)),
             ),
             Expanded(
               child: Row(

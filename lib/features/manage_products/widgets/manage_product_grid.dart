@@ -16,7 +16,9 @@ class ManageProductGrid extends StatelessWidget {
     return ListTile(
       title: Text(product.name),
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(product.imageUrl),
+        backgroundImage: NetworkImage(
+          product.imageUrls.isNotEmpty ? product.imageUrls.first : '',
+        ),
       ),
       trailing: Container(
         width: 100,

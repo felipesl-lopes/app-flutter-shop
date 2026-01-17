@@ -5,6 +5,7 @@ import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/actions/product_actions.dart';
+import 'package:appshop/features/product/widgets/carousel_images_product.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     void handleBuy() {
       cart.addItem(product.product);
-      SnackbarHelper.showAddToCartMessage(
-          context, product.name, () => cart.removeSingleItem(product.id));
       Navigator.of(context).pushNamed(AppRoutes.CART);
     }
 
@@ -33,7 +32,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          product.name,
+          "Informações do produto",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.purple,
@@ -57,15 +56,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 22),
               Stack(
                 children: [
-                  Container(
-                    height: 340,
-                    width: 340,
-                    child: Image.network(product.imageUrl, fit: BoxFit.cover),
-                  ),
+                  product.imageUrls.isNotEmpty
+                      ? CarouselImagesProduct(product.imageUrls)
+                      : AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                              size: 120,
+                            ),
+                          ),
+                        ),
                   Positioned(
                     top: 10,
                     right: 10,
@@ -98,14 +105,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
               SizedBox(height: 16),
-              Text(formatPrice(product.price), style: TextStyle(fontSize: 24)),
-              SizedBox(height: 20),
+              Text(
+                product.name,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              Text(formatPrice(product.price),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+              SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Descrição:"),
+                    Text("Descrição:",
+                        style: TextStyle(fontWeight: FontWeight.w600)),
                     Text(product.description),
                   ],
                 ),
@@ -124,8 +139,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
                 onPressed: () {
                   cart.addItem(product.product);
-                  SnackbarHelper.showAddToCartMessage(context, product.name,
-                      () => cart.removeSingleItem(product.id));
+                  SnackbarHelper.showAddToCartMessage(
+                    context,
+                    product.name,
+                  );
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

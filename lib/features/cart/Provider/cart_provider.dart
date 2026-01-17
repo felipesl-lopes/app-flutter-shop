@@ -13,6 +13,18 @@ class CartProvider with ChangeNotifier {
     return _items.length;
   }
 
+  String _extractImageUrl(dynamic product) {
+    if (product is ProductModel) {
+      return product.imageUrls.isNotEmpty ? product.imageUrls.first : '';
+    }
+
+    if (product is CartItemModel) {
+      return product.imageUrl;
+    }
+
+    return '';
+  }
+
   double get totalAmount {
     double total = 0.0;
     _items.forEach((key, cartItem) {
@@ -22,15 +34,18 @@ class CartProvider with ChangeNotifier {
   }
 
   void addItem(dynamic product) {
+    final imageUrl = _extractImageUrl(product);
+
     if (_items.containsKey(product.id)) {
       _items.update(
         product.id,
         (existingItem) => CartItemModel(
-            id: existingItem.id,
-            name: existingItem.name,
-            quantity: existingItem.quantity + 1,
-            price: existingItem.price,
-            imageUrl: product.imageUrl),
+          id: existingItem.id,
+          name: existingItem.name,
+          quantity: existingItem.quantity + 1,
+          price: existingItem.price,
+          imageUrl: imageUrl,
+        ),
       );
     } else {
       _items.putIfAbsent(
@@ -40,7 +55,7 @@ class CartProvider with ChangeNotifier {
           name: product.name,
           quantity: 1,
           price: product.price,
-          imageUrl: product.imageUrl,
+          imageUrl: imageUrl,
         ),
       );
     }

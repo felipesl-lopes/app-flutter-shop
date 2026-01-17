@@ -23,6 +23,14 @@ class ProductGridItem extends StatelessWidget {
       );
     }
 
+    void _addProduct() {
+      cart.addItem(product.product);
+      SnackbarHelper.showAddToCartMessage(
+        context,
+        product.name,
+      );
+    }
+
     return GestureDetector(
       onTap: () => _selectPage(context),
       child: Container(
@@ -33,13 +41,21 @@ class ProductGridItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // pilha com botão de carrinho
             AspectRatio(
               aspectRatio: 1,
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Image.network(product.imageUrl, fit: BoxFit.cover),
+                    child: product.imageUrls.isNotEmpty
+                        ? Image.network(product.imageUrls.first,
+                            fit: BoxFit.cover)
+                        : Container(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                              size: 48,
+                            ),
+                          ),
                   ),
                   Positioned(
                     bottom: 6,
@@ -52,14 +68,7 @@ class ProductGridItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: InkWell(
-                        onTap: () {
-                          cart.addItem(product.product);
-                          SnackbarHelper.showAddToCartMessage(
-                            context,
-                            product.name,
-                            () => cart.removeSingleItem(product.id),
-                          );
-                        },
+                        onTap: _addProduct,
                         child: const Icon(
                           Icons.shopping_cart,
                           size: 20,
@@ -71,15 +80,13 @@ class ProductGridItem extends StatelessWidget {
                 ],
               ),
             ),
-
-            // detalhes do produto
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${product.name}",
+                    product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 16),

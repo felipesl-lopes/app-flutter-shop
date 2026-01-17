@@ -48,13 +48,20 @@ class ProductListProvider with ChangeNotifier {
     _items.clear();
     data.forEach((productId, productData) {
       final isFavorite = favData[productId] ?? false;
+      final dynamic imageData =
+          productData['imageUrls'] ?? productData['imageUrl'];
+
       _items.add(
         ProductModel(
           id: productId,
           name: productData["name"],
           description: productData["description"],
           price: productData["price"],
-          imageUrl: productData["imageUrl"],
+          imageUrls: imageData is List
+              ? List<String>.from(imageData)
+              : imageData is String
+                  ? [imageData]
+                  : [],
           isFavorite: isFavorite,
           userId: productData["userId"],
         ),
@@ -71,7 +78,7 @@ class ProductListProvider with ChangeNotifier {
       name: data["name"] as String,
       description: data["description"] as String,
       price: data["price"] as double,
-      imageUrl: data["imageUrl"] as String,
+      imageUrls: data["imageUrls"] as List<String>,
       userId: _userId,
     );
 
@@ -90,7 +97,7 @@ class ProductListProvider with ChangeNotifier {
           "name": product.name,
           "description": product.description,
           "price": product.price,
-          "imageUrl": product.imageUrl,
+          "imageUrls": product.imageUrls,
         }));
 
     final _data = jsonDecode(response.body);
@@ -101,7 +108,7 @@ class ProductListProvider with ChangeNotifier {
         name: product.name,
         description: product.description,
         price: product.price,
-        imageUrl: product.imageUrl,
+        imageUrls: product.imageUrls,
         isFavorite: product.isFavorite,
       ),
     );
@@ -119,7 +126,7 @@ class ProductListProvider with ChangeNotifier {
             "name": product.name,
             "description": product.description,
             "price": product.price,
-            "imageUrl": product.imageUrl,
+            "imageUrls": product.imageUrls,
             "userId": _userId,
           }));
 

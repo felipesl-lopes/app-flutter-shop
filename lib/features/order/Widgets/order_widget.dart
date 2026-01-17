@@ -51,10 +51,10 @@ class _OrderWidgetState extends State<OrderWidget> {
       child: Column(
         children: [
           ListTile(
-            title: Text(formatPrice(widget.order.total)),
-            subtitle: Text(
-              DateFormat("dd/MM/yyyy hh:mm").format(widget.order.date),
+            title: Text(
+              DateFormat("dd/MM/yyyy").format(widget.order.date),
             ),
+            subtitle: Text(formatPrice(widget.order.total)),
             trailing: IconButton(
                 onPressed: () => {
                       setState(() {

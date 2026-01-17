@@ -13,7 +13,7 @@ class ProductProvider with ChangeNotifier {
 
   String get id => _product.id;
   String get name => _product.name;
-  String get imageUrl => _product.imageUrl;
+  List<String> get imageUrls => _product.imageUrls;
   bool get isFavorite => _product.isFavorite;
   ProductModel get product => _product;
   double get price => _product.price;
