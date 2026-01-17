@@ -7,6 +7,7 @@ import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/actions/product_actions.dart';
 import 'package:appshop/features/product/widgets/carousel_images_product.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
+import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -66,11 +67,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       : AspectRatio(
                           aspectRatio: 1,
                           child: Container(
-                            child: Icon(
-                              Icons.image_not_supported,
-                              color: Colors.grey,
-                              size: 120,
-                            ),
+                            child: ImageFallbackIcon(size: 120),
                           ),
                         ),
                   Positioned(

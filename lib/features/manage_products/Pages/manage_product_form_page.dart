@@ -1,6 +1,7 @@
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/product_validators.dart';
 import 'package:appshop/features/product/Provider/product_list_provider.dart';
+import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -177,26 +178,28 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 10, left: 10),
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            border: Border.all(color: Colors.grey, width: 1),
-                          ),
-                          child: _imageUrlController.text.isEmpty
-                              ? Text("Informe a URL")
-                              : Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: FittedBox(
-                                    child:
-                                        Image.network(_imageUrlController.text),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                          alignment: Alignment.center,
-                        ),
+                            margin: EdgeInsets.only(top: 10, left: 10),
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              border: Border.all(color: Colors.grey, width: 1),
+                            ),
+                            alignment: Alignment.center,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: _imageUrlController.text.isEmpty
+                                  ? Text("Informe a URL")
+                                  : Image.network(
+                                      _imageUrlController.text,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return ImageFallbackIcon(size: 48);
+                                      },
+                                    ),
+                            )),
                       ],
                     ),
                     SizedBox(height: 80),

@@ -2,6 +2,7 @@ import 'package:appshop/core/models/cart_item_model.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/cart/Widgets/quantity_button.dart';
+import 'package:appshop/shared/Widgets/image_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,26 +46,8 @@ class CartItemWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: cartItem.imageUrl.isNotEmpty
-                  ? BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(cartItem.imageUrl),
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : null,
-              child: cartItem.imageUrl.isNotEmpty
-                  ? null
-                  : Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(40)),
-                      child:
-                          Icon(Icons.image_not_supported, color: Colors.grey)),
+            ImageAvatar(
+              imageUrl: cartItem.imageUrl.isNotEmpty ? cartItem.imageUrl : null,
             ),
             Expanded(
               child: Row(

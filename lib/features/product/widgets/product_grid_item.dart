@@ -3,6 +3,7 @@ import 'package:appshop/core/utils/snackbar_helper.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
+import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,14 +48,15 @@ class ProductGridItem extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: product.imageUrls.isNotEmpty
-                        ? Image.network(product.imageUrls.first,
-                            fit: BoxFit.cover)
+                        ? Image.network(
+                            product.imageUrls.first,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return ImageFallbackIcon(size: 48);
+                            },
+                          )
                         : Container(
-                            child: Icon(
-                              Icons.image_not_supported,
-                              color: Colors.grey,
-                              size: 48,
-                            ),
+                            child: ImageFallbackIcon(size: 48),
                           ),
                   ),
                   Positioned(

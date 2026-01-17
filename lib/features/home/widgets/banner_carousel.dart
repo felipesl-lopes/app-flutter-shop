@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
 
 class BannerCarousel extends StatefulWidget {
@@ -65,6 +66,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
               return Image.asset(
                 _banners[bannerIndex],
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return ImageFallbackIcon(size: 120);
+                },
               );
             },
           ),

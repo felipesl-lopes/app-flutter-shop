@@ -1,7 +1,9 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/errors/generic_exception.dart';
 import 'package:appshop/core/models/product_model.dart';
+import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/product/Provider/product_list_provider.dart';
+import 'package:appshop/shared/Widgets/image_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,11 +16,14 @@ class ManageProductGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final msg = ScaffoldMessenger.of(context);
     return ListTile(
-      title: Text(product.name),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(
-          product.imageUrls.isNotEmpty ? product.imageUrls.first : '',
-        ),
+      title: Text(
+        product.name,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(formatPrice(product.price)),
+      leading: ImageAvatar(
+        imageUrl: product.imageUrls.isNotEmpty ? product.imageUrls.first : null,
       ),
       trailing: Container(
         width: 100,

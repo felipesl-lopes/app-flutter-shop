@@ -1,3 +1,4 @@
+import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -44,6 +45,9 @@ class _CarouselImagesProductState extends State<CarouselImagesProduct> {
                   return Image.network(
                     widget.imageUrls[bannerIndex],
                     fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return ImageFallbackIcon(size: 120);
+                    },
                   );
                 },
               ),
