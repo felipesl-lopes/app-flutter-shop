@@ -10,4 +10,7 @@ class Constants {
 
   static const ORDERS_BASE_URL =
       "https://shop-df68d-default-rtdb.firebaseio.com/orders";
+
+  static const BANNERS_URL =
+      "https://shop-df68d-default-rtdb.firebaseio.com/banners";
 }

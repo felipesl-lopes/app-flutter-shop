@@ -1,20 +1,19 @@
 import 'dart:async';
 
+import 'package:appshop/shared/Models/banner_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
 
 class BannerCarousel extends StatefulWidget {
+  final List<BannerModel> bannerList;
+
+  BannerCarousel({required this.bannerList});
+
   @override
   State<BannerCarousel> createState() => _BannerCarouselState();
 }
 
 class _BannerCarouselState extends State<BannerCarousel> {
-  final List<String> _banners = [
-    'assets/images/banner1.jpg',
-    'assets/images/banner2.jpg',
-    'assets/images/banner3.jpg',
-  ];
-
   final PageController _controller = PageController();
   int _currentIndex = 0;
   late Timer _timer;
@@ -23,7 +22,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
   @override
   void initState() {
     super.initState();
-    _startAutoScroll();
+    if (widget.bannerList.length > 1) _startAutoScroll();
   }
 
   void _startAutoScroll() {
@@ -31,9 +30,11 @@ class _BannerCarouselState extends State<BannerCarousel> {
       const Duration(seconds: 4),
       (_) {
         _currentPage++;
-        _controller.animateToPage(_currentPage,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut);
+        _controller.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
       },
     );
   }
@@ -47,6 +48,10 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.bannerList.isEmpty) return const SizedBox.shrink();
+
+    final banners = widget.bannerList;
+
     return AspectRatio(
       aspectRatio: 19 / 9,
       child: Stack(
@@ -56,18 +61,24 @@ class _BannerCarouselState extends State<BannerCarousel> {
             controller: _controller,
             onPageChanged: (index) {
               setState(() {
-                _currentIndex = index % _banners.length;
+                _currentIndex = index % banners.length;
                 _currentPage = index;
               });
             },
             itemBuilder: (context, index) {
-              final bannerIndex = index % _banners.length;
+              final banner = banners[index % banners.length];
 
-              return Image.asset(
-                _banners[bannerIndex],
+              return Image.network(
+                banner.imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return ImageFallbackIcon(size: 120);
+                  return Image.asset(
+                    'assets/images/banner-padrao.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return ImageFallbackIcon(size: 120);
+                    },
+                  );
                 },
               );
             },
@@ -76,15 +87,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
             bottom: 8,
             child: Row(
               children: List.generate(
-                _banners.length,
+                banners.length,
                 (index) => Container(
                   margin: EdgeInsets.symmetric(horizontal: 4),
                   width: _currentIndex == index ? 10 : 6,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: _currentIndex == index
-                        ? Colors.black87
-                        : Colors.black38,
+                    color:
+                        _currentIndex == index ? Colors.white : Colors.white60,
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

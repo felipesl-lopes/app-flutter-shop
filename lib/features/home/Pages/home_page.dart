@@ -5,6 +5,7 @@ import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
+import 'package:appshop/shared/repository/banners_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<BannersProvider>(context, listen: false).loadBanners();
     Provider.of<ProductListProvider>(context, listen: false)
         .loadProducts()
         .then((value) {
@@ -110,7 +112,12 @@ class _HomePageState extends State<HomePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      BannerCarousel(),
+                      Consumer<BannersProvider>(
+                        builder: (ctx, bannersProvider, child) {
+                          return BannerCarousel(
+                              bannerList: bannersProvider.items);
+                        },
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(12),
                         child: Column(
