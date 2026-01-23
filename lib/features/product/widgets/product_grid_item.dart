@@ -36,9 +36,9 @@ class ProductGridItem extends StatelessWidget {
       onTap: () => _selectPage(context),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          border: Border.all(width: 0.5, color: Colors.grey),
-        ),
+            color: Colors.grey.shade100,
+            border: Border.all(width: 1, color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,23 +48,29 @@ class ProductGridItem extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: product.imageUrls.isNotEmpty
-                        ? Image.network(
-                            product.imageUrls.first,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return ImageFallbackIcon(size: 48);
-                            },
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            ),
+                            child: Image.network(
+                              product.imageUrls.first,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return ImageFallbackIcon(size: 48);
+                              },
+                            ),
                           )
                         : Container(
                             child: ImageFallbackIcon(size: 48),
                           ),
                   ),
                   Positioned(
-                    bottom: 6,
-                    right: 6,
+                    bottom: 8,
+                    right: 8,
                     child: Container(
-                      width: 36,
-                      height: 36,
+                      width: 32,
+                      height: 32,
                       decoration: BoxDecoration(
                         color: Colors.grey.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(40),
@@ -82,22 +88,28 @@ class ProductGridItem extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    formatPrice(product.price),
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        formatPrice(product.price),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

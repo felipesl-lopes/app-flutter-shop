@@ -1,6 +1,7 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/home/widgets/banner_carousel.dart';
+import 'package:appshop/features/home/widgets/category_roundels.dart';
 import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
@@ -118,17 +119,12 @@ class _HomePageState extends State<HomePage> {
                               bannerList: bannersProvider.items);
                         },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            ProductGrid(
-                              _showFavoriteOnly,
-                              "Produtos para você",
-                              4,
-                            ),
-                          ],
-                        ),
+                      SizedBox(height: 12),
+                      CategoryRoundels(),
+                      ProductGrid(
+                        _showFavoriteOnly,
+                        "Produtos para você",
+                        4,
                       ),
                     ],
                   ),

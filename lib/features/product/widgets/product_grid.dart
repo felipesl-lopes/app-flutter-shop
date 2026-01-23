@@ -42,6 +42,7 @@ class ProductGrid extends StatelessWidget {
     }
 
     return Container(
+      margin: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
@@ -62,7 +63,7 @@ class ProductGrid extends StatelessWidget {
             itemCount: _itensCount,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.72,
+              childAspectRatio: 0.70,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
