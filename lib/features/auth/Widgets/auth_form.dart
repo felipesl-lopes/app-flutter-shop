@@ -17,8 +17,12 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
   AuthMode _authMode = AuthMode.Login;
-  final _senhaController = TextEditingController();
-  final _senhaConfirmController = TextEditingController();
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _passwordConfirmController = TextEditingController();
+
   final _prefs = PreferenciesValues();
   bool _keepLogged = false;
 
@@ -27,14 +31,6 @@ class _AuthFormState extends State<AuthForm> {
 
   bool _isLogin() => _authMode == AuthMode.Login;
   bool _isSignup() => _authMode == AuthMode.Signup;
-
-  Map<String, String> _authFormLogin = {'email': '', 'password': ''};
-  Map<String, String> _authFormRegister = {
-    'name': '',
-    'email': '',
-    "password": '',
-    'passwordConfirm': ''
-  };
 
   @override
   void initState() {
@@ -59,23 +55,26 @@ class _AuthFormState extends State<AuthForm> {
     );
   }
 
-// ------------- SUBMIT -------------
   Future<void> _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
 
     setState(() => _isLoading = true);
 
-    _formKey.currentState?.save();
     AuthProvider auth = Provider.of(context, listen: false);
 
     try {
       if (_isLogin()) {
         await auth.signIn(
-            _authFormLogin['email']!, _authFormLogin['password']!);
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
       } else {
-        await auth.signUp(_authFormRegister['email']!,
-            _authFormRegister['password']!, _authFormRegister['name']!);
+        await auth.signUp(
+          _emailController.text.trim(),
+          _passwordController.text,
+          _nameController.text.trim(),
+        );
       }
     } catch (e) {
       _showErrorDialog(e);
@@ -100,8 +99,19 @@ class _AuthFormState extends State<AuthForm> {
       _authMode = _isLogin() ? AuthMode.Signup : AuthMode.Login;
     });
     _formKey.currentState?.reset();
-    _senhaController.clear();
-    _senhaConfirmController.clear();
+    _emailController.clear();
+    _nameController.clear();
+    _passwordController.clear();
+    _passwordConfirmController.clear();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _nameController.dispose();
+    _passwordController.dispose();
+    _passwordConfirmController.dispose();
+    super.dispose();
   }
 
   @override
@@ -125,35 +135,24 @@ class _AuthFormState extends State<AuthForm> {
             if (_isSignup())
               Column(
                 children: [
-                  // ------ SIGNUP: nome ------
                   TextFormField(
+                      controller: _nameController,
                       decoration: getInputDecoration("Nome"),
-                      keyboardType: TextInputType.emailAddress,
-                      onSaved: (name) => _authFormRegister["name"] = name ?? "",
-                      validator: _isSignup()
-                          ? (value) => isValidName(value ?? "")
-                          : null),
+                      validator: (value) => isValidName(value ?? '')),
                   SizedBox(height: 28),
                 ],
               ),
-            // ------ E-mail ------
+
             TextFormField(
+              controller: _emailController,
               decoration: getInputDecoration("E-mail"),
               keyboardType: TextInputType.emailAddress,
-              onSaved: (email) {
-                if (_isLogin()) {
-                  _authFormLogin["email"] = email ?? "";
-                } else {
-                  _authFormRegister["email"] = email ?? "";
-                }
-              },
               validator: (value) => isValidEmail(value ?? ""),
             ),
             SizedBox(height: 28),
 
-            // ------ Senha ------
             TextFormField(
-              controller: _isSignup() ? _senhaController : null,
+              controller: _passwordController,
               decoration: InputDecoration(
                 fillColor: Colors.white,
                 filled: true,
@@ -184,24 +183,16 @@ class _AuthFormState extends State<AuthForm> {
               ),
               keyboardType: TextInputType.visiblePassword,
               obscureText: _isSecury,
-              onSaved: (password) {
-                if (_isLogin()) {
-                  _authFormLogin["password"] = password ?? "";
-                } else {
-                  _authFormRegister["password"] = password ?? "";
-                }
-              },
               validator: (value) => isValidPassword(
-                  value ?? "", _isSignup(), _senhaConfirmController),
+                  value ?? "", _isSignup(), _passwordConfirmController),
             ),
 
-            // ------ Confirmar senha ------
             if (_isSignup())
               Column(
                 children: [
                   SizedBox(height: 28),
                   TextFormField(
-                      controller: _isSignup() ? _senhaConfirmController : null,
+                      controller: _passwordConfirmController,
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
@@ -232,12 +223,9 @@ class _AuthFormState extends State<AuthForm> {
                       ),
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: _isSecury,
-                      onSaved: (passwordConfirm) =>
-                          _authFormRegister["passwordConfirm"] =
-                              passwordConfirm ?? "",
                       validator: _isSignup()
                           ? (value) => isValidPasswordConfirm(
-                              value ?? "", _isSignup(), _senhaController)
+                              value ?? "", _isSignup(), _passwordController)
                           : null),
                 ],
               ),
@@ -278,8 +266,6 @@ class _AuthFormState extends State<AuthForm> {
               ),
 
             SizedBox(height: _isLogin() ? 12 : 30),
-
-            // ------ Botão principal ------
 
             SizedBox(
               width: double.infinity,

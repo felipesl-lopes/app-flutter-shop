@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                       ProductGrid(
                         _showFavoriteOnly,
                         "Produtos para você",
-                        4,
+                        10,
                       ),
                     ],
                   ),

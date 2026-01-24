@@ -1,7 +1,6 @@
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/product_validators.dart';
 import 'package:appshop/features/product/Provider/product_list_provider.dart';
-import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,53 +13,16 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
-  final _imageUrlController = TextEditingController();
-  final _nameFocus = FocusNode();
-  final _priceFocus = FocusNode();
-  final _descriptionFocus = FocusNode();
-  final _imageUrlFocus = FocusNode();
-
   final _formKey = GlobalKey<FormState>();
-  final _formData = Map<String, Object>();
+  final _imageUrlController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  List<String> _imageUrls = [];
+  bool _isInit = true;
   bool _isLoading = false;
   ProductModel? _editedProduct;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _nameFocus.dispose();
-    _priceFocus.dispose();
-    _descriptionFocus.dispose();
-    _imageUrlFocus.dispose();
-    _imageUrlFocus.removeListener(updateImage);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _imageUrlFocus.addListener(updateImage);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_editedProduct == null) {
-      final arg = ModalRoute.of(context)!.settings.arguments;
-      if (arg != null) {
-        _editedProduct = arg as ProductModel?;
-        _formData["id"] = _editedProduct!.id;
-        _formData["name"] = _editedProduct!.name;
-        _formData["price"] = _editedProduct!.price;
-        _formData["description"] = _editedProduct!.description;
-        _formData["imageUrls"] = _editedProduct!.imageUrls;
-
-        _imageUrlController.text = _editedProduct!.imageUrls.isNotEmpty
-            ? _editedProduct!.imageUrls.first
-            : '';
-      }
-    }
-  }
 
   void updateImage() {
     setState(() {});
@@ -71,14 +33,30 @@ class _ProductFormPageState extends State<ProductFormPage> {
     if (!isValidy) {
       return;
     }
-    _formKey.currentState?.save();
+
     setState(() => _isLoading = true);
+
+    final name = _nameController.text.trim();
+    final price = double.parse(_priceController.text);
+    final description = _descriptionController.text.trim();
+    final imageUrls = _imageUrls;
+
+    final data = <String, Object>{
+      "name": name,
+      "price": price,
+      "description": description,
+      "imageUrls": imageUrls,
+    };
+
+    if (_editedProduct != null) {
+      data["id"] = _editedProduct!.id;
+    }
 
     try {
       await Provider.of<ProductListProvider>(
         context,
         listen: false,
-      ).saveProduct(_formData);
+      ).saveProduct(data);
     } catch (error) {
       await showDialog<void>(
         context: context,
@@ -99,6 +77,48 @@ class _ProductFormPageState extends State<ProductFormPage> {
     }
   }
 
+  void _addImage() {
+    FocusScope.of(context).unfocus();
+    final url = _imageUrlController.text.trim();
+
+    if (url.isEmpty || isValidImageUrl(url) != null) {
+      return;
+    }
+
+    setState(() {
+      _imageUrls.add(url);
+      _imageUrlController.clear();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_isInit) {
+      final arg = ModalRoute.of(context)!.settings.arguments;
+      if (arg != null) {
+        _editedProduct = arg as ProductModel;
+
+        _nameController.text = _editedProduct!.name;
+        _priceController.text = _editedProduct!.price.toString();
+        _descriptionController.text = _editedProduct!.description;
+        _imageUrls = List.from(_editedProduct!.imageUrls);
+      }
+
+      _isInit = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _priceController.dispose();
+    _descriptionController.dispose();
+    _imageUrlController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,91 +135,73 @@ class _ProductFormPageState extends State<ProductFormPage> {
               child: CircularProgressIndicator(),
             )
           : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Form(
                 key: _formKey,
                 child: ListView(
                   children: [
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: _nameController,
                       decoration: getInputDecoration("Nome"),
-                      initialValue: _formData["name"]?.toString(),
-                      focusNode: _nameFocus,
-                      onFieldSubmitted: (_) =>
-                          FocusScope.of(context).requestFocus(_nameFocus),
-                      textInputAction: TextInputAction.next,
-                      onSaved: (name) => _formData["name"] = name ?? "",
                       validator: (value) => isValidName(value ?? ""),
                     ),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: _priceController,
                       decoration: getInputDecoration("Preço"),
-                      initialValue: _formData["price"]?.toString(),
-                      textInputAction: TextInputAction.next,
-                      focusNode: _priceFocus,
-                      onFieldSubmitted: (_) =>
-                          FocusScope.of(context).requestFocus(_priceFocus),
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: true),
-                      onSaved: (price) =>
-                          _formData["price"] = double.parse(price ?? "0"),
                       validator: (value) => isValidPrice(value ?? ""),
                     ),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: _descriptionController,
                       decoration: getInputDecoration("Descrição"),
-                      initialValue: _formData["description"]?.toString(),
                       keyboardType: TextInputType.multiline,
-                      focusNode: _descriptionFocus,
                       maxLines: 5,
-                      onFieldSubmitted: (_) => FocusScope.of(context)
-                          .requestFocus(_descriptionFocus),
-                      textInputAction: TextInputAction.next,
-                      onSaved: (description) =>
-                          _formData["description"] = description ?? "",
                       validator: (value) => isValidDescription(value ?? ""),
                     ),
                     SizedBox(height: 20),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: TextFormField(
-                            decoration: getInputDecoration("URL da imagem"),
-                            textInputAction: TextInputAction.done,
-                            keyboardType: TextInputType.url,
-                            controller: _imageUrlController,
-                            focusNode: _imageUrlFocus,
-                            onSaved: (imageUrls) => _formData["imageUrls"] =
-                                imageUrls == null || imageUrls.isEmpty
-                                    ? <String>[]
-                                    : [imageUrls],
-                            validator: (value) => isValidImageUrl(value ?? ""),
-                          ),
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(top: 10, left: 10),
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: Colors.grey, width: 1),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _imageUrlController,
+                                decoration: getInputDecoration("URL da imagem"),
+                                keyboardType: TextInputType.url,
+                              ),
                             ),
-                            alignment: Alignment.center,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: _imageUrlController.text.isEmpty
-                                  ? Text("Informe a URL")
-                                  : Image.network(
-                                      _imageUrlController.text,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return ImageFallbackIcon(size: 48);
-                                      },
-                                    ),
-                            )),
+                            TextButton(
+                                onPressed: _addImage,
+                                child: Text("Adicionar imagem"))
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: _imageUrls.map((url) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border:
+                                      Border.all(color: Colors.grey, width: 1)),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  url,
+                                  width: 90,
+                                  height: 90,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ],
                     ),
                     SizedBox(height: 80),
