@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:appshop/core/errors/generic_exception.dart';
+import 'package:appshop/core/models/product_image_model.dart';
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -48,8 +49,7 @@ class ProductListProvider with ChangeNotifier {
     _items.clear();
     data.forEach((productId, productData) {
       final isFavorite = favData[productId] ?? false;
-      final dynamic imageData =
-          productData['imageUrls'] ?? productData['imageUrl'];
+      final List imageData = (productData['imageUrls'] ?? []) as List;
 
       _items.add(
         ProductModel(
@@ -57,11 +57,8 @@ class ProductListProvider with ChangeNotifier {
           name: productData["name"],
           description: productData["description"],
           price: productData["price"],
-          imageUrls: imageData is List
-              ? List<String>.from(imageData)
-              : imageData is String
-                  ? [imageData]
-                  : [],
+          imageUrls:
+              imageData.map((e) => ProductImageModel.fromMap(e)).toList(),
           isFavorite: isFavorite,
           userId: productData["userId"],
         ),
@@ -78,7 +75,7 @@ class ProductListProvider with ChangeNotifier {
       name: data["name"] as String,
       description: data["description"] as String,
       price: data["price"] as double,
-      imageUrls: data["imageUrls"] as List<String>,
+      imageUrls: data["imageUrls"] as List<ProductImageModel>,
       userId: _userId,
     );
 

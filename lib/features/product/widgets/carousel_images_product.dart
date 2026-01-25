@@ -1,9 +1,10 @@
+import 'package:appshop/core/models/product_image_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CarouselImagesProduct extends StatefulWidget {
-  List<String> imageUrls;
+  List<ProductImageModel> imageUrls;
 
   CarouselImagesProduct(this.imageUrls);
 
@@ -43,7 +44,7 @@ class _CarouselImagesProductState extends State<CarouselImagesProduct> {
                 itemBuilder: (context, index) {
                   final bannerIndex = index % widget.imageUrls.length;
                   return Image.network(
-                    widget.imageUrls[bannerIndex],
+                    widget.imageUrls[bannerIndex].value,
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return ImageFallbackIcon(size: 120);

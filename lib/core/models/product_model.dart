@@ -1,9 +1,11 @@
+import 'package:appshop/core/models/product_image_model.dart';
+
 class ProductModel {
   final String id;
   final String name;
   final String description;
   final double price;
-  final List<String> imageUrls;
+  final List<ProductImageModel> imageUrls;
   final String userId;
   bool isFavorite;
 
@@ -23,7 +25,9 @@ class ProductModel {
       name: json['name'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
-      imageUrls: List<String>.from(json['imageUrls']),
+      imageUrls: (json['imageUrls'] as List)
+          .map((e) => ProductImageModel.fromJson(e))
+          .toList(),
       userId: json['userId'],
     );
   }
@@ -33,7 +37,7 @@ class ProductModel {
       'name': name,
       'description': description,
       'price': price,
-      'imageUrls': imageUrls,
+      'imageUrls': imageUrls.map((e) => e.toJson()).toList(),
       'userId': userId,
     };
   }
@@ -64,7 +68,9 @@ class ProductModel {
       name: map['name'],
       description: map['description'],
       price: (map['price'] as num).toDouble(),
-      imageUrls: map['imageUrls'],
+      imageUrls: (map['imageUrls'] as List)
+          .map((e) => ProductImageModel.fromMap(e))
+          .toList(),
       userId: map['userId'],
       isFavorite: map['isFavorite'] ?? false,
     );
@@ -75,7 +81,7 @@ class ProductModel {
       'name': name,
       'description': description,
       'price': price,
-      'imageUrls': imageUrls,
+      'imageUrls': imageUrls.map((e) => e.toMap()).toList(),
       'userId': userId,
       'isFavorite': isFavorite,
     };

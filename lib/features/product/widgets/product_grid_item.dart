@@ -54,7 +54,7 @@ class ProductGridItem extends StatelessWidget {
                               topRight: Radius.circular(4),
                             ),
                             child: Image.network(
-                              product.imageUrls.first,
+                              product.imageUrls.first.value,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return ImageFallbackIcon(size: 48);

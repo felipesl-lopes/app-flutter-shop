@@ -29,6 +29,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
     _timer = Timer.periodic(
       const Duration(seconds: 4),
       (_) {
+        if (!_controller.hasClients) return;
+
         _currentPage++;
         _controller.animateToPage(
           _currentPage,

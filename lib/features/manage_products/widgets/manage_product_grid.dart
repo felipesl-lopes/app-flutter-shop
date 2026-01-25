@@ -23,7 +23,8 @@ class ManageProductGrid extends StatelessWidget {
       ),
       subtitle: Text(formatPrice(product.price)),
       leading: ImageAvatar(
-        imageUrl: product.imageUrls.isNotEmpty ? product.imageUrls.first : null,
+        imageUrl:
+            product.imageUrls.isNotEmpty ? product.imageUrls.first.value : null,
       ),
       trailing: Container(
         width: 100,

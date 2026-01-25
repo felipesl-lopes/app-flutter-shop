@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appshop/core/errors/generic_exception.dart';
+import 'package:appshop/core/models/product_image_model.dart';
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class ProductProvider with ChangeNotifier {
 
   String get id => _product.id;
   String get name => _product.name;
-  List<String> get imageUrls => _product.imageUrls;
+  List<ProductImageModel> get imageUrls => _product.imageUrls;
   bool get isFavorite => _product.isFavorite;
   ProductModel get product => _product;
   double get price => _product.price;

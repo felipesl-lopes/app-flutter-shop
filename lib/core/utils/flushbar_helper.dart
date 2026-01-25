@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 
 enum FlushType { success, warning, error }
 
+enum FlushPosition { bottom, top }
+
 void showAppFlushbar(
   BuildContext context, {
   required String message,
   required FlushType type,
+  FlushPosition position = FlushPosition.bottom,
 }) {
   final Color bg;
   final IconData iconData;
@@ -27,6 +30,9 @@ void showAppFlushbar(
   }
 
   Flushbar(
+    flushbarPosition: position == FlushPosition.top
+        ? FlushbarPosition.TOP
+        : FlushbarPosition.BOTTOM,
     messageSize: 18,
     message: message,
     backgroundColor: bg,

@@ -15,7 +15,7 @@ class CartProvider with ChangeNotifier {
 
   String _extractImageUrl(dynamic product) {
     if (product is ProductModel) {
-      return product.imageUrls.isNotEmpty ? product.imageUrls.first : '';
+      return product.imageUrls.isNotEmpty ? product.imageUrls.first.value : '';
     }
 
     if (product is CartItemModel) {
