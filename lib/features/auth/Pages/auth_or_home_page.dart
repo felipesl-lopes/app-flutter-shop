@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/services/secure_storage.dart';
 import 'package:appshop/features/auth/Pages/auth_page.dart';
@@ -15,29 +17,42 @@ class AuthOrHomePage extends StatefulWidget {
 }
 
 class _AuthOrHomePageState extends State<AuthOrHomePage> {
+  late StreamSubscription<ConnectivityResult> _connectivitySub;
+
   bool _isLoading = true;
   bool _isOffline = false;
 
   @override
   void initState() {
     super.initState();
+    _startConnectivityListener();
     _tryAuthLogin();
   }
 
-  Future<bool> hasInternet() async {
-    final result = await Connectivity().checkConnectivity();
-    return result != ConnectivityResult.none;
+  void _startConnectivityListener() {
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((result) {
+      final hasConnection = result != ConnectivityResult.none;
+
+      if (hasConnection && _isOffline) {
+        setState(() {
+          _isOffline = false;
+          _isLoading = true;
+        });
+
+        _tryAuthLogin();
+      }
+    });
   }
 
   Future<void> _tryAuthLogin() async {
-    final online = await hasInternet();
+    final result = await Connectivity().checkConnectivity();
+    final online = result != ConnectivityResult.none;
 
     if (!online) {
       setState(() {
         _isLoading = false;
         _isOffline = true;
       });
-
       return;
     }
 
@@ -57,6 +72,12 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
     }
 
     setState(() => _isLoading = false);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySub.cancel();
+    super.dispose();
   }
 
   @override
