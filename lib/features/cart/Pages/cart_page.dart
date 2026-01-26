@@ -1,3 +1,4 @@
+import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/cart/Widgets/cart_item_widget.dart';
@@ -67,7 +68,8 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.SEARCH_PRODUCT),
                   child: Text("Comece a comprar"),
                 ),
               ],

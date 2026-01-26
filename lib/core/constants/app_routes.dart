@@ -7,6 +7,7 @@ import 'package:appshop/features/manage_products/Pages/manage_products_page.dart
 import 'package:appshop/features/order/Pages/orders_page.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:appshop/features/profile/Pages/profile_page.dart';
+import 'package:appshop/features/search/Pages/search_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -19,6 +20,7 @@ class AppRoutes {
   static const MANAGE_PRODUCTS = "/manage-products";
   static const MANAGE_PRODUCT_FORM = "/manage-product-form";
   static const PROFILE = "/profile";
+  static const SEARCH_PRODUCT = "/search-product";
 
   static Map<String, WidgetBuilder> routes = {
     AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
@@ -30,5 +32,6 @@ class AppRoutes {
     AppRoutes.MANAGE_PRODUCTS: (ctx) => ManageProductsPage(),
     AppRoutes.MANAGE_PRODUCT_FORM: (ctx) => ProductFormPage(),
     AppRoutes.PROFILE: (ctx) => ProfilePage(),
+    AppRoutes.SEARCH_PRODUCT: (ctx) => SearchPage(),
   };
 }

@@ -1,45 +1,26 @@
+import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/models/product_model.dart';
-import 'package:appshop/features/auth/Provider/auth_provider.dart';
-import 'package:appshop/features/product/Provider/product_list_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductGrid extends StatelessWidget {
-  final bool showFavoriteOnly;
   final title;
-  final quantityGrid;
+  final int quantityGrid;
+  final List<ProductModel> list_products;
 
-  ProductGrid(this.showFavoriteOnly, this.title, this.quantityGrid);
+  ProductGrid({
+    required this.title,
+    required this.quantityGrid,
+    required this.list_products,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final _userId = Provider.of<AuthProvider>(context).userId;
-    final provider = Provider.of<ProductListProvider>(context);
-
-    final List<ProductModel> _loadedProducts =
-        showFavoriteOnly ? provider.favoriteItems : provider.items;
-
-    final _listProduct =
-        _loadedProducts.where((item) => item.userId != _userId).toList();
-
-    final _itensCount = _listProduct.length >= quantityGrid
+    final _itensCount = list_products.length >= quantityGrid
         ? quantityGrid
-        : _listProduct.length;
-
-    if (_listProduct.isEmpty) {
-      return Container(
-          alignment: Alignment.topCenter,
-          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-          child: Text(
-            showFavoriteOnly
-                ? "Nenhum produto favorito encontrado."
-                : "Nenhum produto para venda encontrado.",
-            style: TextStyle(fontSize: 17),
-            textAlign: TextAlign.center,
-          ));
-    }
+        : list_products.length;
 
     return Container(
       margin: EdgeInsets.all(12),
@@ -68,10 +49,37 @@ class ProductGrid extends StatelessWidget {
               mainAxisSpacing: 8,
             ),
             itemBuilder: (ctx, index) => ChangeNotifierProvider(
-              create: (_) => ProductProvider(_listProduct[index]),
+              create: (_) => ProductProvider(list_products[index]),
               child: ProductGridItem(),
             ),
           ),
+          if (quantityGrid < list_products.length)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.SEARCH_PRODUCT),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Ver mais",
+                      style: TextStyle(fontSize: 16, color: Colors.purple),
+                    ),
+                    Icon(
+                      Icons.arrow_right,
+                      color: Colors.purple,
+                      size: 30,
+                    ),
+                  ],
+                ),
+              ),
+            )
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/home/widgets/banner_carousel.dart';
 import 'package:appshop/features/home/widgets/category_roundels.dart';
@@ -15,13 +16,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-enum FilterOptions {
-  Favorite,
-  All,
-}
-
 class _HomePageState extends State<HomePage> {
-  bool _showFavoriteOnly = false;
   bool _isLoading = true;
   final TextEditingController _searchController = TextEditingController();
 
@@ -45,17 +40,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _searchProduct() {
-    // TODO: IMPLEMENTAR A BUSCA DE PRODUTO
-
     final query = _searchController.text.trim();
     if (query.isEmpty) return;
 
-    print(query);
-    FocusScope.of(context).unfocus();
+    Navigator.of(context).pushNamed(AppRoutes.SEARCH_PRODUCT, arguments: query);
+    _searchController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+    final productListProvider = Provider.of<ProductListProvider>(context);
+
+    final allProducts = productListProvider.items;
+
+    final visibleProducts =
+        allProducts.where((item) => item.userId != auth.userId).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -122,9 +123,9 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 12),
                       CategoryRoundels(),
                       ProductGrid(
-                        _showFavoriteOnly,
-                        "Produtos para você",
-                        20,
+                        list_products: visibleProducts,
+                        quantityGrid: 6,
+                        title: "Produtos para você",
                       ),
                     ],
                   ),
