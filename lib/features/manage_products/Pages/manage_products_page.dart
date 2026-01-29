@@ -7,10 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ManageProductsPage extends StatelessWidget {
-  Future<void> _refreshProducts(BuildContext context) {
-    return Provider.of<ProductListProvider>(context, listen: false).loadProducts();
-  }
-
   @override
   Widget build(BuildContext context) {
     final _userId = Provider.of<AuthProvider>(context).userId;
@@ -37,45 +33,42 @@ class ManageProductsPage extends StatelessWidget {
         backgroundColor: Colors.purple,
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-            padding: EdgeInsets.all(12),
-            child: _productList.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Você ainda não possui nenhum produto cadastrado.",
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
+      body: Padding(
+          padding: EdgeInsets.all(12),
+          child: _productList.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Você ainda não possui nenhum produto cadastrado.",
+                        style: TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 24),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
                         ),
-                        SizedBox(height: 24),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple,
-                          ),
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(AppRoutes.MANAGE_PRODUCT_FORM),
-                          child: Text("Cadastre agora",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: _productList.length,
-                    itemBuilder: (ctx, index) => Column(
-                      children: [
-                        ManageProductGrid(_productList[index]),
-                        Divider(),
-                      ],
-                    ),
-                  )),
-      ),
+                        onPressed: () => Navigator.of(context)
+                            .pushNamed(AppRoutes.MANAGE_PRODUCT_FORM),
+                        child: Text("Cadastre agora",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16)),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: _productList.length,
+                  itemBuilder: (ctx, index) => Column(
+                    children: [
+                      ManageProductGrid(_productList[index]),
+                      Divider(),
+                    ],
+                  ),
+                )),
     );
   }
 }

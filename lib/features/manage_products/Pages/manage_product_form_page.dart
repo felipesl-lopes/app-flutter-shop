@@ -28,9 +28,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
   bool _isLoading = false;
   ProductModel? _editedProduct;
 
-  void updateImage() {
-    setState(() {});
-  }
+  late Map<String, dynamic> _initialFormData;
+  bool _hasChanges = false;
 
   Future<void> _submitForm() async {
     final isValidy = _formKey.currentState?.validate() ?? false;
@@ -71,6 +70,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
         context,
         listen: false,
       ).saveProduct(data);
+
+      _initialFormData = _getCurrentFormData();
+      _hasChanges = false;
     } catch (error) {
       await showDialog<void>(
         context: context,
@@ -85,6 +87,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           ],
         ),
       );
+      rethrow;
     } finally {
       setState(() => _isLoading = true);
       Navigator.of(context).pop();
@@ -122,6 +125,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {
       _imageUrls.add(newImage);
       _imageUrlController.clear();
+      _checkForChanges();
     });
   }
 
@@ -129,7 +133,30 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {
       _imageUrls.removeWhere((img) => img.id == id);
     });
-    print("Id da imagem: $id");
+    _checkForChanges();
+  }
+
+  Future<bool> _onWillPop() async {
+    if (!_hasChanges) return true;
+
+    return await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Descartar alterações?'),
+            content: Text('Você tem alterações não salvas.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: Text('Descartar'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   @override
@@ -147,8 +174,42 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _imageUrls = List.from(_editedProduct!.imageUrls);
       }
 
+      _initialFormData = _getCurrentFormData();
       _isInit = false;
     }
+  }
+
+  Map<String, dynamic> _getCurrentFormData() {
+    return {
+      'name': _nameController.text.trim(),
+      'price': _priceController.text.trim(),
+      'description': _descriptionController.text.trim(),
+      'imageUrls': _imageUrls.map((e) => e.value).toList(),
+    };
+  }
+
+  void _checkForChanges() {
+    final current = _getCurrentFormData();
+
+    final hasChanged = current['name'] != _initialFormData['name'] ||
+        current['price'] != _initialFormData['price'] ||
+        current['description'] != _initialFormData['description'] ||
+        !_listEquals(
+          current['imageUrls'],
+          _initialFormData['imageUrls'],
+        );
+
+    if (hasChanged != _hasChanges) {
+      setState(() => _hasChanges = hasChanged);
+    }
+  }
+
+  bool _listEquals(List a, List b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   @override
@@ -165,132 +226,142 @@ class _ProductFormPageState extends State<ProductFormPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            _editedProduct == null ? "Adicionar produto" : "Editar produto",
-            style: TextStyle(color: Colors.white),
+      child: WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          appBar: AppBar(
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Text(
+              _editedProduct == null ? "Adicionar produto" : "Editar produto",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.purple,
           ),
-          backgroundColor: Colors.purple,
-        ),
-        body: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: [
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: getInputDecoration("Nome"),
-                        validator: (value) => isValidName(value ?? ""),
-                      ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: _priceController,
-                        decoration: getInputDecoration("Preço"),
-                        keyboardType:
-                            TextInputType.numberWithOptions(decimal: true),
-                        validator: (value) => isValidPrice(value ?? ""),
-                      ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: _descriptionController,
-                        decoration: getInputDecoration("Descrição"),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 5,
-                        validator: (value) => isValidDescription(value ?? ""),
-                      ),
-                      SizedBox(height: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _imageUrlController,
-                                  decoration:
-                                      getInputDecoration("URL da imagem"),
-                                  keyboardType: TextInputType.url,
+          body: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: [
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _nameController,
+                          onChanged: (_) => _checkForChanges(),
+                          decoration: getInputDecoration("Nome"),
+                          validator: (value) => isValidName(value ?? ""),
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _priceController,
+                          onChanged: (_) => _checkForChanges(),
+                          decoration: getInputDecoration("Preço"),
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
+                          validator: (value) => isValidPrice(value ?? ""),
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _descriptionController,
+                          onChanged: (_) => _checkForChanges(),
+                          decoration: getInputDecoration("Descrição"),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          validator: (value) => isValidDescription(value ?? ""),
+                        ),
+                        SizedBox(height: 20),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: _imageUrlController,
+                                    decoration:
+                                        getInputDecoration("URL da imagem"),
+                                    keyboardType: TextInputType.url,
+                                  ),
                                 ),
-                              ),
-                              TextButton(
-                                  onPressed: _addImage,
-                                  child: Text("Adicionar imagem"))
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Text("Imagens ${_imageUrls.length}/10"),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: _imageUrls.map((image) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            border: Border.all(
-                                                color: Colors.grey, width: 1)),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          child: Image.network(
-                                            image.value,
-                                            width: 120,
-                                            height: 120,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 8,
-                                        right: 8,
-                                        child: Container(
-                                          width: 28,
-                                          height: 28,
+                                TextButton(
+                                    onPressed: _addImage,
+                                    child: Text("Adicionar imagem"))
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Text("Imagens ${_imageUrls.length}/10"),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: _imageUrls.map((image) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: Stack(
+                                      children: [
+                                        Container(
                                           decoration: BoxDecoration(
-                                            color: Colors.grey.withOpacity(0.7),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  color: Colors.grey,
+                                                  width: 1)),
+                                          child: ClipRRect(
                                             borderRadius:
-                                                BorderRadius.circular(40),
-                                          ),
-                                          child: InkWell(
-                                            onTap: () => _removeImage(image.id),
-                                            child: const Icon(
-                                              Icons.close,
-                                              color: Colors.black54,
+                                                BorderRadius.circular(6),
+                                            child: Image.network(
+                                              image.value,
+                                              width: 120,
+                                              height: 120,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
+                                        Positioned(
+                                          bottom: 8,
+                                          right: 8,
+                                          child: Container(
+                                            width: 28,
+                                            height: 28,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.grey.withOpacity(0.7),
+                                              borderRadius:
+                                                  BorderRadius.circular(40),
+                                            ),
+                                            child: InkWell(
+                                              onTap: () =>
+                                                  _removeImage(image.id),
+                                              child: const Icon(
+                                                Icons.close,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 80),
-                    ],
+                          ],
+                        ),
+                        SizedBox(height: 80),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: _submitForm,
-          backgroundColor: Colors.purple,
-          label: Text(
-            "Salvar",
-            style: TextStyle(color: Colors.white, fontSize: 16),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: _hasChanges && !_isLoading ? _submitForm : null,
+            backgroundColor:
+                _hasChanges && !_isLoading ? Colors.purple : Colors.grey,
+            label: Text(
+              "Salvar",
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ),
         ),
       ),
