@@ -18,7 +18,7 @@ class AuthLogin extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/images/teste-logo.png',
+                  'assets/images/logo.png',
                   width: MediaQuery.of(context).size.width * 0.25,
                 ),
                 SizedBox(height: 28),

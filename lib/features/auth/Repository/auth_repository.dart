@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:appshop/core/constants/url_config.dart';
 import 'package:appshop/core/errors/auth_exception.dart';
-import 'package:appshop/features/auth/Provider/auth_provider.dart';
+import 'package:appshop/features/auth/enum/auth_mode.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
@@ -22,10 +22,6 @@ class AuthRepository {
 
       final body = jsonDecode(response.body);
 
-      if (response.statusCode >= 400) {
-        throw AuthException();
-      }
-
       if (body['error'] != null) {
         throw AuthException();
       }
@@ -39,60 +35,49 @@ class AuthRepository {
   }
 
   Future<Map<String, dynamic>> refreshToken({
-    required String? refreshToken,
-    required Future<void> logout(),
+    required String refreshToken,
   }) async {
-    try {
-      final response = await http.post(
-        Uri.parse(SECURE_TOKEN_URL),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'refresh_token',
-          'refresh_token': refreshToken!,
-        },
-      ).timeout(const Duration(seconds: 10));
+    final response = await http.post(
+      Uri.parse(SECURE_TOKEN_URL),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'grant_type': 'refresh_token',
+        'refresh_token': refreshToken,
+      },
+    ).timeout(const Duration(seconds: 10));
 
-      final body = jsonDecode(response.body);
+    final body = jsonDecode(response.body);
 
-      if (response.statusCode != 200) {
-        await logout();
-        throw AuthException();
-      }
-
-      return body;
-    } on SocketException {
-      throw SocketException('Internet instável.');
-    } on TimeoutException {
-      throw TimeoutException('Tempo de espera excedido.');
+    if (response.statusCode != 200 || body['error'] != null) {
+      throw AuthException();
     }
+
+    return body;
   }
 
   Future<Map<String, dynamic>> fetchOrCreateUser({
     required AuthMode mode,
-    required String url,
+    required String userId,
+    required String token,
     required Map<String, dynamic> userMap,
   }) async {
-    try {
-      final response = mode == AuthMode.signIn
-          ? await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10))
-          : await http
-              .put(
-                Uri.parse(url),
-                body: jsonEncode(userMap),
-              )
-              .timeout(const Duration(seconds: 10));
+    final url = "$USERS_BASE_URL/$userId.json?auth=$token";
 
-      if (response.statusCode >= 400) {
-        throw AuthException();
-      }
+    final response = mode == AuthMode.signIn
+        ? await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10))
+        : await http
+            .put(
+              Uri.parse(url),
+              body: jsonEncode(userMap),
+            )
+            .timeout(const Duration(seconds: 10));
 
-      if (response.body.isEmpty) return {};
-
-      return jsonDecode(response.body);
-    } on SocketException {
-      throw SocketException('Internet instável.');
-    } on TimeoutException {
-      throw TimeoutException("O tempo de espera foi muito longo.");
+    if (response.statusCode != 200) {
+      throw AuthException();
     }
+
+    if (response.body.isEmpty) return {};
+
+    return jsonDecode(response.body);
   }
 }

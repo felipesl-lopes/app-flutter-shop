@@ -1,11 +1,10 @@
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/utils/auth_validators.dart';
 import 'package:appshop/features/auth/Provider/auth_provider.dart';
+import 'package:appshop/features/auth/enum/auth_mode.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-enum AuthMode { Signup, Login }
 
 class AuthForm extends StatefulWidget {
   const AuthForm({super.key});
@@ -16,7 +15,7 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
-  AuthMode _authMode = AuthMode.Login;
+  AuthMode _authMode = AuthMode.signIn;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -29,8 +28,8 @@ class _AuthFormState extends State<AuthForm> {
   bool _isSecury = true;
   bool _isLoading = false;
 
-  bool _isLogin() => _authMode == AuthMode.Login;
-  bool _isSignup() => _authMode == AuthMode.Signup;
+  bool _isLogin() => _authMode == AuthMode.signIn;
+  bool _isSignup() => _authMode == AuthMode.signUp;
 
   @override
   void initState() {
@@ -77,7 +76,9 @@ class _AuthFormState extends State<AuthForm> {
         );
       }
     } catch (e) {
+      debugPrint(e.toString());
       _showErrorDialog(e);
+      rethrow;
     }
 
     if (!mounted) return;
@@ -96,7 +97,7 @@ class _AuthFormState extends State<AuthForm> {
 
   void _switchFormMode() {
     setState(() {
-      _authMode = _isLogin() ? AuthMode.Signup : AuthMode.Login;
+      _authMode = _isLogin() ? AuthMode.signUp : AuthMode.signIn;
     });
     _formKey.currentState?.reset();
     _emailController.clear();
@@ -142,7 +143,6 @@ class _AuthFormState extends State<AuthForm> {
                   SizedBox(height: 28),
                 ],
               ),
-
             TextFormField(
               controller: _emailController,
               decoration: getInputDecoration("E-mail"),
@@ -150,7 +150,6 @@ class _AuthFormState extends State<AuthForm> {
               validator: (value) => isValidEmail(value ?? ""),
             ),
             SizedBox(height: 28),
-
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
@@ -186,7 +185,6 @@ class _AuthFormState extends State<AuthForm> {
               validator: (value) => isValidPassword(
                   value ?? "", _isSignup(), _passwordConfirmController),
             ),
-
             if (_isSignup())
               Column(
                 children: [
@@ -230,7 +228,6 @@ class _AuthFormState extends State<AuthForm> {
                 ],
               ),
             SizedBox(height: 4),
-
             if (_isLogin())
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -264,38 +261,31 @@ class _AuthFormState extends State<AuthForm> {
                   ),
                 ],
               ),
-
             SizedBox(height: _isLogin() ? 12 : 30),
-
             SizedBox(
               width: double.infinity,
-              child: AbsorbPointer(
-                absorbing: _isLoading,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(12),
-                    backgroundColor: Colors.purple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              child: ElevatedButton(
+                onPressed: _isLoading ? () {} : _submitForm,
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(12),
+                  backgroundColor: Colors.purple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: _isLoading ? () {} : _submitForm,
-                  child: _isLoading
-                      ? SizedBox(
-                          height: 23,
-                          width: 23,
-                          child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 3),
-                        )
-                      : Text(
-                          _isLogin() ? "Entrar" : "Registrar",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
                 ),
+                child: _isLoading
+                    ? SizedBox(
+                        height: 23,
+                        width: 23,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 3),
+                      )
+                    : Text(
+                        _isLogin() ? "Entrar" : "Registrar",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
               ),
             ),
-
-            // ------ Alternar modo ------
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -308,7 +298,7 @@ class _AuthFormState extends State<AuthForm> {
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
                   ),
-                  onPressed: _switchFormMode,
+                  onPressed: _isLoading ? null : _switchFormMode,
                   child: Text(
                     _isLogin() ? "Registre-se" : "Logar",
                     style: TextStyle(color: Colors.purple),

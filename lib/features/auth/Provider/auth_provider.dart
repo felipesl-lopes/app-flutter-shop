@@ -1,18 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:appshop/core/constants/url_config.dart';
-import 'package:appshop/core/errors/auth_exception.dart';
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/services/secure_storage.dart';
 import 'package:appshop/features/auth/Repository/auth_repository.dart';
+import 'package:appshop/features/auth/enum/auth_mode.dart';
 import 'package:appshop/shared/Models/user_model.dart';
 import 'package:flutter/material.dart';
-
-enum AuthMode {
-  signIn,
-  signUp,
-}
 
 class AuthProvider with ChangeNotifier {
   String? _token;
@@ -39,50 +33,56 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> _authenticate(String email, String password, AuthMode mode,
       {String? name}) async {
-    final authBody = {
-      'email': email,
-      'password': password,
-      'returnSecureToken': true,
-    };
+    try {
+      final authBody = {
+        'email': email,
+        'password': password,
+        'returnSecureToken': true,
+      };
 
-    final authData =
-        await _repository.authenticate(mode: mode, authBody: authBody);
+      final authData =
+          await _repository.authenticate(mode: mode, authBody: authBody);
 
-    final _urlResponse =
-        "${USERS_BASE_URL}/${authData['localId']}.json?auth=${authData['idToken']}";
-
-    final userJson = UserModel(
-      name: name.toString(),
-      phoneNumber: 0,
-      city: '',
-      country: '',
-      address: '',
-      birthDate: null,
-      avatarUrl: '',
-    );
-
-    final userData = await _repository.fetchOrCreateUser(
-        mode: mode, url: _urlResponse, userMap: userJson.toMap());
-
-    final bool keepLogged = await _prefs.getKeepLogged();
-    if (mode == AuthMode.signIn && keepLogged) {
-      await _storage.saveCredentials(email, password);
-    }
-
-    if (userData.isNotEmpty) {
-      _refreshToken = authData['refreshToken'];
-      _token = authData['idToken'];
-      _email = authData['email'];
-      _userId = authData['localId'];
-      _expiryDate = DateTime.now().add(
-        Duration(seconds: int.parse(authData['expiresIn'])),
+      final userJson = UserModel(
+        name: name ?? '',
+        phoneNumber: 0,
+        city: '',
+        country: '',
+        address: '',
+        birthDate: null,
+        avatarUrl: '',
       );
+
+      final userData = await _repository.fetchOrCreateUser(
+        mode: mode,
+        userId: authData['localId'],
+        token: authData['idToken'],
+        userMap: userJson.toMap(),
+      );
+
+      final bool keepLogged = await _prefs.getKeepLogged();
+      if (mode == AuthMode.signIn && keepLogged) {
+        await _storage.saveCredentials(email, password);
+      }
+
+      if (userData.isNotEmpty) {
+        _refreshToken = authData['refreshToken'];
+        _token = authData['idToken'];
+        _email = authData['email'];
+        _userId = authData['localId'];
+        _expiryDate = DateTime.now().add(
+          Duration(seconds: int.parse(authData['expiresIn'])),
+        );
+      }
+
+      _user = UserModel.fromMap(userData);
+
+      _generateNewToken();
+      notifyListeners();
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
     }
-
-    _user = UserModel.fromMap(userData);
-
-    _generateNewToken();
-    notifyListeners();
   }
 
   Future<void> signUp(String email, String password, String name) async {
@@ -123,21 +123,27 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> refreshAuthToken() async {
     if (_refreshToken == null) {
-      throw AuthException();
+      await logout();
+      return;
     }
 
-    final body = await _repository.refreshToken(
-        refreshToken: _refreshToken, logout: logout);
+    try {
+      final body = await _repository.refreshToken(refreshToken: _refreshToken!);
 
-    _token = body['id_token'];
-    _refreshToken = body['refresh_token'];
-    _expiryDate = DateTime.now().add(
-      Duration(seconds: int.parse(body['expires_in'])),
-    );
+      _token = body['id_token'];
+      _refreshToken = body['refresh_token'];
+      _expiryDate = DateTime.now().add(
+        Duration(seconds: int.parse(body['expires_in'])),
+      );
 
-    await _storage.saveRefreshToken(jsonEncode(_refreshToken));
+      await _storage.saveRefreshToken(jsonEncode(_refreshToken));
 
-    _generateNewToken();
-    notifyListeners();
+      _generateNewToken();
+      notifyListeners();
+    } catch (e) {
+      debugPrint(e.toString());
+      await logout();
+      rethrow;
+    }
   }
 }

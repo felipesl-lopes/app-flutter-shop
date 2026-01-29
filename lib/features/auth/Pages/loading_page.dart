@@ -12,7 +12,7 @@ class LoadingPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/teste-logo.png',
+              'assets/images/logo.png',
               width: MediaQuery.of(context).size.width * 0.38,
             ),
             SizedBox(height: 28),
