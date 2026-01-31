@@ -2,7 +2,7 @@ import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/cart/Widgets/cart_item_widget.dart';
-import 'package:appshop/features/order/Provider/order_list_provider.dart';
+import 'package:appshop/features/compras/Provider/order_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

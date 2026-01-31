@@ -3,7 +3,7 @@ import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/home/widgets/banner_carousel.dart';
 import 'package:appshop/features/home/widgets/category_roundels.dart';
-import 'package:appshop/features/product/Provider/product_list_provider.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Provider.of<BannersProvider>(context, listen: false).loadBanners();
-    Provider.of<ProductListProvider>(context, listen: false)
+    Provider.of<ProductProvider>(context, listen: false)
         .loadProducts()
         .then((value) {
       setState(() {
@@ -50,9 +50,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
-    final productListProvider = Provider.of<ProductListProvider>(context);
+    final productListProvider = Provider.of<ProductProvider>(context);
 
-    final allProducts = productListProvider.items;
+    final allProducts = productListProvider.produtos;
 
     final visibleProducts =
         allProducts.where((item) => item.userId != auth.userId).toList();

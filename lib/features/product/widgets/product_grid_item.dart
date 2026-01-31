@@ -1,31 +1,31 @@
+import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/utils/snackbar_helper.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductGridItem extends StatelessWidget {
+  final ProductModel product;
+
+  ProductGridItem({required this.product});
+
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<ProductProvider>(context);
     final cart = Provider.of<CartProvider>(context);
 
     void _selectPage(BuildContext context) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider.value(
-            value: product,
-            child: ProductDetailPage(),
-          ),
+          builder: (_) => ProductDetailPage(product: product),
         ),
       );
     }
 
     void _addProduct() {
-      cart.addItem(product.product);
+      cart.addItem(product);
       SnackbarHelper.showAddToCartMessage(
         context,
         product.name,

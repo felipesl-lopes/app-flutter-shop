@@ -1,7 +1,7 @@
 import 'package:appshop/core/models/cart_item_model.dart';
 import 'package:appshop/core/models/order.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
-import 'package:appshop/features/order/Repository/order_repository.dart';
+import 'package:appshop/features/compras/Repository/order_repository.dart';
 import 'package:flutter/material.dart';
 
 class OrderListProvider with ChangeNotifier {

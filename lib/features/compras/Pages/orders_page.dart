@@ -1,5 +1,5 @@
-import 'package:appshop/features/order/Provider/order_list_provider.dart';
-import 'package:appshop/features/order/Widgets/order_widget.dart';
+import 'package:appshop/features/compras/Provider/order_list_provider.dart';
+import 'package:appshop/features/compras/Widgets/lista_de_compras.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +53,7 @@ class _OrdersPageState extends State<OrdersPage> {
               child: ListView.builder(
                 padding: EdgeInsets.all(10),
                 itemCount: orders.itemsCount,
-                itemBuilder: (ctx, index) => OrderWidget(
+                itemBuilder: (ctx, index) => ListaDeCompras(
                   order: orders.items[index],
                 ),
               ),

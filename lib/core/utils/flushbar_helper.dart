@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
-enum FlushType { success, warning, error }
+enum FlushType { success, info, error, warning }
 
 enum FlushPosition { bottom, top }
 
@@ -18,6 +18,10 @@ void showAppFlushbar(
     case FlushType.success:
       bg = Colors.green;
       iconData = Icons.check_circle;
+      break;
+    case FlushType.info:
+      bg = Colors.blue;
+      iconData = Icons.info_outline;
       break;
     case FlushType.warning:
       bg = Colors.amber;

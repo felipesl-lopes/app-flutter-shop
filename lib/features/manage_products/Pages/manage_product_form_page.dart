@@ -4,7 +4,7 @@ import 'package:appshop/core/models/product_image_model.dart';
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/product_validators.dart';
-import 'package:appshop/features/product/Provider/product_list_provider.dart';
+import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -66,7 +66,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     }
 
     try {
-      await Provider.of<ProductListProvider>(
+      await Provider.of<ProductProvider>(
         context,
         listen: false,
       ).saveProduct(data);
@@ -112,7 +112,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     if (_imageUrls.length >= 10) {
       showAppFlushbar(context,
           message: "Limite de imagens atingido.",
-          type: FlushType.warning,
+          type: FlushType.info,
           position: FlushPosition.top);
       return;
     }

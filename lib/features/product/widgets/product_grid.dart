@@ -1,9 +1,7 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/models/product_model.dart';
-import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ProductGrid extends StatelessWidget {
   final title;
@@ -48,10 +46,8 @@ class ProductGrid extends StatelessWidget {
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemBuilder: (ctx, index) => ChangeNotifierProvider(
-              create: (_) => ProductProvider(list_products[index]),
-              child: ProductGridItem(),
-            ),
+            itemBuilder: (ctx, index) =>
+                ProductGridItem(product: list_products[index]),
           ),
           if (quantityGrid < list_products.length)
             Padding(

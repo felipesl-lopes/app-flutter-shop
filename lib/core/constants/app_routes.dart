@@ -1,10 +1,10 @@
 import 'package:appshop/features/auth/Pages/auth_or_home_page.dart';
 import 'package:appshop/features/auth/Pages/auth_page.dart';
 import 'package:appshop/features/cart/Pages/cart_page.dart';
+import 'package:appshop/features/compras/Pages/orders_page.dart';
 import 'package:appshop/features/home/Pages/home_page.dart';
 import 'package:appshop/features/manage_products/Pages/manage_product_form_page.dart';
 import 'package:appshop/features/manage_products/Pages/manage_products_page.dart';
-import 'package:appshop/features/order/Pages/orders_page.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:appshop/features/profile/Pages/profile_page.dart';
 import 'package:appshop/features/search/Pages/search_page.dart';
