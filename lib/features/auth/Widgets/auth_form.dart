@@ -78,7 +78,6 @@ class _AuthFormState extends State<AuthForm> {
     } catch (e) {
       debugPrint(e.toString());
       _showErrorDialog(e);
-      rethrow;
     }
 
     if (!mounted) return;

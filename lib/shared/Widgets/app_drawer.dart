@@ -16,8 +16,17 @@ class AppDrawer extends StatelessWidget {
             automaticallyImplyLeading: false,
             backgroundColor: Colors.purple,
             iconTheme: IconThemeData(color: Colors.white),
-            title: Text("Bem vindo(a) ${user?.name}",
-                style: TextStyle(color: Colors.white)),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Bem vindo(a) ${user?.name}",
+                    style: TextStyle(color: Colors.white, fontSize: 20)),
+                Text(
+                  auth.isAuth ? auth.email.toString() : "",
+                  style: TextStyle(color: Colors.grey.shade200, fontSize: 14),
+                ),
+              ],
+            ),
           ),
           SizedBox(height: 8),
           ListTile(
@@ -56,73 +65,75 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.logout, color: Colors.purple),
             title: Text("Sair", style: TextStyle(color: Colors.purple)),
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (ctx) => Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Deseja sair?",
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(20),
-                          alignment: Alignment.center,
-                          child: Icon(Icons.logout,
-                              size: 40, color: Colors.grey),
-                        ),
-                        Text(
-                          "Após confirmar sua saída, precisará se logar novamente na próxima vez.",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () => Navigator.of(ctx).pop(),
-                              child: Text("CANCELAR", style: TextStyle(color: Colors.purple)),
-                            ),
-                            SizedBox(width: 8),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.purple,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                              ),
-                              onPressed: () {
-                                Provider.of<AuthProvider>(context,
-                                        listen: false)
-                                    .deslogar();
-                                Navigator.of(context).pushReplacementNamed(
-                                  AppRoutes.AUTH_OR_HOME,
-                                );
-                              },
-                              child: Text(
-                                "CONFIRMAR",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+              confirmarLogout(context);
             },
           ),
           Divider(),
         ],
+      ),
+    );
+  }
+
+  Future<dynamic> confirmarLogout(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Deseja sair?",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              Container(
+                padding: EdgeInsets.all(20),
+                alignment: Alignment.center,
+                child: Icon(Icons.logout, size: 40, color: Colors.grey),
+              ),
+              Text(
+                "Após confirmar sua saída, precisará se logar novamente na próxima vez.",
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: Text("CANCELAR",
+                        style: TextStyle(color: Colors.purple)),
+                  ),
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    onPressed: () {
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .deslogar();
+                      Navigator.of(context).pushReplacementNamed(
+                        AppRoutes.AUTH_OR_HOME,
+                      );
+                    },
+                    child: Text(
+                      "CONFIRMAR",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
