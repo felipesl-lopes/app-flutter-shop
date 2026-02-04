@@ -1,5 +1,4 @@
 import 'package:appshop/core/constants/app_routes.dart';
-import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/home/widgets/banner_carousel.dart';
 import 'package:appshop/features/home/widgets/category_roundels.dart';
@@ -25,11 +24,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     Provider.of<BannersProvider>(context, listen: false).loadBanners();
     Provider.of<ProductProvider>(context, listen: false)
-        .loadProducts()
-        .then((value) {
-      setState(() {
-        _isLoading = false;
-      });
+        .carregarProdutos()
+        .then((_) {
+      setState(() => _isLoading = false);
     });
   }
 
@@ -49,13 +46,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
-    final productListProvider = Provider.of<ProductProvider>(context);
-
-    final allProducts = productListProvider.produtos;
-
-    final visibleProducts =
-        allProducts.where((item) => item.userId != auth.userId).toList();
+    final _listaDeProdutos =
+        Provider.of<ProductProvider>(context).produtosParaCompra;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 12),
                       CategoryRoundels(),
                       ProductGrid(
-                        list_products: visibleProducts,
+                        list_products: _listaDeProdutos,
                         quantityGrid: 6,
                         title: "Produtos para você",
                       ),

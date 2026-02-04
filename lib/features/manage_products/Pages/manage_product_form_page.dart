@@ -69,7 +69,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
       await Provider.of<ProductProvider>(
         context,
         listen: false,
-      ).saveProduct(data);
+      ).salvarProduto(data);
 
       _initialFormData = _getCurrentFormData();
       _hasChanges = false;

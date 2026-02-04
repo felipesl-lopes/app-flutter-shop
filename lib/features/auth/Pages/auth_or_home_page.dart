@@ -63,7 +63,7 @@ class _AuthOrHomePageState extends State<AuthOrHomePage> {
 
     if (creds != null) {
       try {
-        await auth.signIn(creds['email']!, creds['password']!);
+        await auth.logar(creds['email']!, creds['password']!);
       } catch (e) {
         print(e);
       }

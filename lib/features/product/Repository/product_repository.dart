@@ -7,8 +7,6 @@ import 'package:appshop/core/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 class ProductRepository {
-  /////////
-
   final String token;
   final String userId;
 
@@ -17,7 +15,7 @@ class ProductRepository {
     required this.userId,
   });
 
-  Future<List<ProductModel>> loadProducts() async {
+  Future<List<ProductModel>> carregarProdutos() async {
     final response = await http
         .get(Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$token"));
 
@@ -58,7 +56,7 @@ class ProductRepository {
     return produtos;
   }
 
-  Future<String> addProduct(ProductModel product) async {
+  Future<String> adicionarProduto(ProductModel product) async {
     final response = await http.post(
       Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$token"),
       body: jsonEncode({
@@ -74,7 +72,7 @@ class ProductRepository {
     return data['name'];
   }
 
-  Future<void> updateProduct(ProductModel product) async {
+  Future<void> atualizarProduto(ProductModel product) async {
     await http.patch(
       Uri.parse("${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$token"),
       body: jsonEncode({
@@ -87,7 +85,7 @@ class ProductRepository {
     );
   }
 
-  Future<void> deleteProduct(String idProduto) async {
+  Future<void> deletarProduto(String idProduto) async {
     final response = await http.delete(
       Uri.parse("${Constants.PRODUCT_BASE_URL}/${idProduto}.json?auth=$token"),
     );
@@ -100,7 +98,7 @@ class ProductRepository {
     }
   }
 
-  Future<void> toggleFavorite({
+  Future<void> adicionarOuRemoverFavorito({
     required String productId,
     required bool isFavorite,
   }) async {

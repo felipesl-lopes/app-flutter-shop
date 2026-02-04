@@ -8,7 +8,7 @@ import 'package:appshop/features/auth/enum/auth_mode.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
-  Future<Map<String, dynamic>> authenticate({
+  Future<Map<String, dynamic>> autenticar({
     required AuthMode mode,
     required Map<String, dynamic> authBody,
   }) async {

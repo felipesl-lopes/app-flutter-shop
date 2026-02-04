@@ -61,7 +61,7 @@ class ManageProductGrid extends StatelessWidget {
                             await Provider.of<ProductProvider>(
                               context,
                               listen: false,
-                            ).deleteProduct(product);
+                            ).deletarProduto(product);
                           } on GenericExeption catch (error) {
                             msg.showSnackBar(
                                 SnackBar(content: Text(error.toString())));

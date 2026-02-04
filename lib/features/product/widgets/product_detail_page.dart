@@ -66,7 +66,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     Future<void> toggleFavorite() async {
       try {
-        await productList.toggleFavorite(product.id);
+        await productList.adicionarOuRemoverFavorito(product.id);
         showAppFlushbar(context,
             message: product.isFavorite
                 ? "Produto favoritado."

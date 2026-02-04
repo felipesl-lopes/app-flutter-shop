@@ -25,18 +25,32 @@ class ProductProvider with ChangeNotifier {
   List<ProductModel> get produtosFavoritos =>
       _produtos.where((prod) => prod.isFavorite).toList();
 
-  int get itemsCount {
+  List<ProductModel> get meusProdutos =>
+      _produtos.where((p) => p.userId == _userId).toList();
+
+  List<ProductModel> get produtosParaCompra =>
+      _produtos.where((p) => p.userId != _userId).toList();
+
+  int get quantidadeDeProdutos {
     return _produtos.length;
   }
 
-  Future<void> loadProducts() async {
-    final produtos = await _repository.loadProducts();
+  Future<void> carregarProdutos() async {
+    final produtos = await _repository.carregarProdutos();
 
     _produtos = produtos;
     notifyListeners();
   }
 
-  Future<void> saveProduct(Map<String, Object> data) {
+  List<ProductModel> searchByName(String query) {
+    final q = query.toLowerCase();
+
+    return _produtos.where((p) {
+      return p.name.toLowerCase().contains(q);
+    }).toList();
+  }
+
+  Future<void> salvarProduto(Map<String, Object> data) {
     bool hasId = data["id"] != null;
 
     final newProduct = new ProductModel(
@@ -49,14 +63,14 @@ class ProductProvider with ChangeNotifier {
     );
 
     if (hasId) {
-      return updateProduct(newProduct);
+      return atualizarProduto(newProduct);
     } else {
-      return addProduct(newProduct);
+      return adicionarProduto(newProduct);
     }
   }
 
-  Future<void> addProduct(ProductModel produto) async {
-    final generateId = await _repository.addProduct(produto);
+  Future<void> adicionarProduto(ProductModel produto) async {
+    final generateId = await _repository.adicionarProduto(produto);
 
     final newProduct = produto.copyWith(id: generateId);
 
@@ -64,24 +78,24 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProduct(ProductModel produto) async {
+  Future<void> atualizarProduto(ProductModel produto) async {
     int index = _produtos.indexWhere((p) => p.id == produto.id);
 
     if (index < 0) return;
 
-    await _repository.updateProduct(produto);
+    await _repository.atualizarProduto(produto);
 
     _produtos[index] = produto;
     notifyListeners();
   }
 
-  Future<void> deleteProduct(ProductModel produto) async {
+  Future<void> deletarProduto(ProductModel produto) async {
     int index = _produtos.indexWhere((p) => p.id == produto.id);
 
     if (index < 0) return;
 
     try {
-      await _repository.deleteProduct(produto.id);
+      await _repository.deletarProduto(produto.id);
 
       _produtos.removeAt(index);
       notifyListeners();
@@ -91,7 +105,7 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<void> toggleFavorite(String productId) async {
+  Future<void> adicionarOuRemoverFavorito(String productId) async {
     final index = _produtos.indexWhere((p) => p.id == productId);
 
     if (index < 0) return;
@@ -102,7 +116,7 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.toggleFavorite(
+      await _repository.adicionarOuRemoverFavorito(
           productId: productId, isFavorite: product.isFavorite);
     } catch (e) {
       // rollback

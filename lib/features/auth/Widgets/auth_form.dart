@@ -64,12 +64,12 @@ class _AuthFormState extends State<AuthForm> {
 
     try {
       if (_isLogin()) {
-        await auth.signIn(
+        await auth.logar(
           _emailController.text.trim(),
           _passwordController.text,
         );
       } else {
-        await auth.signUp(
+        await auth.registrar(
           _emailController.text.trim(),
           _passwordController.text,
           _nameController.text.trim(),

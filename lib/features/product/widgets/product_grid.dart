@@ -5,20 +5,22 @@ import 'package:flutter/material.dart';
 
 class ProductGrid extends StatelessWidget {
   final title;
-  final int quantityGrid;
+  final int? quantityGrid;
   final List<ProductModel> list_products;
 
   ProductGrid({
     required this.title,
-    required this.quantityGrid,
+    this.quantityGrid,
     required this.list_products,
   });
 
   @override
   Widget build(BuildContext context) {
-    final _itensCount = list_products.length >= quantityGrid
-        ? quantityGrid
-        : list_products.length;
+    final _itensCount = quantityGrid == null
+        ? list_products.length
+        : (list_products.length >= quantityGrid!
+            ? quantityGrid!
+            : list_products.length);
 
     return Container(
       margin: EdgeInsets.all(12),
@@ -49,7 +51,7 @@ class ProductGrid extends StatelessWidget {
             itemBuilder: (ctx, index) =>
                 ProductGridItem(product: list_products[index]),
           ),
-          if (quantityGrid < list_products.length)
+          if (quantityGrid != null && quantityGrid! < list_products.length)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextButton(

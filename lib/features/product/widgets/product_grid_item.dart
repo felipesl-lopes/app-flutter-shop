@@ -16,7 +16,7 @@ class ProductGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
 
-    void _selectPage(BuildContext context) {
+    void _navegar(BuildContext context) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => ProductDetailPage(product: product),
@@ -24,7 +24,7 @@ class ProductGridItem extends StatelessWidget {
       );
     }
 
-    void _addProduct() {
+    void _adicionarProdutoAoCarrinho() {
       cart.addItem(product);
       SnackbarHelper.showAddToCartMessage(
         context,
@@ -33,7 +33,7 @@ class ProductGridItem extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () => _selectPage(context),
+      onTap: () => _navegar(context),
       child: Container(
         decoration: BoxDecoration(
             color: Colors.grey.shade100,
@@ -76,7 +76,7 @@ class ProductGridItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: InkWell(
-                        onTap: _addProduct,
+                        onTap: _adicionarProdutoAoCarrinho,
                         child: const Icon(
                           Icons.shopping_cart,
                           size: 20,

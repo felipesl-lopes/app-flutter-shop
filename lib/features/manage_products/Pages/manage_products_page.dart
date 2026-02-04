@@ -1,5 +1,4 @@
 import 'package:appshop/core/constants/app_routes.dart';
-import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/manage_products/widgets/manage_product_grid.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
@@ -9,10 +8,7 @@ import 'package:provider/provider.dart';
 class ManageProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _userId = Provider.of<AuthProvider>(context).userId;
-    final product = Provider.of<ProductProvider>(context).produtos;
-    final _productList =
-        product.where((item) => item.userId == _userId).toList();
+    final _productList = Provider.of<ProductProvider>(context).meusProdutos;
 
     return Scaffold(
       appBar: AppBar(

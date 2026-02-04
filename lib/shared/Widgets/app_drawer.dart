@@ -102,7 +102,7 @@ class AppDrawer extends StatelessWidget {
                               onPressed: () {
                                 Provider.of<AuthProvider>(context,
                                         listen: false)
-                                    .logout();
+                                    .deslogar();
                                 Navigator.of(context).pushReplacementNamed(
                                   AppRoutes.AUTH_OR_HOME,
                                 );
