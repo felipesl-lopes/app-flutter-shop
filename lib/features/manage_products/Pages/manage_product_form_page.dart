@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:appshop/core/errors/generic_exception.dart';
 import 'package:appshop/core/models/product_image_model.dart';
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
@@ -223,6 +224,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final msg = ScaffoldMessenger.of(context);
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -236,6 +239,45 @@ class _ProductFormPageState extends State<ProductFormPage> {
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.purple,
+            actions: [
+              if (_editedProduct != null)
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text("Confirmar exclusão"),
+                        content: Text(
+                            "Deseja excluir o produto ${_editedProduct?.name}?"),
+                        actions: [
+                          TextButton(
+                            child: Text("Cancelar"),
+                            onPressed: () => {
+                              Navigator.of(ctx).pop(),
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Confirmar"),
+                            onPressed: () async {
+                              try {
+                                Navigator.of(ctx).pop();
+                                await Provider.of<ProductProvider>(
+                                  context,
+                                  listen: false,
+                                ).deletarProduto(_editedProduct!);
+                              } on GenericExeption catch (error) {
+                                msg.showSnackBar(
+                                    SnackBar(content: Text(error.toString())));
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+            ],
           ),
           body: _isLoading
               ? Center(

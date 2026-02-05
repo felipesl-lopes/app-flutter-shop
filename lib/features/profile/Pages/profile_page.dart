@@ -87,7 +87,7 @@ class _ProfileHeader extends StatelessWidget {
               child: CircleAvatar(
                 radius: 56,
                 backgroundColor: themeColor.withOpacity(0.2),
-                child: auth.isAuth
+                child: !auth.isAuth
                     ? Icon(Icons.person, size: 64, color: Colors.black54)
                     : Text(
                         getIniciais(auth.isAuth ? auth.user!.name : ''),
@@ -151,7 +151,7 @@ class _TopicsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Colors.purple;
+    final themeColor = Colors.black54;
     final topics = [
       (Icons.person_outline, "Dados do usuário"),
       (Icons.security_outlined, "Segurança e conta"),
@@ -179,7 +179,7 @@ class _TopicsSection extends StatelessWidget {
                     icon: Icon(icon, color: themeColor, size: 22),
                     paginaDestino: title,
                   ),
-                  if (index < topics.length - 1) Divider(height: 1, indent: 56),
+                  if (index < topics.length - 1) Divider(height: 1),
                 ],
               );
             }),

@@ -30,7 +30,7 @@ class ManageProductsPage extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: Padding(
-          padding: EdgeInsets.all(12),
+          padding: EdgeInsets.only(left: 12, right: 12, top: 8),
           child: _productList.isEmpty
               ? Center(
                   child: Column(
