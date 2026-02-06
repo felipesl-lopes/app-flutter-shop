@@ -66,12 +66,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     Future<void> toggleFavorite() async {
       try {
-        await productList.adicionarOuRemoverFavorito(product.id);
         showAppFlushbar(context,
             message: product.isFavorite
-                ? "Produto favoritado."
-                : "Produto desfavoritado.",
+                ? "Produto desfavoritado."
+                : "Produto favoritado.",
             type: FlushType.info);
+        await productList.adicionarOuRemoverFavorito(product.id);
       } catch (e) {
         showAppFlushbar(context,
             message: "Não foi possível realizar a ação.",

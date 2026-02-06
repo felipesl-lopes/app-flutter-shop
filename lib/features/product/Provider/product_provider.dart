@@ -31,6 +31,10 @@ class ProductProvider with ChangeNotifier {
   List<ProductModel> get produtosParaCompra =>
       _produtos.where((p) => p.userId != _userId).toList();
 
+  List<ProductModel> get meusFavoritos => _produtos
+      .where((p) => p.isFavorite == true && p.userId != _userId)
+      .toList();
+
   int get quantidadeDeProdutos {
     return _produtos.length;
   }

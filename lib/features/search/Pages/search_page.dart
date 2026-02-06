@@ -55,7 +55,8 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductProvider>(context);
 
-    final productsToShow = _hasSearched ? _filteredProducts : provider.produtos;
+    final productsToShow =
+        _hasSearched ? _filteredProducts : provider.produtosParaCompra;
 
     void _searchProduct() {
       final query = _searchController.text.trim();

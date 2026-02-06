@@ -1,6 +1,7 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/home/widgets/banner_carousel.dart';
+import 'package:appshop/features/home/widgets/card_incentivo_carrinho.dart';
 import 'package:appshop/features/home/widgets/category_roundels.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
@@ -46,8 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _listaDeProdutos =
-        Provider.of<ProductProvider>(context).produtosParaCompra;
+    final _listaDeProdutos = Provider.of<ProductProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -114,8 +114,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: 12),
                       CategoryRoundels(),
+                      if (_listaDeProdutos.meusFavoritos.isNotEmpty)
+                        ProductGrid(
+                          list_products: _listaDeProdutos.meusFavoritos,
+                          quantityGrid: 4,
+                          title: "Seus favoritos",
+                        ),
+                      CardIncentivoCarrinho(),
                       ProductGrid(
-                        list_products: _listaDeProdutos,
+                        list_products: _listaDeProdutos.produtosParaCompra,
                         quantityGrid: 6,
                         title: "Produtos para você",
                       ),
