@@ -4,6 +4,7 @@ import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/utils/snackbar_helper.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
+import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/carousel_images_product.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
@@ -58,6 +59,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
 
     final cart = Provider.of<CartProvider>(context);
+    final _categories = Provider.of<CategoriasProvider>(context, listen: false);
+    final _nomesCategorias = _categories.getNomesCategorias(product.categories);
 
     void handleBuy() {
       cart.addItem(product);
@@ -169,6 +172,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Text("Descrição:",
                         style: TextStyle(fontWeight: FontWeight.w600)),
                     Text(product.description),
+                    SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Text(
+                            _nomesCategorias.length > 1
+                                ? "Categorias: "
+                                : "Categoria: ",
+                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        Text(_nomesCategorias.join((', '))),
+                      ],
+                    ),
                   ],
                 ),
               ),

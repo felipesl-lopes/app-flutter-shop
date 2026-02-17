@@ -3,6 +3,7 @@ import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/cart/Widgets/cart_item_widget.dart';
 import 'package:appshop/features/compras/Provider/order_list_provider.dart';
+import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class CartPage extends StatelessWidget {
         ),
         backgroundColor: Colors.purple,
       ),
+      drawer: AppDrawer(),
       body: _carrinhoVazio
           ? Center(
               child: Column(

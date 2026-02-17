@@ -42,60 +42,61 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
       );
     }
 
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              DateFormat("dd/MM/yyyy").format(widget.order.date),
-            ),
-            subtitle: Text(formatPrice(widget.order.total)),
-            trailing: IconButton(
-                onPressed: () => {
-                      setState(() {
-                        _expanded = !_expanded;
-                      }),
-                    },
-                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more)),
-          ),
-          if (_expanded)
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                children: widget.order.products.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final product = entry.value;
-                  return Column(
-                    children: [
-                      InkWell(
-                        onTap: () => _selectPage(context, product),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              product.name,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "${product.quantity}x ${formatPrice(product.price)}",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (index < widget.order.products.length - 1) Divider(),
-                    ],
-                  );
-                }).toList(),
+    return InkWell(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: Card(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                DateFormat("dd/MM/yyyy").format(widget.order.date),
               ),
+              subtitle: Text(formatPrice(widget.order.total)),
+              trailing: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
             ),
-        ],
+            if (_expanded)
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: widget.order.products.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final product = entry.value;
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () => _selectPage(context, product),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  product.name,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "${product.quantity}x ${formatPrice(product.price)}",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (index < widget.order.products.length - 1) Divider(),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

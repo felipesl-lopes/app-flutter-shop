@@ -129,48 +129,52 @@ class _SearchPageState extends State<SearchPage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : productsToShow.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.search_off,
-                        size: 64,
-                        color: Colors.grey,
+          : Column(
+              children: [
+                if (_searchController.text.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        "Exibindo resultado de pesquisa para: ${_searchController.text}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 12),
-                      Text(
-                        "Nenhum produto encontrado.",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      if (_searchController.text.isNotEmpty)
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: Text(
-                              "Exibindo resultado de pesquisa para: ${_searchController.text}",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 16),
-                            ),
+                productsToShow.isEmpty
+                    ? Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 12),
+                              Text(
+                                "Nenhum produto encontrado.",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ProductGrid(
-                        list_products: productsToShow,
-                        title: "Produtos para você",
+                      )
+                    : Expanded(
+                        child: SingleChildScrollView(
+                          child: ProductGrid(
+                            list_products: productsToShow,
+                            title: "Produtos para você",
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
+              ],
+            ),
     );
   }
 }

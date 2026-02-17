@@ -34,6 +34,22 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
+            leading: Icon(Icons.person),
+            title: Text("Meu perfil"),
+            onTap: () => Navigator.of(context).pushReplacementNamed(
+              AppRoutes.PROFILE,
+            ),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.shopping_cart),
+            title: Text("Meu carrinho"),
+            onTap: () => Navigator.of(context).pushReplacementNamed(
+              AppRoutes.CART,
+            ),
+          ),
+          Divider(),
+          ListTile(
             leading: Icon(Icons.payment),
             title: Text("Minhas compras"),
             onTap: () => Navigator.of(context).pushReplacementNamed(
@@ -42,18 +58,10 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.edit_note),
+            leading: Icon(Icons.inventory),
             title: Text("Gerenciar produtos"),
             onTap: () => Navigator.of(context).pushReplacementNamed(
               AppRoutes.MANAGE_PRODUCTS,
-            ),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text("Meu perfil"),
-            onTap: () => Navigator.of(context).pushReplacementNamed(
-              AppRoutes.PROFILE,
             ),
           ),
           Divider(),

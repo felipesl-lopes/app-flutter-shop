@@ -49,9 +49,11 @@ class ProductProvider with ChangeNotifier {
   List<ProductModel> searchByName(String query) {
     final q = query.toLowerCase();
 
-    return _produtos.where((p) {
+    final lista = _produtos.where((p) {
       return p.name.toLowerCase().contains(q);
     }).toList();
+
+    return lista.where((p) => p.userId != _userId).toList();
   }
 
   List<ProductModel> produtosPorCategoria(String categoryId) {

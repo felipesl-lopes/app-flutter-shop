@@ -32,4 +32,11 @@ class CategoriasProvider with ChangeNotifier {
 
     setCategorias(categorias);
   }
+
+  List<String> getNomesCategorias(List<String> categoryIds) {
+    return _categorias
+        .where((c) => categoryIds.contains(c.id))
+        .map((c) => c.nome)
+        .toList();
+  }
 }
