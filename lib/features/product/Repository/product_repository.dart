@@ -47,6 +47,9 @@ class ProductRepository {
             price: productData["price"],
             imageUrls:
                 imageData.map((e) => ProductImageModel.fromMap(e)).toList(),
+            categories: productData['categories'] == null
+                ? []
+                : List<String>.from(productData['categories']),
             isFavorite: isFavorite,
             userId: productData["userId"],
           ),
@@ -65,6 +68,7 @@ class ProductRepository {
         "description": product.description,
         "price": product.price,
         "imageUrls": product.imageUrls,
+        "categories": product.categories,
       }),
     );
     final data = jsonDecode(response.body);
@@ -81,6 +85,7 @@ class ProductRepository {
         "price": product.price,
         "imageUrls": product.imageUrls,
         "userId": userId,
+        "categories": product.categories,
       }),
     );
   }

@@ -6,6 +6,7 @@ class ProductModel {
   final String description;
   final double price;
   final List<ProductImageModel> imageUrls;
+  final List<String> categories;
   final String userId;
   bool isFavorite;
 
@@ -15,6 +16,7 @@ class ProductModel {
     required this.description,
     required this.price,
     required this.imageUrls,
+    required this.categories,
     required this.userId,
     this.isFavorite = false,
   });
@@ -28,6 +30,9 @@ class ProductModel {
       imageUrls: (json['imageUrls'] as List)
           .map((e) => ProductImageModel.fromJson(e))
           .toList(),
+      categories: json['categories'] == null
+          ? []
+          : List<String>.from(json['categories']),
       userId: json['userId'],
     );
   }
@@ -38,6 +43,7 @@ class ProductModel {
       'description': description,
       'price': price,
       'imageUrls': imageUrls.map((e) => e.toJson()).toList(),
+      'categories': categories.map((e) => e.toString()).toList(),
       'userId': userId,
     };
   }
@@ -48,6 +54,7 @@ class ProductModel {
     String? description,
     double? price,
     String? imageUrl,
+    List<String>? categories,
     String? userId,
     bool? isFavorite,
   }) {
@@ -57,6 +64,7 @@ class ProductModel {
       description: description ?? this.description,
       price: price ?? this.price,
       imageUrls: imageUrls,
+      categories: categories ?? this.categories,
       userId: userId ?? this.userId,
       isFavorite: isFavorite ?? this.isFavorite,
     );
@@ -72,6 +80,8 @@ class ProductModel {
           .map((e) => ProductImageModel.fromMap(e))
           .toList(),
       userId: map['userId'],
+      categories:
+          map['categories'] == null ? [] : List<String>.from(map['categories']),
       isFavorite: map['isFavorite'] ?? false,
     );
   }
@@ -82,6 +92,7 @@ class ProductModel {
       'description': description,
       'price': price,
       'imageUrls': imageUrls.map((e) => e.toMap()).toList(),
+      'categories': categories,
       'userId': userId,
       'isFavorite': isFavorite,
     };

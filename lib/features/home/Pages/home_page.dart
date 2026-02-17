@@ -1,10 +1,12 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
+import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/home/widgets/banner_carousel.dart';
 import 'package:appshop/features/home/widgets/card_incentivo_carrinho.dart';
 import 'package:appshop/features/home/widgets/category_roundels.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
+import 'package:appshop/features/search/Models/search_model.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
@@ -23,6 +25,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<CategoriasProvider>(context, listen: false)
+        .carregarCategorias();
     Provider.of<BannersProvider>(context, listen: false).loadBanners();
     Provider.of<ProductProvider>(context, listen: false)
         .carregarProdutos()
@@ -41,13 +45,25 @@ class _HomePageState extends State<HomePage> {
     final query = _searchController.text.trim();
     if (query.isEmpty) return;
 
-    Navigator.of(context).pushNamed(AppRoutes.SEARCH_PRODUCT, arguments: query);
     _searchController.clear();
+    Navigator.of(context).pushNamed(
+      AppRoutes.SEARCH_PRODUCT,
+      arguments: SearchPageArgs(query: query),
+    );
+  }
+
+  void _searchProductCategory(String categoryId) {
+    Navigator.of(context).pushNamed(
+      AppRoutes.SEARCH_PRODUCT,
+      arguments: SearchPageArgs(categoryId: categoryId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final _listaDeProdutos = Provider.of<ProductProvider>(context);
+    final _categorias =
+        Provider.of<CategoriasProvider>(context).principaisCategorias.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -113,7 +129,10 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                       SizedBox(height: 12),
-                      CategoryRoundels(),
+                      CategoryRoundels(
+                        categorias: _categorias,
+                        onCategorySelected: _searchProductCategory,
+                      ),
                       if (_listaDeProdutos.meusFavoritos.isNotEmpty)
                         ProductGrid(
                           list_products: _listaDeProdutos.meusFavoritos,

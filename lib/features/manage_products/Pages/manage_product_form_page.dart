@@ -5,6 +5,7 @@ import 'package:appshop/core/models/product_image_model.dart';
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/product_validators.dart';
+import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _categoriesController = TextEditingController();
+
+  String? _selectedCategory;
 
   List<ProductImageModel> _imageUrls = [];
   bool _isInit = true;
@@ -54,12 +58,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final price = double.parse(_priceController.text);
     final description = _descriptionController.text.trim();
     final imageUrls = _imageUrls;
+    final categories = _selectedCategory == null ? [] : [_selectedCategory!];
 
     final data = <String, Object>{
       "name": name,
       "price": price,
       "description": description,
       "imageUrls": imageUrls,
+      "categories": categories,
     };
 
     if (_editedProduct != null) {
@@ -173,6 +179,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _priceController.text = _editedProduct!.price.toString();
         _descriptionController.text = _editedProduct!.description;
         _imageUrls = List.from(_editedProduct!.imageUrls);
+        _selectedCategory = _editedProduct!.categories.isNotEmpty
+            ? _editedProduct!.categories.first
+            : null;
       }
 
       _initialFormData = _getCurrentFormData();
@@ -186,6 +195,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
       'price': _priceController.text.trim(),
       'description': _descriptionController.text.trim(),
       'imageUrls': _imageUrls.map((e) => e.value).toList(),
+      'selectedCategory': _selectedCategory,
     };
   }
 
@@ -195,6 +205,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final hasChanged = current['name'] != _initialFormData['name'] ||
         current['price'] != _initialFormData['price'] ||
         current['description'] != _initialFormData['description'] ||
+        current['selectedCategory'] != _initialFormData['selectedCategory'] ||
         !_listEquals(
           current['imageUrls'],
           _initialFormData['imageUrls'],
@@ -220,11 +231,16 @@ class _ProductFormPageState extends State<ProductFormPage> {
     _priceController.dispose();
     _descriptionController.dispose();
     _imageUrlController.dispose();
+    _categoriesController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final msg = ScaffoldMessenger.of(context);
+
+    final categorias = Provider.of<CategoriasProvider>(context, listen: false)
+        .categorias
+        .toList();
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -295,6 +311,25 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           onChanged: (_) => _checkForChanges(),
                           decoration: getInputDecoration("Nome"),
                           validator: (value) => isValidName(value ?? ""),
+                        ),
+                        SizedBox(height: 20),
+                        DropdownButtonFormField(
+                          value: _selectedCategory,
+                          decoration: getInputDecoration("Categoria"),
+                          items: categorias.map((categoria) {
+                            return DropdownMenuItem(
+                              value: categoria.id,
+                              child: Text(categoria.nome),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCategory = value;
+                              _categoriesController.text = value ?? '';
+                              _checkForChanges();
+                            });
+                          },
+                          validator: (value) => isValidCategory(value ?? ""),
                         ),
                         SizedBox(height: 20),
                         TextFormField(

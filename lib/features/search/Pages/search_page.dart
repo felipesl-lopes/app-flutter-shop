@@ -1,6 +1,7 @@
 import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/product_grid.dart';
+import 'package:appshop/features/search/Models/search_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,16 +19,24 @@ class _SearchPageState extends State<SearchPage> {
   bool _hasSearched = false;
 
   bool _isInit = true;
+  String? _initialQuery;
+  String? _initialCategoryId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     if (_isInit) {
-      final query = ModalRoute.of(context)?.settings.arguments as String?;
+      final args = ModalRoute.of(context)?.settings.arguments;
 
-      if (query != null && query.isNotEmpty) {
-        _searchController.text = query;
+      if (args is SearchPageArgs) {
+        if (args.query != null && args.query!.trim().isNotEmpty) {
+          _searchController.text = args.query!;
+          _initialQuery = args.query!.trim();
+        }
+        if (args.categoryId != null && args.categoryId!.isNotEmpty) {
+          _initialCategoryId = args.categoryId;
+        }
       }
       _isInit = false;
     }
@@ -35,14 +44,22 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
+    super.initState();
     Provider.of<ProductProvider>(context, listen: false)
         .carregarProdutos()
-        .then(
-          (_) => setState(
-            () => _isLoading = false,
-          ),
-        );
-    super.initState();
+        .then((_) {
+      final provider = Provider.of<ProductProvider>(context, listen: false);
+
+      if (_initialCategoryId != null) {
+        _filteredProducts = provider.produtosPorCategoria(_initialCategoryId!);
+        _hasSearched = true;
+      } else if (_initialQuery != null) {
+        _filteredProducts = provider.searchByName(_initialQuery!);
+        _hasSearched = true;
+      }
+
+      setState(() => _isLoading = false);
+    });
   }
 
   @override
@@ -112,51 +129,48 @@ class _SearchPageState extends State<SearchPage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (_searchController.text.isNotEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Text(
-                          "Exibindo resultado de pesquisa para: ${_searchController.text}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
+          : productsToShow.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        "Nenhum produto encontrado.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
                         ),
                       ),
-                    ),
-                  productsToShow.isEmpty
-                      ? SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.search_off,
-                                  size: 64,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(height: 12),
-                                Text(
-                                  "Nenhum produto encontrado.",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
+                    ],
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (_searchController.text.isNotEmpty)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              "Exibindo resultado de pesquisa para: ${_searchController.text}",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
-                        )
-                      : ProductGrid(
-                          list_products: productsToShow,
-                          title: "Produtos para você",
                         ),
-                ],
-              ),
-            ),
+                      ProductGrid(
+                        list_products: productsToShow,
+                        title: "Produtos para você",
+                      ),
+                    ],
+                  ),
+                ),
     );
   }
 }

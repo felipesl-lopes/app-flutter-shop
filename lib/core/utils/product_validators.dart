@@ -20,6 +20,13 @@ String? isValidName(String name) {
   return null;
 }
 
+String? isValidCategory(String category) {
+  if (category.isEmpty) {
+    return "Selecione uma categoria";
+  }
+  return null;
+}
+
 String? isValidPrice(String priceValue) {
   if (priceValue.endsWith('.')) {
     return "Digite um valor válido.";

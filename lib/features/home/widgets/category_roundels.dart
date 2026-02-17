@@ -1,20 +1,22 @@
+import 'package:appshop/features/categorias/Models/categorias_model.dart';
+import 'package:appshop/features/categorias/Widgets/categoria_icon_helper.dart';
 import 'package:flutter/material.dart';
 
 class CategoryRoundels extends StatelessWidget {
-  CategoryRoundels({super.key});
+  final List<CategoriasModel> categorias;
+  final ValueChanged<String> onCategorySelected;
 
-  final lista_categorias = [
-    {'nome': 'Eletrônico', 'filtro': "Eletronico", 'icone': Icons.devices},
-    {'nome': 'Moda', 'filtro': "Moda", 'icone': Icons.checkroom},
-    {'nome': 'Casa', 'filtro': "Casa", 'icone': Icons.home_work},
-    {'nome': 'Esporte', 'filtro': "Esporte", 'icone': Icons.sports},
-    {'nome': 'Beleza', 'filtro': "Beleza", 'icone': Icons.face},
-    {'nome': 'Acessórios', 'filtro': "Acessorios", 'icone': Icons.watch},
-    {'nome': 'Games', 'filtro': "Games", 'icone': Icons.sports_esports},
-  ];
+  CategoryRoundels({
+    required this.categorias,
+    required this.onCategorySelected,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (categorias.isEmpty) {
+      return SizedBox();
+    }
+
     return Column(
       children: [
         Padding(
@@ -28,27 +30,25 @@ class CategoryRoundels extends StatelessWidget {
           height: 100,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: lista_categorias.length,
+            itemCount: categorias.length,
             itemBuilder: (context, index) {
-              final categoria = lista_categorias[index];
-              final nomeCategoria = categoria['nome']!;
+              final categoria = categorias[index];
 
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 8),
                 child: InkWell(
-                  onTap: () {
-                    // TODO: implementar navegação com filtro de categoria.
-                  },
+                  onTap: () => onCategorySelected(categoria.id),
                   child: Column(
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 30,
-                        child: Icon(categoria['icone'] as IconData?),
+                        child:
+                            Icon(CategoriaIconHelper.getIcon(categoria.nome)),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        nomeCategoria.toString(),
+                        categoria.nome,
                         style: TextStyle(fontSize: 12),
                       ),
                     ],

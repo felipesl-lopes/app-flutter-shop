@@ -9,8 +9,9 @@ import 'package:provider/provider.dart';
 class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final CartProvider cart = Provider.of<CartProvider>(context);
-    final items = cart.items.values.toList();
+    final CartProvider _cart = Provider.of<CartProvider>(context);
+    final _items = _cart.items.values.toList();
+    final bool _carrinhoVazio = _items.length == 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -21,75 +22,85 @@ class CartPage extends StatelessWidget {
         ),
         backgroundColor: Colors.purple,
       ),
-      body: Column(
-        children: [
-          Card(
-            margin: EdgeInsets.all(20),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: _carrinhoVazio
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    "Valor total",
-                    style: TextStyle(fontSize: 20),
+                  Icon(
+                    Icons.remove_shopping_cart,
+                    color: Colors.black45,
+                    size: 60,
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(height: 16),
                   Text(
-                    formatPrice(cart.totalAmount),
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.purple,
-                      fontWeight: FontWeight.bold,
+                    "Nenhum item encontrado no carrinho.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black45, fontSize: 16),
+                  ),
+                  SizedBox(height: 40),
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.of(context)
+                        .pushNamed(AppRoutes.SEARCH_PRODUCT),
+                    icon: Icon(Icons.storefront, color: Colors.white),
+                    label: Text(
+                      "Explorar produtos",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
-                  Spacer(),
-                  CartButton(cart: cart)
                 ],
               ),
-            ),
-          ),
-          if (items.length == 0)
-            Column(
+            )
+          : Column(
               children: [
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Icon(Icons.remove_shopping_cart,
-                          color: Colors.black45, size: 60),
-                      SizedBox(height: 16),
-                      Text(
-                        textAlign: TextAlign.center,
-                        "Nenhum item encontrado no carrinho.",
-                        style: TextStyle(color: Colors.black45, fontSize: 16),
-                      ),
-                    ],
+                Card(
+                  margin: EdgeInsets.all(20),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Valor total",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          formatPrice(_cart.totalAmount),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.purple,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Spacer(),
+                        CartButton(cart: _cart),
+                      ],
+                    ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.SEARCH_PRODUCT),
-                  child: Text("Comece a comprar"),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _items.length,
+                    itemBuilder: (ctx, index) => CartItemWidget(_items[index]),
+                  ),
                 ),
               ],
             ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (ctx, index) => CartItemWidget(
-                items[index],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
 
 class CartButton extends StatefulWidget {
-  const CartButton({
+  CartButton({
     super.key,
     required this.cart,
   });
@@ -123,13 +134,11 @@ class _CartButtonState extends State<CartButton> {
           )
         : Container(
             decoration: BoxDecoration(
-              color: widget.cart.itemsCount == 0
-                  ? Colors.grey.withOpacity(0.6)
-                  : Colors.purple,
+              color: Colors.purple,
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextButton(
-              onPressed: widget.cart.itemsCount == 0 ? null : handleBuy,
+              onPressed: handleBuy,
               child: Text(
                 "COMPRAR",
                 style: TextStyle(color: Colors.white),

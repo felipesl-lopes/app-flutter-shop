@@ -1,5 +1,6 @@
 import 'package:appshop/features/auth/Provider/auth_provider.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
+import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/compras/Provider/order_list_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
@@ -22,6 +23,20 @@ class AppProviders {
           auth.token ?? "",
           auth.userId ?? "",
           previous?.produtos ?? [],
+        );
+      },
+    ),
+    ChangeNotifierProxyProvider<AuthProvider, CategoriasProvider>(
+      create: (_) => CategoriasProvider(),
+      update: (ctx, auth, previous) {
+        if (!auth.isAuth) {
+          return CategoriasProvider();
+        }
+
+        return CategoriasProvider(
+          auth.token ?? "",
+          auth.userId ?? "",
+          previous?.categorias ?? [],
         );
       },
     ),

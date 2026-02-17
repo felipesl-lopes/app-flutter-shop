@@ -21,10 +21,6 @@ class AppDrawer extends StatelessWidget {
               children: [
                 Text("Bem vindo(a) ${user?.name}",
                     style: TextStyle(color: Colors.white, fontSize: 20)),
-                Text(
-                  auth.isAuth ? auth.email.toString() : "",
-                  style: TextStyle(color: Colors.grey.shade200, fontSize: 14),
-                ),
               ],
             ),
           ),

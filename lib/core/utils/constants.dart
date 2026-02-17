@@ -8,6 +8,9 @@ class Constants {
   static const PRODUCT_BASE_URL =
       "https://shop-df68d-default-rtdb.firebaseio.com/products";
 
+  static const PRODUCT_CATEGORIES =
+      "https://shop-df68d-default-rtdb.firebaseio.com/categories";
+
   static const ORDERS_BASE_URL =
       "https://shop-df68d-default-rtdb.firebaseio.com/orders";
 

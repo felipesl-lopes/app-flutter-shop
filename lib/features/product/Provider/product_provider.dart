@@ -54,6 +54,14 @@ class ProductProvider with ChangeNotifier {
     }).toList();
   }
 
+  List<ProductModel> produtosPorCategoria(String categoryId) {
+    final lista = _produtos.where((p) {
+      return p.categories.contains(categoryId);
+    }).toList();
+
+    return lista.where((p) => p.userId != _userId).toList();
+  }
+
   Future<void> salvarProduto(Map<String, Object> data) {
     bool hasId = data["id"] != null;
 
@@ -63,6 +71,7 @@ class ProductProvider with ChangeNotifier {
       description: data["description"] as String,
       price: data["price"] as double,
       imageUrls: data["imageUrls"] as List<ProductImageModel>,
+      categories: List<String>.from(data['categories'] as List<String>),
       userId: _userId,
     );
 
