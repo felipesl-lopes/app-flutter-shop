@@ -7,6 +7,7 @@ import 'package:appshop/features/cart/Provider/cart_provider.dart';
 import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/carousel_images_product.dart';
+import 'package:appshop/features/product/widgets/discount_badge.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
@@ -155,24 +156,61 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
               SizedBox(height: 16),
+              if (product.isPromotional)
+                DiscountBadge(
+                  percentage: product.discountPercentage!,
+                  fontSize: 15,
+                ),
               Text(
                 product.name,
                 style: TextStyle(
                   fontSize: 20,
                 ),
               ),
-              Text(formatPrice(product.price),
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-              SizedBox(height: 12),
+              Text(
+                formatPrice(
+                  product.price,
+                ),
+                style: TextStyle(
+                  fontSize: 15,
+                  decoration: TextDecoration.lineThrough,
+                  decorationColor: Colors.black45,
+                  color: Colors.black45,
+                ),
+              ),
+              Text(
+                formatPrice(
+                  discountPercentageAsDouble(
+                    product.discountPercentage.toString(),
+                    product.price.toString(),
+                  ),
+                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              ),
+              if (product.isPromotional)
+                Column(
+                  children: [
+                    SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(color: Colors.transparent),
+                      child: Text(
+                        "Aproveite essa promoção por mais ${product.promotionEndDate!.difference(DateTime.now()).inDays.toString()} dias.",
+                        style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              SizedBox(height: 8),
+              Divider(),
+              SizedBox(height: 8),
               Container(
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Descrição:",
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                    Text(product.description),
-                    SizedBox(height: 12),
                     Row(
                       children: [
                         Text(
@@ -183,10 +221,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         Text(_nomesCategorias.join((', '))),
                       ],
                     ),
+                    SizedBox(height: 8),
+                    Text("Descrição:",
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    Text(product.description),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 child: SendButton("Comprar agora", handleBuy),
@@ -215,6 +257,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),

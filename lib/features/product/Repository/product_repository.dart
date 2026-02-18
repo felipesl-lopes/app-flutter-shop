@@ -38,6 +38,8 @@ class ProductRepository {
       (productId, productData) {
         final isFavorite = favData[productId] ?? false;
         final List imageData = (productData['imageUrls'] ?? []) as List;
+        final promotionDateRaw =
+            productData['promotionEndDate'] ?? productData['promotionValidUntil'];
 
         produtos.add(
           ProductModel(
@@ -50,8 +52,15 @@ class ProductRepository {
             categories: productData['categories'] == null
                 ? []
                 : List<String>.from(productData['categories']),
-            isFavorite: isFavorite,
             userId: productData["userId"],
+            isFavorite: isFavorite,
+            isPromotional: productData['isPromotional'] ?? false,
+            discountPercentage: productData['discountPercentage'] != null
+                ? (productData['discountPercentage'] as num).toDouble()
+                : null,
+            promotionEndDate: promotionDateRaw != null
+                ? DateTime.parse(promotionDateRaw as String)
+                : null,
           ),
         );
       },
@@ -69,6 +78,9 @@ class ProductRepository {
         "price": product.price,
         "imageUrls": product.imageUrls,
         "categories": product.categories,
+        "isPromotional": product.isPromotional,
+        "discountPercentage": product.discountPercentage,
+        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
       }),
     );
     final data = jsonDecode(response.body);
@@ -86,6 +98,9 @@ class ProductRepository {
         "imageUrls": product.imageUrls,
         "userId": userId,
         "categories": product.categories,
+        "isPromotional": product.isPromotional,
+        "discountPercentage": product.discountPercentage,
+        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
       }),
     );
   }

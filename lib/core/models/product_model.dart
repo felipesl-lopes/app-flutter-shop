@@ -9,6 +9,9 @@ class ProductModel {
   final List<String> categories;
   final String userId;
   bool isFavorite;
+  final bool isPromotional;
+  final double? discountPercentage;
+  final DateTime? promotionEndDate;
 
   ProductModel({
     required this.id,
@@ -19,6 +22,9 @@ class ProductModel {
     required this.categories,
     required this.userId,
     this.isFavorite = false,
+    this.isPromotional = false,
+    this.discountPercentage,
+    this.promotionEndDate,
   });
 
   factory ProductModel.fromJson(String id, Map<String, dynamic> json) {
@@ -34,6 +40,13 @@ class ProductModel {
           ? []
           : List<String>.from(json['categories']),
       userId: json['userId'],
+      isPromotional: json['isPromotional'] ?? false,
+      discountPercentage: json['discountPercentage'] != null
+          ? (json['discountPercentage'] as num).toDouble()
+          : null,
+      promotionEndDate: json['promotionEndDate'] != null
+          ? DateTime.parse(json['promotionEndDate'])
+          : null,
     );
   }
 
@@ -45,6 +58,9 @@ class ProductModel {
       'imageUrls': imageUrls.map((e) => e.toJson()).toList(),
       'categories': categories.map((e) => e.toString()).toList(),
       'userId': userId,
+      'isPromotional': isPromotional,
+      'discountPercentage': discountPercentage,
+      'promotionEndDate': promotionEndDate?.toIso8601String(),
     };
   }
 
@@ -57,6 +73,9 @@ class ProductModel {
     List<String>? categories,
     String? userId,
     bool? isFavorite,
+    bool? isPromotional,
+    double? discountPercentage,
+    DateTime? promotionEndDate,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -67,6 +86,9 @@ class ProductModel {
       categories: categories ?? this.categories,
       userId: userId ?? this.userId,
       isFavorite: isFavorite ?? this.isFavorite,
+      isPromotional: isPromotional ?? this.isPromotional,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      promotionEndDate: promotionEndDate ?? this.promotionEndDate,
     );
   }
 
@@ -83,6 +105,13 @@ class ProductModel {
       categories:
           map['categories'] == null ? [] : List<String>.from(map['categories']),
       isFavorite: map['isFavorite'] ?? false,
+      isPromotional: map['isPromotional'] ?? false,
+      discountPercentage: map['discountPercentage'] != null
+          ? (map['discountPercentage'] as num).toDouble()
+          : null,
+      promotionEndDate: map['promotionEndDate'] != null
+          ? DateTime.parse(map['promotionEndDate'])
+          : null,
     );
   }
 
@@ -95,6 +124,9 @@ class ProductModel {
       'categories': categories,
       'userId': userId,
       'isFavorite': isFavorite,
+      'isPromotional': isPromotional,
+      'discountPercentage': discountPercentage,
+      'promotionEndDate': promotionEndDate?.toIso8601String(),
     };
   }
 }

@@ -8,3 +8,17 @@ String formatPrice(double total) {
   ).format(total);
   return price;
 }
+
+double discountPercentageAsDouble(String? percentage, String price) {
+  final _percentage = double.tryParse(
+        percentage!.replaceAll(',', '.').trim(),
+      ) ??
+      0.0;
+
+  final _price = double.tryParse(
+        price.replaceAll(',', '.').trim(),
+      ) ??
+      0.0;
+
+  return _price * (1 - (_percentage / 100));
+}

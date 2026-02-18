@@ -67,7 +67,18 @@ class ProductProvider with ChangeNotifier {
   Future<void> salvarProduto(Map<String, Object> data) {
     bool hasId = data["id"] != null;
 
-    final newProduct = new ProductModel(
+    final isPromotional = data["isPromotional"] == true ||
+        data["discountPercentage"] != null ||
+        data["promotionEndDate"] != null ||
+        data["promotionValidUntil"] != null;
+
+    final promotionDateRaw =
+        data["promotionEndDate"] ?? data["promotionValidUntil"];
+    final DateTime? promotionEndDate = promotionDateRaw != null
+        ? DateTime.parse(promotionDateRaw as String)
+        : null;
+
+    final newProduct = ProductModel(
       id: hasId ? data["id"].toString() : Random().nextDouble().toString(),
       name: data["name"] as String,
       description: data["description"] as String,
@@ -75,6 +86,9 @@ class ProductProvider with ChangeNotifier {
       imageUrls: data["imageUrls"] as List<ProductImageModel>,
       categories: List<String>.from(data['categories'] as List<String>),
       userId: _userId,
+      isPromotional: isPromotional,
+      discountPercentage: data["discountPercentage"] as double?,
+      promotionEndDate: promotionEndDate,
     );
 
     if (hasId) {

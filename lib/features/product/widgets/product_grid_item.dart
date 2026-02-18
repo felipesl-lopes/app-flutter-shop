@@ -2,6 +2,7 @@ import 'package:appshop/core/models/product_model.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/utils/snackbar_helper.dart';
 import 'package:appshop/features/cart/Provider/cart_provider.dart';
+import 'package:appshop/features/product/widgets/discount_badge.dart';
 import 'package:appshop/features/product/widgets/product_detail_page.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,10 @@ class ProductGridItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             color: Colors.grey.shade100,
-            border: Border.all(width: 1, color: Colors.grey.shade300),
+            border: Border.all(
+              width: 1,
+              color: Colors.grey.shade300,
+            ),
             borderRadius: BorderRadius.circular(4)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +59,7 @@ class ProductGridItem extends StatelessWidget {
                             ),
                             child: Image.network(
                               product.imageUrls.first.value,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) {
                                 return ImageFallbackIcon(size: 48);
                               },
@@ -94,16 +98,37 @@ class ProductGridItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (product.isPromotional)
+                      DiscountBadge(
+                        percentage: product.discountPercentage!,
+                        fontSize: 12,
+                      ),
                     Text(
                       product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 15),
                     ),
+                    if (product.isPromotional)
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          formatPrice(product.price),
+                          style: TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              decorationColor: Colors.black45,
+                              color: Colors.black45),
+                        ),
+                      ),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        formatPrice(product.price),
+                        formatPrice(
+                          discountPercentageAsDouble(
+                            product.discountPercentage.toString(),
+                            product.price.toString(),
+                          ),
+                        ),
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
