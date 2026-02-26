@@ -10,6 +10,7 @@ import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductFormPage extends StatefulWidget {
@@ -39,6 +40,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
   late Map<String, dynamic> _initialFormData;
   bool _hasChanges = false;
   late var _produtoPromocional = false;
+  bool _maxDateWarningShown = false;
+  bool _maxPercentageWarningShown = false;
 
   Future<void> _submitForm() async {
     final isValidy = _formKey.currentState?.validate() ?? false;
@@ -72,11 +75,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
       "categories": categories,
     };
 
+    if ((_percentageController.value.text.isNotEmpty ||
+            _promotionDateController.value.text.isNotEmpty) &&
+        _produtoPromocional == false) {
+      // TODO: implementar a caixa de diálogo para confirmar a ação.
+      // Se SIM, então salva.
+    }
+
     if (_produtoPromocional) {
-      final percentage = double.tryParse(
-            _percentageController.text.replaceAll(',', '.').trim(),
+      final percentage = int.tryParse(
+            _percentageController.text.trim(),
           ) ??
-          0.0;
+          0;
 
       final days = int.tryParse(
             _promotionDateController.text.trim(),
@@ -118,7 +128,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
           ],
         ),
       );
-      rethrow;
     } finally {
       setState(() => _isLoading = true);
       Navigator.of(context).pop();
@@ -206,13 +215,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _selectedCategory = _editedProduct!.categories.isNotEmpty
             ? _editedProduct!.categories.first
             : null;
-        _percentageController.text =
-            _editedProduct!.discountPercentage.toString();
+        _percentageController.text = _editedProduct!.discountPercentage != null
+            ? _editedProduct!.discountPercentage.toString()
+            : "";
         _promotionDateController.text = _editedProduct!.promotionEndDate != null
-            ? _editedProduct!.promotionEndDate!
-                .difference(DateTime.now())
-                .inDays
-                .toString()
+            ? convertDateDifference(_editedProduct!.promotionEndDate!)
             : '';
         _produtoPromocional = _editedProduct!.isPromotional;
       }
@@ -231,7 +238,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
       'selectedCategory': _selectedCategory,
       'discountPercentage': _percentageController.text.trim(),
       'promotionEndDate': _promotionDateController.text.trim(),
-      'isPromotional': _produtoPromocional,
+      // 'isPromotional': _produtoPromocional,
     };
   }
 
@@ -248,8 +255,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
         ) ||
         current['discountPercentage'] !=
             _initialFormData['discountPercentage'] ||
-        current['promotionEndDate'] != _initialFormData['promotionEndDate'] ||
-        current['isPromotional'] != _initialFormData['isPromotional'];
+        current['promotionEndDate'] != _initialFormData['promotionEndDate'];
+    // current['isPromotional'] != _initialFormData['isPromotional'];
 
     if (hasChanged != _hasChanges) {
       setState(() => _hasChanges = hasChanged);
@@ -361,23 +368,43 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           validator: (value) => isValidName(value ?? ""),
                         ),
                         SizedBox(height: 20),
-                        DropdownButtonFormField(
-                          value: _selectedCategory,
-                          decoration: getInputDecoration("Categoria"),
-                          items: categorias.map((categoria) {
-                            return DropdownMenuItem(
-                              value: categoria.id,
-                              child: Text(categoria.nome),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
+                        DropdownMenu<String>(
+                          menuHeight: 350,
+                          inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Colors.white,
+                            filled: true,
+                            hintStyle: TextStyle(color: Colors.grey),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 2),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            errorStyle: TextStyle(
+                              fontSize: 14,
+                              height: 0,
+                            ),
+                            isDense: true,
+                          ),
+                          width: MediaQuery.of(context).size.width - 40,
+                          initialSelection: _selectedCategory,
+                          hintText: "Categoria",
+                          onSelected: (value) {
                             setState(() {
                               _selectedCategory = value;
                               _categoriesController.text = value ?? '';
                               _checkForChanges();
                             });
                           },
-                          validator: (value) => isValidCategory(value ?? ""),
+                          dropdownMenuEntries: categorias.map((categoria) {
+                            return DropdownMenuEntry<String>(
+                              value: categoria.id,
+                              label: categoria.nome,
+                            );
+                          }).toList(),
                         ),
                         SizedBox(height: 20),
                         TextFormField(
@@ -490,7 +517,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                   value: _produtoPromocional,
                                   onChanged: (value) {
                                     setState(() {
-                                      _checkForChanges();
                                       _produtoPromocional = value;
                                     });
                                   },
@@ -511,12 +537,25 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                             width: 60,
                                             child: TextFormField(
                                               controller: _percentageController,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly,
+                                              ],
                                               onChanged: (value) {
-                                                final number = double.tryParse(
-                                                    value.replaceAll(',', '.'));
+                                                final number =
+                                                    int.tryParse(value);
 
                                                 if (number != null &&
                                                     number > 100) {
+                                                  if (!_maxDateWarningShown) {
+                                                    showAppFlushbar(context,
+                                                        message:
+                                                            "Desconto máximo excedido.",
+                                                        type:
+                                                            FlushType.warning);
+                                                    _maxDateWarningShown = true;
+                                                  }
+
                                                   _percentageController.text =
                                                       "100";
                                                   _percentageController
@@ -528,7 +567,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                             _percentageController
                                                                 .text.length),
                                                   );
+                                                } else {
+                                                  _maxDateWarningShown = false;
                                                 }
+
                                                 setState(() {});
                                                 _checkForChanges();
                                               },
@@ -544,11 +586,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                           Text(" % de desconto.")
                                         ],
                                       ),
-                                      Text("Valor final: ${formatPrice(
-                                        discountPercentageAsDouble(
-                                            _percentageController.text,
-                                            _priceController.text),
-                                      )}")
+                                      if (_percentageController
+                                          .value.text.isNotEmpty)
+                                        Text("Valor final: ${formatPrice(
+                                          discountPercentageAsDouble(
+                                              _percentageController.text,
+                                              _priceController.text),
+                                        )}")
                                     ],
                                   ),
                                   SizedBox(height: 12),
@@ -563,14 +607,28 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                             child: TextFormField(
                                               controller:
                                                   _promotionDateController,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly,
+                                              ],
                                               decoration:
                                                   getInputDecoration(""),
                                               onChanged: (value) {
-                                                final number = double.tryParse(
-                                                    value.replaceAll(',', '.'));
+                                                final number =
+                                                    int.tryParse(value);
 
                                                 if (number != null &&
                                                     number > 30) {
+                                                  if (!_maxPercentageWarningShown) {
+                                                    showAppFlushbar(context,
+                                                        message:
+                                                            "Data máxima excedida.",
+                                                        type:
+                                                            FlushType.warning);
+
+                                                    _maxPercentageWarningShown =
+                                                        true;
+                                                  }
                                                   _promotionDateController
                                                       .text = "30";
                                                   _promotionDateController
@@ -582,7 +640,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                             _promotionDateController
                                                                 .text.length),
                                                   );
+                                                } else {
+                                                  _maxPercentageWarningShown =
+                                                      false;
                                                 }
+
                                                 setState(() {});
                                                 _checkForChanges();
                                               },
@@ -591,11 +653,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                           Text(" Dias promocionais.")
                                         ],
                                       ),
-                                      Text(
-                                        "Data: ${promotionDate.day.toString().padLeft(2, '0')}/"
-                                        "${promotionDate.month.toString().padLeft(2, '0')}/"
-                                        "${promotionDate.year}",
-                                      ),
+                                      if (_promotionDateController
+                                          .value.text.isNotEmpty)
+                                        Text(
+                                          "Data: ${promotionDate.day.toString().padLeft(2, '0')}/"
+                                          "${promotionDate.month.toString().padLeft(2, '0')}/"
+                                          "${promotionDate.year}",
+                                        ),
                                     ],
                                   )
                                 ],

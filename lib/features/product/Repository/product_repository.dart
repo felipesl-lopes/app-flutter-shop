@@ -38,8 +38,8 @@ class ProductRepository {
       (productId, productData) {
         final isFavorite = favData[productId] ?? false;
         final List imageData = (productData['imageUrls'] ?? []) as List;
-        final promotionDateRaw =
-            productData['promotionEndDate'] ?? productData['promotionValidUntil'];
+        final promotionDateRaw = productData['promotionEndDate'] ??
+            productData['promotionValidUntil'];
 
         produtos.add(
           ProductModel(
@@ -56,7 +56,7 @@ class ProductRepository {
             isFavorite: isFavorite,
             isPromotional: productData['isPromotional'] ?? false,
             discountPercentage: productData['discountPercentage'] != null
-                ? (productData['discountPercentage'] as num).toDouble()
+                ? (productData['discountPercentage'] as num).toInt()
                 : null,
             promotionEndDate: promotionDateRaw != null
                 ? DateTime.parse(promotionDateRaw as String)

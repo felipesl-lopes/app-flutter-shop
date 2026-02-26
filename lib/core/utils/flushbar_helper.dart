@@ -24,7 +24,7 @@ void showAppFlushbar(
       iconData = Icons.info_outline;
       break;
     case FlushType.warning:
-      bg = Colors.amber;
+      bg = Colors.orange;
       iconData = Icons.warning;
       break;
     case FlushType.error:

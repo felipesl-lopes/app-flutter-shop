@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DiscountBadge extends StatelessWidget {
-  final double percentage;
+  final int percentage;
   final double fontSize;
 
   const DiscountBadge({

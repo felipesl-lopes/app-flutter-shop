@@ -87,7 +87,7 @@ class ProductProvider with ChangeNotifier {
       categories: List<String>.from(data['categories'] as List<String>),
       userId: _userId,
       isPromotional: isPromotional,
-      discountPercentage: data["discountPercentage"] as double?,
+      discountPercentage: data["discountPercentage"] as int?,
       promotionEndDate: promotionEndDate,
     );
 

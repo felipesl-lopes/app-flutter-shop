@@ -167,17 +167,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   fontSize: 20,
                 ),
               ),
-              Text(
-                formatPrice(
-                  product.price,
+              if (product.isPromotional)
+                Text(
+                  formatPrice(
+                    product.price,
+                  ),
+                  style: TextStyle(
+                    fontSize: 15,
+                    decoration: TextDecoration.lineThrough,
+                    decorationColor: Colors.black45,
+                    color: Colors.black45,
+                  ),
                 ),
-                style: TextStyle(
-                  fontSize: 15,
-                  decoration: TextDecoration.lineThrough,
-                  decorationColor: Colors.black45,
-                  color: Colors.black45,
-                ),
-              ),
               Text(
                 formatPrice(
                   discountPercentageAsDouble(
@@ -194,7 +195,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Container(
                       decoration: BoxDecoration(color: Colors.transparent),
                       child: Text(
-                        "Aproveite essa promoção por mais ${product.promotionEndDate!.difference(DateTime.now()).inDays.toString()} dias.",
+                        "Aproveite essa promoção por mais ${convertDateDifference(product.promotionEndDate!)} dias.",
                         style: TextStyle(
                             color: Colors.blueAccent,
                             fontSize: 15,

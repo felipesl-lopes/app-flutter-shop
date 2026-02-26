@@ -10,7 +10,7 @@ class ProductModel {
   final String userId;
   bool isFavorite;
   final bool isPromotional;
-  final double? discountPercentage;
+  final int? discountPercentage;
   final DateTime? promotionEndDate;
 
   ProductModel({
@@ -42,7 +42,7 @@ class ProductModel {
       userId: json['userId'],
       isPromotional: json['isPromotional'] ?? false,
       discountPercentage: json['discountPercentage'] != null
-          ? (json['discountPercentage'] as num).toDouble()
+          ? (json['discountPercentage'] as num).toInt()
           : null,
       promotionEndDate: json['promotionEndDate'] != null
           ? DateTime.parse(json['promotionEndDate'])
@@ -74,7 +74,7 @@ class ProductModel {
     String? userId,
     bool? isFavorite,
     bool? isPromotional,
-    double? discountPercentage,
+    int? discountPercentage,
     DateTime? promotionEndDate,
   }) {
     return ProductModel(
@@ -107,7 +107,7 @@ class ProductModel {
       isFavorite: map['isFavorite'] ?? false,
       isPromotional: map['isPromotional'] ?? false,
       discountPercentage: map['discountPercentage'] != null
-          ? (map['discountPercentage'] as num).toDouble()
+          ? (map['discountPercentage'] as num).toInt()
           : null,
       promotionEndDate: map['promotionEndDate'] != null
           ? DateTime.parse(map['promotionEndDate'])
