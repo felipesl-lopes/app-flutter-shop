@@ -65,6 +65,9 @@ class _HomePageState extends State<HomePage> {
     final _categorias =
         Provider.of<CategoriasProvider>(context).principaisCategorias.toList();
 
+    final _produtosEmOferta =
+        _listaDeProdutos.produtos.where((p) => p.isPromotional).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -138,12 +141,19 @@ class _HomePageState extends State<HomePage> {
                           list_products: _listaDeProdutos.meusFavoritos,
                           quantityGrid: 4,
                           title: "Seus favoritos",
+                          gridHorizontal: true,
                         ),
                       CardIncentivoCarrinho(),
                       ProductGrid(
                         list_products: _listaDeProdutos.produtosParaCompra,
                         quantityGrid: 6,
                         title: "Produtos para você",
+                      ),
+                      SizedBox(height: 16),
+                      ProductGrid(
+                        list_products: _produtosEmOferta,
+                        quantityGrid: 6,
+                        title: "Produtos em oferta",
                       ),
                     ],
                   ),

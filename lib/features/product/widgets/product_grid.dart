@@ -7,11 +7,13 @@ class ProductGrid extends StatelessWidget {
   final title;
   final int? quantityGrid;
   final List<ProductModel> list_products;
+  final bool? gridHorizontal;
 
   ProductGrid({
     required this.title,
     this.quantityGrid,
     required this.list_products,
+    this.gridHorizontal = false,
   });
 
   @override
@@ -37,20 +39,40 @@ class ProductGrid extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
           ),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.all(8),
-            itemCount: _itensCount,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.6,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+          if (gridHorizontal == true) ...[
+            // GRID HORIZONTAL
+            SizedBox(
+              height: 312,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.all(8),
+                itemCount: _itensCount,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (ctx, index) => SizedBox(
+                  width: 180,
+                  child: ProductGridItem(
+                    product: list_products[index],
+                  ),
+                ),
+              ),
             ),
-            itemBuilder: (ctx, index) =>
-                ProductGridItem(product: list_products[index]),
-          ),
+          ] else ...[
+            // GRID VERTICAL
+            GridView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.all(8),
+              itemCount: _itensCount,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.6,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemBuilder: (ctx, index) =>
+                  ProductGridItem(product: list_products[index]),
+            ),
+          ],
           if (quantityGrid != null && quantityGrid! < list_products.length)
             Padding(
               padding: const EdgeInsets.all(8.0),

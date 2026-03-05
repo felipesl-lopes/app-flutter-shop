@@ -8,6 +8,7 @@ import 'package:appshop/features/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/features/product/Provider/product_provider.dart';
 import 'package:appshop/features/product/widgets/carousel_images_product.dart';
 import 'package:appshop/features/product/widgets/discount_badge.dart';
+import 'package:appshop/features/product/widgets/promotion_countdown_text.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
@@ -183,22 +184,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
-              if (product.isPromotional)
-                Column(
-                  children: [
-                    SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(color: Colors.transparent),
-                      child: Text(
-                        "Aproveite essa promoção por mais ${convertDateDifference(product.promotionEndDate!)} dias.",
-                        style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ],
-                ),
+              PromotionCountdownText(
+                isPromotional: product.isPromotional,
+                promotionEndDate: product.promotionEndDate,
+              ),
               SizedBox(height: 8),
               Divider(),
               SizedBox(height: 8),

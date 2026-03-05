@@ -48,12 +48,15 @@ class ProductProvider with ChangeNotifier {
     final produtos = await _repository.carregarProdutos();
     final favoritos = await _repository.carregarFavoritos();
 
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
+
     final List<ProductModel> atualizados = [];
 
     for (var product in produtos) {
       if (product.isPromotional &&
           product.promotionEndDate != null &&
-          product.promotionEndDate!.isBefore(DateTime.now())) {
+          product.promotionEndDate!.isBefore(today)) {
         final novoProduto = product.copyWith(
           isPromotional: false,
           discountPercentage: () => null,
