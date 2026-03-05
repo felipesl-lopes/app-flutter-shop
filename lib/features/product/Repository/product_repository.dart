@@ -23,20 +23,12 @@ class ProductRepository {
       return [];
     }
 
-    final favResponse = await http.get(
-      Uri.parse("${Constants.USER_FAVORITES_URL}/$userId.json?auth=$token"),
-    );
-
-    Map<String, dynamic> favData =
-        favResponse.body == "null" ? {} : jsonDecode(favResponse.body);
-
     Map<String, dynamic> data = jsonDecode(response.body);
 
     final List<ProductModel> produtos = [];
 
     data.forEach(
       (productId, productData) {
-        final isFavorite = favData[productId] ?? false;
         final List imageData = (productData['imageUrls'] ?? []) as List;
         final promotionDateRaw = productData['promotionEndDate'] ??
             productData['promotionValidUntil'];
@@ -53,7 +45,6 @@ class ProductRepository {
                 ? []
                 : List<String>.from(productData['categories']),
             userId: productData["userId"],
-            isFavorite: isFavorite,
             isPromotional: productData['isPromotional'] ?? false,
             discountPercentage: productData['discountPercentage'] != null
                 ? (productData['discountPercentage'] as num).toInt()
@@ -66,6 +57,21 @@ class ProductRepository {
       },
     );
     return produtos;
+  }
+
+  Future<Set<String>> carregarFavoritos() async {
+    final response = await http.get(
+      Uri.parse("${Constants.USER_FAVORITES_URL}/$userId.json?auth=$token"),
+    );
+
+    if (response.body == 'null') return {};
+
+    final Map<String, dynamic> data = jsonDecode(response.body);
+
+    return data.entries
+        .where((entry) => entry.value == true)
+        .map((entry) => entry.key)
+        .toSet();
   }
 
   Future<String> adicionarProduto(ProductModel product) async {
@@ -125,21 +131,13 @@ class ProductRepository {
     final url =
         "${Constants.USER_FAVORITES_URL}/$userId/${productId}.json?auth=$token";
 
+    // ignore: unused_local_variable
     http.Response response;
 
     if (isFavorite) {
       response = await http.put(Uri.parse(url), body: jsonEncode(true));
     } else {
       response = await http.delete(Uri.parse(url));
-    }
-
-    if (response.statusCode >= 400) {
-      throw GenericExeption.ExceptionMsg(
-        msg: isFavorite
-            ? "Não foi possível desfavoritar o produto."
-            : "Não foi possível favoritar o produto.",
-        statusCode: response.statusCode,
-      );
     }
   }
 }

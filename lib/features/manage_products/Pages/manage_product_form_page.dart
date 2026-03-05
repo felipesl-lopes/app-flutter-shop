@@ -238,7 +238,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
       'selectedCategory': _selectedCategory,
       'discountPercentage': _percentageController.text.trim(),
       'promotionEndDate': _promotionDateController.text.trim(),
-      // 'isPromotional': _produtoPromocional,
     };
   }
 
@@ -256,7 +255,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
         current['discountPercentage'] !=
             _initialFormData['discountPercentage'] ||
         current['promotionEndDate'] != _initialFormData['promotionEndDate'];
-    // current['isPromotional'] != _initialFormData['isPromotional'];
 
     if (hasChanged != _hasChanges) {
       setState(() => _hasChanges = hasChanged);
@@ -551,8 +549,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                     showAppFlushbar(context,
                                                         message:
                                                             "Desconto máximo excedido.",
-                                                        type:
-                                                            FlushType.warning);
+                                                        type: FlushType.warning,
+                                                        position:
+                                                            FlushPosition.top);
                                                     _maxDateWarningShown = true;
                                                   }
 
@@ -623,8 +622,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                     showAppFlushbar(context,
                                                         message:
                                                             "Data máxima excedida.",
-                                                        type:
-                                                            FlushType.warning);
+                                                        type: FlushType.warning,
+                                                        position:
+                                                            FlushPosition.top);
 
                                                     _maxPercentageWarningShown =
                                                         true;

@@ -74,8 +74,8 @@ class ProductModel {
     String? userId,
     bool? isFavorite,
     bool? isPromotional,
-    int? discountPercentage,
-    DateTime? promotionEndDate,
+    int? Function()? discountPercentage,
+    DateTime? Function()? promotionEndDate,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -87,8 +87,11 @@ class ProductModel {
       userId: userId ?? this.userId,
       isFavorite: isFavorite ?? this.isFavorite,
       isPromotional: isPromotional ?? this.isPromotional,
-      discountPercentage: discountPercentage ?? this.discountPercentage,
-      promotionEndDate: promotionEndDate ?? this.promotionEndDate,
+      discountPercentage: discountPercentage != null
+          ? discountPercentage()
+          : this.discountPercentage,
+      promotionEndDate:
+          promotionEndDate != null ? promotionEndDate() : this.promotionEndDate,
     );
   }
 
