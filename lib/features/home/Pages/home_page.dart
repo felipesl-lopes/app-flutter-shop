@@ -65,8 +65,7 @@ class _HomePageState extends State<HomePage> {
     final _categorias =
         Provider.of<CategoriasProvider>(context).principaisCategorias.toList();
 
-    final _produtosEmOferta =
-        _listaDeProdutos.produtos.where((p) => p.isPromotional).toList();
+    final _produtosEmOferta = _listaDeProdutos.produtosEmOferta;
 
     return Scaffold(
       appBar: AppBar(
@@ -150,11 +149,12 @@ class _HomePageState extends State<HomePage> {
                         title: "Produtos para você",
                       ),
                       SizedBox(height: 16),
-                      ProductGrid(
-                        list_products: _produtosEmOferta,
-                        quantityGrid: 6,
-                        title: "Produtos em oferta",
-                      ),
+                      if (_produtosEmOferta.isNotEmpty)
+                        ProductGrid(
+                          list_products: _produtosEmOferta,
+                          quantityGrid: 6,
+                          title: "Produtos em oferta",
+                        ),
                     ],
                   ),
                 ),

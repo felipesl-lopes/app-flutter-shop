@@ -22,14 +22,18 @@ class ProductProvider with ChangeNotifier {
   }
 
   List<ProductModel> get produtos => [..._produtos];
-  List<ProductModel> get produtosFavoritos =>
-      _produtos.where((prod) => prod.isFavorite).toList();
+  List<ProductModel> get produtosFavoritos => _produtos
+      .where((prod) => prod.isFavorite && prod.userId != _userId)
+      .toList();
 
   List<ProductModel> get meusProdutos =>
       _produtos.where((p) => p.userId == _userId).toList();
 
   List<ProductModel> get produtosParaCompra =>
       _produtos.where((p) => p.userId != _userId).toList();
+
+  List<ProductModel> get produtosEmOferta =>
+      _produtos.where((p) => p.isPromotional && p.userId != _userId).toList();
 
   List<ProductModel> get meusFavoritos => _produtos
       .where((p) => p.isFavorite == true && p.userId != _userId)

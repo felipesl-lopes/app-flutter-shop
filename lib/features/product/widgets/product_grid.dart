@@ -42,7 +42,7 @@ class ProductGrid extends StatelessWidget {
           if (gridHorizontal == true) ...[
             // GRID HORIZONTAL
             SizedBox(
-              height: 312,
+              height: 306,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.all(8),
@@ -65,7 +65,7 @@ class ProductGrid extends StatelessWidget {
               itemCount: _itensCount,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.6,
+                childAspectRatio: 0.62,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
               ),
