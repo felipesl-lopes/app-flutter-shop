@@ -2,13 +2,13 @@ class HttpResponse {
   HttpResponse({
     this.data,
     this.headers,
-    this.statusCode,
+    required this.statusCode,
     this.statusMessage,
   });
 
   final dynamic data;
   final Map<String, dynamic>? headers;
-  final int? statusCode;
+  final int statusCode;
   final String? statusMessage;
 
   HttpResponse copyWith({
@@ -24,6 +24,8 @@ class HttpResponse {
       statusMessage: statusMessage ?? this.statusMessage,
     );
   }
+
+  bool get isSuccess => statusCode >= 200 && statusCode < 300;
 
   List<Object?> get props => [
         data,

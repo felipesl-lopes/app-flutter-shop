@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:appshop/core/utils/constants.dart';
 import 'package:appshop/shared/Models/banner_model.dart';
+import 'package:appshop/shared/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

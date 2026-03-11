@@ -1,5 +1,5 @@
-import 'package:appshop/core/constants/app_providers.dart';
-import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/shared/constants/app_providers.dart';
+import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
