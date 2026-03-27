@@ -2,6 +2,7 @@ import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
 import 'package:appshop/modules/search/Models/search_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
+import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -88,8 +89,8 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: TextField(
+      appBar: DrawerAppBar(
+        titleWidget: TextField(
           controller: _searchController,
           autofocus: false,
           onSubmitted: (_) => FocusScope.of(context).unfocus(),
@@ -114,15 +115,14 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        backgroundColor: Colors.purple,
-        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.tune,
-                color: Colors.white,
-              )),
+            onPressed: () {},
+            icon: Icon(
+              Icons.tune,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
       body: _isLoading

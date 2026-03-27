@@ -8,6 +8,7 @@ import 'package:appshop/modules/product/widgets/product_grid.dart';
 import 'package:appshop/modules/search/Models/search_model.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
+import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
 import 'package:flutter/material.dart';
@@ -68,8 +69,8 @@ class _HomePageState extends State<HomePage> {
     final _produtosEmOferta = _listaDeProdutos.produtosEmOferta;
 
     return Scaffold(
-      appBar: AppBar(
-        title: TextField(
+      appBar: DrawerAppBar(
+        titleWidget: TextField(
           controller: _searchController,
           autofocus: false,
           onSubmitted: (_) => FocusScope.of(context).unfocus(),
@@ -94,8 +95,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        backgroundColor: Colors.purple,
-        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           Consumer<CartProvider>(
             child: IconButton(

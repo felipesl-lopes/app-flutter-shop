@@ -1,6 +1,7 @@
 import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/modules/compras/Widgets/lista_de_compras.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
+import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,16 +18,7 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Minhas compras",
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Colors.purple,
-      ),
+      appBar: DrawerAppBar(title: "Minhas compras"),
       drawer: AppDrawer(),
       body: FutureBuilder(
         future: _refreshOrders(context),

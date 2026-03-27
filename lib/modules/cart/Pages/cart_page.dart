@@ -2,6 +2,7 @@ import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Widgets/cart_item_widget.dart';
 import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
+import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -15,14 +16,7 @@ class CartPage extends StatelessWidget {
     final bool _carrinhoVazio = _items.length == 0;
 
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Carrinho",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.purple,
-      ),
+      appBar: DrawerAppBar(title: "Carrinho"),
       drawer: AppDrawer(),
       body: _carrinhoVazio
           ? Center(

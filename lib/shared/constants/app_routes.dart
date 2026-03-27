@@ -6,6 +6,7 @@ import 'package:appshop/modules/home/Pages/home_page.dart';
 import 'package:appshop/modules/manage_products/Pages/manage_product_form_page.dart';
 import 'package:appshop/modules/manage_products/Pages/manage_products_page.dart';
 import 'package:appshop/modules/product/widgets/product_detail_page.dart';
+import 'package:appshop/modules/profile/Pages/dados_usuario_page.dart';
 import 'package:appshop/modules/profile/Pages/profile_page.dart';
 import 'package:appshop/modules/search/Pages/search_page.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class AppRoutes {
   static const MANAGE_PRODUCT_FORM = "/manage-product-form";
   static const PROFILE = "/profile";
   static const SEARCH_PRODUCT = "/search-product";
+  static const PROFILE_USER_DATA = '/profile/user_data';
+  static const PROFILE_SECURITY_ACCOUNT = '/profile/security_account';
 
   static Map<String, WidgetBuilder> routes = {
     AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
@@ -33,5 +36,6 @@ class AppRoutes {
     AppRoutes.MANAGE_PRODUCT_FORM: (ctx) => ProductFormPage(),
     AppRoutes.PROFILE: (ctx) => ProfilePage(),
     AppRoutes.SEARCH_PRODUCT: (ctx) => SearchPage(),
+    AppRoutes.PROFILE_USER_DATA: (ctx) => DadosUsuarioPage(),
   };
 }

@@ -4,6 +4,7 @@ import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
+import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
@@ -301,13 +302,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
       child: WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-          appBar: AppBar(
-            iconTheme: IconThemeData(color: Colors.white),
-            title: Text(
-              _editedProduct == null ? "Adicionar produto" : "Editar produto",
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.purple,
+          appBar: BackAppBar(
+            title:
+                _editedProduct == null ? "Adicionar produto" : "Editar produto",
             actions: [
               if (_editedProduct != null)
                 IconButton(

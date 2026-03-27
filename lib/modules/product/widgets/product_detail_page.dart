@@ -6,6 +6,7 @@ import 'package:appshop/modules/product/widgets/discount_badge.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
 import 'package:appshop/modules/product/widgets/promotion_countdown_text.dart';
 import 'package:appshop/shared/Models/product_model.dart';
+import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
@@ -93,13 +94,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Informações do produto",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.purple,
+      appBar: BackAppBar(
+        title: "Informações do produto",
         actions: [
           Consumer<CartProvider>(
             child: IconButton(

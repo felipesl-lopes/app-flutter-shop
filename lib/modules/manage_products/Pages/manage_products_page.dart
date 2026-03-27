@@ -1,6 +1,7 @@
 import 'package:appshop/modules/manage_products/widgets/manage_product_grid.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
+import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,14 +12,8 @@ class ManageProductsPage extends StatelessWidget {
     final _productList = Provider.of<ProductProvider>(context).meusProdutos;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Gerenciar produtos",
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-        ),
+      appBar: DrawerAppBar(
+        title: "Gerenciar produtos",
         actions: [
           IconButton(
             onPressed: () =>
@@ -26,7 +21,6 @@ class ManageProductsPage extends StatelessWidget {
             icon: Icon(Icons.add),
           )
         ],
-        backgroundColor: Colors.purple,
       ),
       drawer: AppDrawer(),
       body: Padding(
