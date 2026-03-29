@@ -1,6 +1,7 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
+import 'package:appshop/modules/product/functions/adicionarproduto.dart';
 import 'package:appshop/modules/product/widgets/carousel_images_product.dart';
 import 'package:appshop/modules/product/widgets/discount_badge.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
@@ -13,7 +14,6 @@ import 'package:appshop/shared/Widgets/send_button.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
-import 'package:appshop/shared/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -235,13 +235,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () {
-                      cart.addItem(product);
-                      SnackbarHelper.showAddToCartMessage(
-                        context,
-                        product.name,
-                      );
-                    },
+                    onPressed: () => ProductMethod.adicionarProdutoAoCarrinho(
+                      cart: cart,
+                      context: context,
+                      product: product,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

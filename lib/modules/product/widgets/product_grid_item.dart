@@ -1,10 +1,10 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
+import 'package:appshop/modules/product/functions/adicionarproduto.dart';
 import 'package:appshop/modules/product/widgets/discount_badge.dart';
 import 'package:appshop/modules/product/widgets/product_detail_page.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/utils/formatters.dart';
-import 'package:appshop/shared/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,18 +23,6 @@ class ProductGridItem extends StatelessWidget {
           builder: (_) => ProductDetailPage(product: product),
         ),
       );
-    }
-
-    void _adicionarProdutoAoCarrinho() async {
-      SnackbarHelper.showAddToCartMessage(
-        context,
-        product.name,
-      );
-      try {
-        await cart.addItem(product);
-      } catch (e) {
-        debugPrint(e.toString());
-      }
     }
 
     return GestureDetector(
@@ -84,7 +72,11 @@ class ProductGridItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: InkWell(
-                        onTap: _adicionarProdutoAoCarrinho,
+                        onTap: () => ProductMethod.adicionarProdutoAoCarrinho(
+                          cart: cart,
+                          context: context,
+                          product: product,
+                        ),
                         child: const Icon(
                           Icons.shopping_cart,
                           size: 20,

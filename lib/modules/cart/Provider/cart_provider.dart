@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
@@ -16,6 +18,8 @@ class CartProvider with ChangeNotifier {
     this._userId = '',
     this._items = const [],
   ]);
+
+  Timer? _debounce;
 
   List<CartItemModel> get items => [..._items];
 
@@ -89,34 +93,41 @@ class CartProvider with ChangeNotifier {
 
     notifyListeners();
 
-    try {
-      await _cartRepository.adicionarProdutoAoCarrinho(
-        itemCart: updatedItem,
-        token: _token,
-        userId: _userId,
-      );
-    } catch (e) {
-      debugPrint('Erro ao adicionar produto: [${e.toString()}]');
+    _debounce?.cancel();
 
-      final index = _items.indexWhere((e) => e.id == updatedItem.id);
+    _debounce = Timer(Duration(milliseconds: 400), () async {
+      try {
+        final item = _items.firstWhere((e) => e.id == updatedItem.id);
 
-      if (index >= 0) {
-        if (_items[index].quantity > 1) {
-          _items[index] = CartItemModel(
-            id: updatedItem.id,
-            name: updatedItem.name,
-            quantity: _items[index].quantity - 1,
-            price: updatedItem.price,
-            imageUrl: updatedItem.imageUrl,
-          );
-        } else {
-          _items.removeAt(index);
+        await _cartRepository.updateItemQuantity(
+          productId: item.id,
+          quantity: item.quantity,
+          userId: _userId,
+          token: _token,
+          item: item,
+        );
+      } catch (e) {
+        debugPrint('Erro ao adicionar produto: $e');
+
+        final index = _items.indexWhere((e) => e.id == updatedItem.id);
+
+        if (index >= 0) {
+          if (_items[index].quantity > 1) {
+            _items[index] = CartItemModel(
+              id: updatedItem.id,
+              name: updatedItem.name,
+              quantity: _items[index].quantity - 1,
+              price: updatedItem.price,
+              imageUrl: updatedItem.imageUrl,
+            );
+          } else {
+            _items.removeAt(index);
+          }
         }
-      }
 
-      notifyListeners();
-      throw Exception('Erro ao adicionar o produto ao carrinho.');
-    }
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> removeSingleItem(String productId) async {
@@ -140,15 +151,32 @@ class CartProvider with ChangeNotifier {
 
     notifyListeners();
 
-    try {
-      await _cartRepository.removerItem(
-        productId: productId,
-        userId: _userId,
-        token: _token,
-      );
-    } catch (e) {
-      debugPrint('Erro ao deletar produto: [${e.toString()}]');
-    }
+    _debounce?.cancel();
+
+    _debounce = Timer(Duration(milliseconds: 400), () async {
+      try {
+        final item = _items.firstWhere(
+          (e) => e.id == productId,
+          orElse: () => CartItemModel(
+            id: productId,
+            name: '',
+            quantity: 0,
+            price: 0,
+            imageUrl: '',
+          ),
+        );
+
+        await _cartRepository.updateItemQuantity(
+          productId: item.id,
+          quantity: item.quantity,
+          userId: _userId,
+          token: _token,
+          item: item,
+        );
+      } catch (e) {
+        debugPrint('Erro ao atualizar produto: $e');
+      }
+    });
   }
 
   void clear() {
