@@ -16,4 +16,7 @@ class Constants {
 
   static const BANNERS_URL =
       "https://shop-df68d-default-rtdb.firebaseio.com/banners";
+
+  static const CART_PRODUCTS_URL =
+      "https://shop-df68d-default-rtdb.firebaseio.com/cartProducts";
 }

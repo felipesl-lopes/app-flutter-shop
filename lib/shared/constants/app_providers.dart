@@ -12,12 +12,22 @@ class AppProviders {
     ChangeNotifierProvider(
       create: (_) => AuthProvider(),
     ),
+    ChangeNotifierProxyProvider<AuthProvider, CartProvider>(
+      create: (_) => CartProvider(),
+      update: (ctx, auth, previous) {
+        if (!auth.isAuth) return CartProvider();
+
+        return CartProvider(
+          auth.token ?? '',
+          auth.userId ?? '',
+          previous?.items ?? [],
+        );
+      },
+    ),
     ChangeNotifierProxyProvider<AuthProvider, ProductProvider>(
       create: (_) => ProductProvider(),
       update: (ctx, auth, previous) {
-        if (!auth.isAuth) {
-          return ProductProvider();
-        }
+        if (!auth.isAuth) return ProductProvider();
 
         return ProductProvider(
           auth.token ?? "",
@@ -29,9 +39,7 @@ class AppProviders {
     ChangeNotifierProxyProvider<AuthProvider, CategoriasProvider>(
       create: (_) => CategoriasProvider(),
       update: (ctx, auth, previous) {
-        if (!auth.isAuth) {
-          return CategoriasProvider();
-        }
+        if (!auth.isAuth) return CategoriasProvider();
 
         return CategoriasProvider(
           auth.token ?? "",
@@ -43,9 +51,7 @@ class AppProviders {
     ChangeNotifierProxyProvider<AuthProvider, OrderListProvider>(
       create: (_) => OrderListProvider(),
       update: (ctx, auth, previous) {
-        if (!auth.isAuth) {
-          return OrderListProvider();
-        }
+        if (!auth.isAuth) return OrderListProvider();
 
         return OrderListProvider(
           auth.token ?? "",
@@ -57,18 +63,13 @@ class AppProviders {
     ChangeNotifierProxyProvider<AuthProvider, BannersProvider>(
       create: (_) => BannersProvider(),
       update: (ctx, auth, previous) {
-        if (!auth.isAuth) {
-          return BannersProvider();
-        }
+        if (!auth.isAuth) return BannersProvider();
 
         return BannersProvider(
           auth.token ?? "",
           previous?.items ?? [],
         );
       },
-    ),
-    ChangeNotifierProvider(
-      create: (_) => CartProvider(),
     ),
   ];
 }

@@ -26,12 +26,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<CategoriasProvider>(context, listen: false)
-        .carregarCategorias();
-    Provider.of<BannersProvider>(context, listen: false).loadBanners();
-    Provider.of<ProductProvider>(context, listen: false)
-        .carregarProdutos()
-        .then((_) {
+
+    final categorias = Provider.of<CategoriasProvider>(context, listen: false);
+    final banners = Provider.of<BannersProvider>(context, listen: false);
+    final produtos = Provider.of<ProductProvider>(context, listen: false);
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
+    categorias.carregarCategorias();
+    banners.loadBanners();
+    cart.loadCart();
+
+    produtos.carregarProdutos().then((_) {
       setState(() => _isLoading = false);
     });
   }

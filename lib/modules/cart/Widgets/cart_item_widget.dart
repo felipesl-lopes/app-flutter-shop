@@ -30,7 +30,7 @@ class CartItemWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Provider.of<CartProvider>(context, listen: false)
-                    .removeItem(cartItem.id);
+                    .removeSingleItem(cartItem.id);
                 Navigator.of(ctx).pop(true);
               },
               child: Text("Sim"),
@@ -84,7 +84,7 @@ class CartItemWidget extends StatelessWidget {
                             onTap: () => {
                               cartItem.quantity == 1
                                   ? showRemoveItemDialog()
-                                  : cart.removerItem(cartItem)
+                                  : cart.removeSingleItem(cartItem.id)
                             },
                             icon: Icons.remove,
                           ),

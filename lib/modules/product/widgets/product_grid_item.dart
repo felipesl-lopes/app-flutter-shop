@@ -25,12 +25,16 @@ class ProductGridItem extends StatelessWidget {
       );
     }
 
-    void _adicionarProdutoAoCarrinho() {
-      cart.addItem(product);
+    void _adicionarProdutoAoCarrinho() async {
       SnackbarHelper.showAddToCartMessage(
         context,
         product.name,
       );
+      try {
+        await cart.addItem(product);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     }
 
     return GestureDetector(

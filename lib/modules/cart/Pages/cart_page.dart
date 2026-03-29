@@ -12,7 +12,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartProvider _cart = Provider.of<CartProvider>(context);
-    final _items = _cart.items.values.toList();
+    final _items = _cart.items.toList();
     final bool _carrinhoVazio = _items.length == 0;
 
     return Scaffold(
