@@ -7,15 +7,12 @@ import 'package:appshop/shared/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 class ProductRepository {
-  final String token;
-  final String userId;
+  ProductRepository();
 
-  ProductRepository({
-    required this.token,
-    required this.userId,
-  });
-
-  Future<List<ProductModel>> carregarProdutos() async {
+  Future<List<ProductModel>> carregarProdutos({
+    required String token,
+    required String userId,
+  }) async {
     final response = await http
         .get(Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$token"));
 
@@ -59,7 +56,10 @@ class ProductRepository {
     return produtos;
   }
 
-  Future<Set<String>> carregarFavoritos() async {
+  Future<Set<String>> carregarFavoritos({
+    required String token,
+    required String userId,
+  }) async {
     final response = await http.get(
       Uri.parse("${Constants.USER_FAVORITES_URL}/$userId.json?auth=$token"),
     );
@@ -74,7 +74,11 @@ class ProductRepository {
         .toSet();
   }
 
-  Future<String> adicionarProduto(ProductModel product) async {
+  Future<String> adicionarProduto(
+    ProductModel product, {
+    required String token,
+    required String userId,
+  }) async {
     final response = await http.post(
       Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$token"),
       body: jsonEncode({
@@ -94,7 +98,11 @@ class ProductRepository {
     return data['name'];
   }
 
-  Future<void> atualizarProduto(ProductModel product) async {
+  Future<void> atualizarProduto(
+    ProductModel product, {
+    required String token,
+    required String userId,
+  }) async {
     await http.patch(
       Uri.parse("${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$token"),
       body: jsonEncode({
@@ -111,7 +119,11 @@ class ProductRepository {
     );
   }
 
-  Future<void> deletarProduto(String idProduto) async {
+  Future<void> deletarProduto(
+    String idProduto, {
+    required String token,
+    required String userId,
+  }) async {
     final response = await http.delete(
       Uri.parse("${Constants.PRODUCT_BASE_URL}/${idProduto}.json?auth=$token"),
     );
@@ -127,6 +139,8 @@ class ProductRepository {
   Future<void> adicionarOuRemoverFavorito({
     required String productId,
     required bool isFavorite,
+    required String token,
+    required String userId,
   }) async {
     final url =
         "${Constants.USER_FAVORITES_URL}/$userId/${productId}.json?auth=$token";

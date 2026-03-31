@@ -1,3 +1,4 @@
+import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
@@ -6,17 +7,16 @@ import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
 
 class OrderListProvider with ChangeNotifier {
-  final String _token;
-  final String _userId;
+  final AuthProvider auth;
+  final CartRepository _cartRepository;
+
   List<Order> _items = [];
   final _repository = OrderRepository();
-  final _cartRepository = CartRepository();
 
-  OrderListProvider([
-    this._token = "",
-    this._userId = "",
-    this._items = const [],
-  ]);
+  OrderListProvider(this.auth, this._cartRepository);
+
+  String get _token => auth.token ?? '';
+  String get _userId => auth.userId ?? '';
 
   List<Order> get items {
     return [..._items];

@@ -3,6 +3,7 @@ import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
+import 'package:appshop/shared/injection_dependency/injection_dependency.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -10,66 +11,22 @@ import 'package:provider/single_child_widget.dart';
 class AppProviders {
   static List<SingleChildWidget> providers = [
     ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
+      create: (_) => getIt<AuthProvider>(),
     ),
-    ChangeNotifierProxyProvider<AuthProvider, CartProvider>(
-      create: (_) => CartProvider(),
-      update: (ctx, auth, previous) {
-        if (!auth.isAuth) return CartProvider();
-
-        return CartProvider(
-          auth.token ?? '',
-          auth.userId ?? '',
-          previous?.items ?? [],
-        );
-      },
+    ChangeNotifierProvider(
+      create: (_) => getIt<CartProvider>(),
     ),
-    ChangeNotifierProxyProvider<AuthProvider, ProductProvider>(
-      create: (_) => ProductProvider(),
-      update: (ctx, auth, previous) {
-        if (!auth.isAuth) return ProductProvider();
-
-        return ProductProvider(
-          auth.token ?? "",
-          auth.userId ?? "",
-          previous?.produtos ?? [],
-        );
-      },
+    ChangeNotifierProvider(
+      create: (_) => getIt<ProductProvider>(),
     ),
-    ChangeNotifierProxyProvider<AuthProvider, CategoriasProvider>(
-      create: (_) => CategoriasProvider(),
-      update: (ctx, auth, previous) {
-        if (!auth.isAuth) return CategoriasProvider();
-
-        return CategoriasProvider(
-          auth.token ?? "",
-          auth.userId ?? "",
-          previous?.categorias ?? [],
-        );
-      },
+    ChangeNotifierProvider(
+      create: (_) => getIt<CategoriasProvider>(),
     ),
-    ChangeNotifierProxyProvider<AuthProvider, OrderListProvider>(
-      create: (_) => OrderListProvider(),
-      update: (ctx, auth, previous) {
-        if (!auth.isAuth) return OrderListProvider();
-
-        return OrderListProvider(
-          auth.token ?? "",
-          auth.userId ?? "",
-          previous?.items ?? [],
-        );
-      },
+    ChangeNotifierProvider(
+      create: (_) => getIt<OrderListProvider>(),
     ),
-    ChangeNotifierProxyProvider<AuthProvider, BannersProvider>(
-      create: (_) => BannersProvider(),
-      update: (ctx, auth, previous) {
-        if (!auth.isAuth) return BannersProvider();
-
-        return BannersProvider(
-          auth.token ?? "",
-          previous?.items ?? [],
-        );
-      },
+    ChangeNotifierProvider(
+      create: (_) => getIt<BannersProvider>(),
     ),
   ];
 }

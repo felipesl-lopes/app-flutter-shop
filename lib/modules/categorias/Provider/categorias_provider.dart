@@ -1,21 +1,18 @@
+import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/categorias/Models/categorias_model.dart';
 import 'package:appshop/modules/categorias/Repository/categorias_repository.dart';
 import 'package:flutter/material.dart';
 
 class CategoriasProvider with ChangeNotifier {
-  final String _userId;
-  final String _token;
+  final AuthProvider auth;
+  final CategoriasRepository _categoriasRepository;
 
-  late final CategoriasRepository _repository;
   List<CategoriasModel> _categorias = [];
 
-  CategoriasProvider([
-    this._token = '',
-    this._userId = '',
-    this._categorias = const [],
-  ]) {
-    _repository = CategoriasRepository(token: _token, userId: _userId);
-  }
+  CategoriasProvider(this.auth, this._categoriasRepository);
+
+  String get _token => auth.token ?? '';
+  String get _userId => auth.userId ?? '';
 
   List<CategoriasModel> get categorias => [..._categorias];
 
@@ -28,7 +25,10 @@ class CategoriasProvider with ChangeNotifier {
   }
 
   Future<void> carregarCategorias() async {
-    final categorias = await _repository.carregarCategorias();
+    final categorias = await _categoriasRepository.carregarCategorias(
+      token: _token,
+      userId: _userId,
+    );
 
     setCategorias(categorias);
   }

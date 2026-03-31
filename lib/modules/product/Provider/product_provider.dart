@@ -1,25 +1,24 @@
 import 'dart:math';
 
+import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductProvider with ChangeNotifier {
-  final String _userId;
-  final String _token;
-
-  late final ProductRepository _repository;
+  final AuthProvider auth;
+  final ProductRepository _productRepository;
 
   List<ProductModel> _produtos = [];
 
-  ProductProvider([
-    this._token = '',
-    this._userId = '',
-    this._produtos = const [],
-  ]) {
-    _repository = ProductRepository(token: _token, userId: _userId);
-  }
+  ProductProvider(
+    this.auth,
+    this._productRepository,
+  );
+
+  String get _token => auth.token ?? '';
+  String get _userId => auth.userId ?? '';
 
   List<ProductModel> get produtos => [..._produtos];
   List<ProductModel> get produtosFavoritos => _produtos
@@ -49,8 +48,14 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> carregarProdutos() async {
-    final produtos = await _repository.carregarProdutos();
-    final favoritos = await _repository.carregarFavoritos();
+    final produtos = await _productRepository.carregarProdutos(
+      token: _token,
+      userId: _userId,
+    );
+    final favoritos = await _productRepository.carregarFavoritos(
+      token: _token,
+      userId: _userId,
+    );
 
     DateTime today = DateTime.now();
     today = DateTime(today.year, today.month, today.day);
@@ -67,7 +72,11 @@ class ProductProvider with ChangeNotifier {
           promotionEndDate: () => null,
         );
 
-        await _repository.atualizarProduto(novoProduto);
+        await _productRepository.atualizarProduto(
+          novoProduto,
+          token: _token,
+          userId: _userId,
+        );
         atualizados.add(novoProduto);
       } else {
         atualizados.add(product);
@@ -136,7 +145,11 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> adicionarProduto(ProductModel produto) async {
-    final generateId = await _repository.adicionarProduto(produto);
+    final generateId = await _productRepository.adicionarProduto(
+      produto,
+      token: _token,
+      userId: _userId,
+    );
 
     final novoProduto = produto.copyWith(id: generateId);
 
@@ -144,7 +157,11 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> atualizarProduto(ProductModel produto) async {
-    await _repository.atualizarProduto(produto);
+    await _productRepository.atualizarProduto(
+      produto,
+      token: _token,
+      userId: _userId,
+    );
 
     final lista =
         _produtos.map((e) => e.id == produto.id ? produto : e).toList();
@@ -153,7 +170,11 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> deletarProduto(ProductModel produto) async {
-    await _repository.deletarProduto(produto.id);
+    await _productRepository.deletarProduto(
+      produto.id,
+      token: _token,
+      userId: _userId,
+    );
 
     final lista = _produtos.where((p) => p.id != produto.id).toList();
 
@@ -170,7 +191,11 @@ class ProductProvider with ChangeNotifier {
     product.isFavorite = !product.isFavorite;
     notifyListeners();
 
-    await _repository.adicionarOuRemoverFavorito(
-        productId: productId, isFavorite: product.isFavorite);
+    await _productRepository.adicionarOuRemoverFavorito(
+      productId: productId,
+      isFavorite: product.isFavorite,
+      token: _token,
+      userId: _userId,
+    );
   }
 }

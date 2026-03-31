@@ -1,16 +1,19 @@
 import 'dart:convert';
 
+import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Models/banner_model.dart';
 import 'package:appshop/shared/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class BannersProvider with ChangeNotifier {
-  final String _token;
+  final AuthProvider auth;
+
+  BannersProvider(this.auth);
+
+  String get _token => auth.token ?? '';
+
   List<BannerModel> _items = [];
-
-  BannersProvider([this._token = "", this._items = const []]);
-
   List<BannerModel> get items => [..._items];
 
   Future<void> loadBanners() async {

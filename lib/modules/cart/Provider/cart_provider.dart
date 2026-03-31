@@ -1,25 +1,22 @@
 import 'dart:async';
 
+import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {
-  final String _token;
-  final String _userId;
-
+  final AuthProvider auth;
+  final CartRepository _cartRepository;
   List<CartItemModel> _items = [];
 
-  final _cartRepository = CartRepository();
-
-  CartProvider([
-    this._token = '',
-    this._userId = '',
-    this._items = const [],
-  ]);
+  CartProvider(this.auth, this._cartRepository);
 
   Timer? _debounce;
+
+  String get _token => auth.token ?? '';
+  String get _userId => auth.userId ?? '';
 
   List<CartItemModel> get items => [..._items];
 

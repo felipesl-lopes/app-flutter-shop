@@ -5,15 +5,12 @@ import 'package:appshop/shared/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 class CategoriasRepository {
-  final String token;
-  final String userId;
+  CategoriasRepository();
 
-  CategoriasRepository({
-    required this.token,
-    required this.userId,
-  });
-
-  Future<List<CategoriasModel>> carregarCategorias() async {
+  Future<List<CategoriasModel>> carregarCategorias({
+    required String token,
+    required String userId,
+  }) async {
     final response = await http
         .get(Uri.parse("${Constants.PRODUCT_CATEGORIES}.json?auth=$token"));
 
