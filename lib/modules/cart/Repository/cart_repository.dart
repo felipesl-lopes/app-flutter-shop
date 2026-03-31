@@ -58,4 +58,13 @@ class CartRepository {
       );
     }
   }
+
+  Future<void> limparCarrinho({
+    required String userId,
+    required String token,
+  }) async {
+    final url = "${Constants.CART_PRODUCTS_URL}/$userId.json?auth=$token";
+
+    await http.delete(Uri.parse(url));
+  }
 }

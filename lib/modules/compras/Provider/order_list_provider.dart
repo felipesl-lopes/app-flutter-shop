@@ -1,4 +1,5 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
+import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/order.dart';
@@ -9,6 +10,7 @@ class OrderListProvider with ChangeNotifier {
   final String _userId;
   List<Order> _items = [];
   final _repository = OrderRepository();
+  final _cartRepository = CartRepository();
 
   OrderListProvider([
     this._token = "",
@@ -85,6 +87,10 @@ class OrderListProvider with ChangeNotifier {
         products: cart.items.toList(),
       ),
     );
+
+    await _cartRepository.limparCarrinho(token: _token, userId: _userId);
+
+    cart.clear();
     notifyListeners();
   }
 }
