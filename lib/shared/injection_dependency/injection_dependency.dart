@@ -24,7 +24,7 @@ void configureDependencies() {
   );
 
   getIt.registerLazySingleton<CategoriasRepository>(
-    () => CategoriasRepository(),
+    () => CategoriasRepository(getIt<IHttpClient>()),
   );
   getIt.registerLazySingleton<ProductRepository>(
     () => ProductRepository(getIt<IHttpClient>()),

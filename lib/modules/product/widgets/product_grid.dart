@@ -45,9 +45,9 @@ class ProductGrid extends StatelessWidget {
               height: 306,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 itemCount: _itensCount,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, __) => SizedBox(width: 12),
                 itemBuilder: (ctx, index) => SizedBox(
                   width: 180,
                   child: ProductGridItem(

@@ -1,24 +1,21 @@
-import 'dart:convert';
-
 import 'package:appshop/modules/categorias/Models/categorias_model.dart';
-import 'package:appshop/shared/utils/constants.dart';
-import 'package:http/http.dart' as http;
+import 'package:appshop/shared/services/i_http_client.dart';
 
 class CategoriasRepository {
-  CategoriasRepository();
+  final IHttpClient client;
+
+  CategoriasRepository(this.client);
 
   Future<List<CategoriasModel>> carregarCategorias({
-    required String token,
     required String userId,
   }) async {
-    final response = await http
-        .get(Uri.parse("${Constants.PRODUCT_CATEGORIES}.json?auth=$token"));
+    final response = await client.get('categories');
 
-    if (response.body == "null") {
+    if (response.data == null) {
       return [];
     }
 
-    Map<String, dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> data = response.data;
 
     final List<CategoriasModel> categorias = [];
 

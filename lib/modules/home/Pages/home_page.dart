@@ -147,11 +147,15 @@ class _HomePageState extends State<HomePage> {
                           gridHorizontal: true,
                         ),
                       CardIncentivoCarrinho(),
-                      ProductGrid(
-                        list_products: _listaDeProdutos.produtosParaCompra,
-                        quantityGrid: 6,
-                        title: "Produtos para você",
-                      ),
+                      if (_listaDeProdutos.produtosParaCompra.isEmpty) ...[
+                        Text("Nenhum produto encontrado")
+                      ] else ...[
+                        ProductGrid(
+                          list_products: _listaDeProdutos.produtosParaCompra,
+                          quantityGrid: 6,
+                          title: "Produtos para você",
+                        ),
+                      ],
                       SizedBox(height: 16),
                       if (_produtosEmOferta.isNotEmpty)
                         ProductGrid(
