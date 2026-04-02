@@ -7,6 +7,8 @@ import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
+import 'package:appshop/shared/services/http_client_service.dart';
+import 'package:appshop/shared/services/i_http_client.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -14,11 +16,18 @@ final getIt = GetIt.instance;
 void configureDependencies() {
   getIt.registerLazySingleton<AuthProvider>(() => AuthProvider());
 
+  getIt.registerLazySingleton<IHttpClient>(
+    () => HttpClientService(
+      baseUrl: 'https://shop-df68d-default-rtdb.firebaseio.com/',
+      auth: getIt<AuthProvider>(),
+    ),
+  );
+
   getIt.registerLazySingleton<CategoriasRepository>(
     () => CategoriasRepository(),
   );
   getIt.registerLazySingleton<ProductRepository>(
-    () => ProductRepository(),
+    () => ProductRepository(getIt<IHttpClient>()),
   );
   getIt.registerLazySingleton<CartRepository>(
     () => CartRepository(),

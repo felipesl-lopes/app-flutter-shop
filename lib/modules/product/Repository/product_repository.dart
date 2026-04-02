@@ -3,26 +3,25 @@ import 'dart:convert';
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
-import 'package:appshop/shared/utils/constants.dart';
-import 'package:http/http.dart' as http;
+import 'package:appshop/shared/services/i_http_client.dart';
 
 class ProductRepository {
-  ProductRepository();
+  final IHttpClient client;
 
-  Future<List<ProductModel>> carregarProdutos({
-    required String token,
-    required String userId,
-  }) async {
-    final response = await http
-        .get(Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$token"));
+  ProductRepository(this.client);
 
-    if (response.body == "null") {
+  Future<List<ProductModel>> carregarProdutos() async {
+    final response = await client.get("products");
+
+    if (response.data == "null") {
       return [];
     }
 
-    Map<String, dynamic> data = jsonDecode(response.body);
+    final data = response.data;
 
     final List<ProductModel> produtos = [];
+
+    if (data == null) return [];
 
     data.forEach(
       (productId, productData) {
@@ -56,77 +55,70 @@ class ProductRepository {
     return produtos;
   }
 
-  Future<Set<String>> carregarFavoritos({
-    required String token,
+  Future<List<String>> carregarFavoritos({
     required String userId,
   }) async {
-    final response = await http.get(
-      Uri.parse("${Constants.USER_FAVORITES_URL}/$userId.json?auth=$token"),
-    );
+    final response = await client.get("userFavorites/$userId");
 
-    if (response.body == 'null') return {};
+    if (response.data == null) return [];
 
-    final Map<String, dynamic> data = jsonDecode(response.body);
+    final data = response.data as Map<String, dynamic>;
 
-    return data.entries
-        .where((entry) => entry.value == true)
-        .map((entry) => entry.key)
-        .toSet();
+    final List<String> favoritos = [];
+
+    data.forEach((productId, isFavorite) {
+      if (isFavorite == true) {
+        favoritos.add(productId);
+      }
+    });
+
+    return favoritos;
   }
 
   Future<String> adicionarProduto(
     ProductModel product, {
-    required String token,
     required String userId,
   }) async {
-    final response = await http.post(
-      Uri.parse("${Constants.PRODUCT_BASE_URL}.json?auth=$token"),
-      body: jsonEncode({
-        "userId": userId,
-        "name": product.name,
-        "description": product.description,
-        "price": product.price,
-        "imageUrls": product.imageUrls,
-        "categories": product.categories,
-        "isPromotional": product.isPromotional,
-        "discountPercentage": product.discountPercentage,
-        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-      }),
-    );
-    final data = jsonDecode(response.body);
+    final body = {
+      "userId": userId,
+      "name": product.name,
+      "description": product.description,
+      "price": product.price,
+      "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
+      "categories": product.categories,
+      "isPromotional": product.isPromotional,
+      "discountPercentage": product.discountPercentage,
+      "promotionEndDate": product.promotionEndDate?.toIso8601String(),
+    };
+
+    final response = await client.post('products', body: body);
+
+    final data = response.data;
 
     return data['name'];
   }
 
   Future<void> atualizarProduto(
     ProductModel product, {
-    required String token,
     required String userId,
   }) async {
-    await http.patch(
-      Uri.parse("${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$token"),
-      body: jsonEncode({
-        "name": product.name,
-        "description": product.description,
-        "price": product.price,
-        "imageUrls": product.imageUrls,
-        "userId": userId,
-        "categories": product.categories,
-        "isPromotional": product.isPromotional,
-        "discountPercentage": product.discountPercentage,
-        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-      }),
-    );
+    final body = jsonEncode({
+      "name": product.name,
+      "description": product.description,
+      "price": product.price,
+      "imageUrls": product.imageUrls,
+      "userId": userId,
+      "categories": product.categories,
+      "isPromotional": product.isPromotional,
+      "discountPercentage": product.discountPercentage,
+      "promotionEndDate": product.promotionEndDate?.toIso8601String(),
+    });
+
+    await client.patch('products', body: body);
   }
 
-  Future<void> deletarProduto(
-    String idProduto, {
-    required String token,
-    required String userId,
-  }) async {
-    final response = await http.delete(
-      Uri.parse("${Constants.PRODUCT_BASE_URL}/${idProduto}.json?auth=$token"),
-    );
+  Future<void> deletarProduto(String idProduto) async {
+    final response = await client.delete('products/$idProduto');
 
     if (response.statusCode >= 400) {
       throw GenericExeption.ExceptionMsg(
@@ -139,19 +131,14 @@ class ProductRepository {
   Future<void> adicionarOuRemoverFavorito({
     required String productId,
     required bool isFavorite,
-    required String token,
     required String userId,
   }) async {
-    final url =
-        "${Constants.USER_FAVORITES_URL}/$userId/${productId}.json?auth=$token";
-
-    // ignore: unused_local_variable
-    http.Response response;
+    final path = 'userFavorites/$userId/$productId';
 
     if (isFavorite) {
-      response = await http.put(Uri.parse(url), body: jsonEncode(true));
+      await client.put(path, body: true);
     } else {
-      response = await http.delete(Uri.parse(url));
+      await client.delete(path);
     }
   }
 }

@@ -1,4 +1,9 @@
 class HttpResponse {
+  final dynamic data;
+  final Map<String, String>? headers;
+  final int statusCode;
+  final String? statusMessage;
+
   HttpResponse({
     this.data,
     this.headers,
@@ -6,14 +11,9 @@ class HttpResponse {
     this.statusMessage,
   });
 
-  final dynamic data;
-  final Map<String, dynamic>? headers;
-  final int statusCode;
-  final String? statusMessage;
-
   HttpResponse copyWith({
-    dynamicdata,
-    Map<String, dynamic>? headers,
+    dynamic data,
+    Map<String, String>? headers,
     int? statusCode,
     String? statusMessage,
   }) {

@@ -17,7 +17,6 @@ class ProductProvider with ChangeNotifier {
     this._productRepository,
   );
 
-  String get _token => auth.token ?? '';
   String get _userId => auth.userId ?? '';
 
   List<ProductModel> get produtos => [..._produtos];
@@ -48,12 +47,8 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> carregarProdutos() async {
-    final produtos = await _productRepository.carregarProdutos(
-      token: _token,
-      userId: _userId,
-    );
+    final produtos = await _productRepository.carregarProdutos();
     final favoritos = await _productRepository.carregarFavoritos(
-      token: _token,
       userId: _userId,
     );
 
@@ -74,7 +69,6 @@ class ProductProvider with ChangeNotifier {
 
         await _productRepository.atualizarProduto(
           novoProduto,
-          token: _token,
           userId: _userId,
         );
         atualizados.add(novoProduto);
@@ -147,8 +141,7 @@ class ProductProvider with ChangeNotifier {
   Future<void> adicionarProduto(ProductModel produto) async {
     final generateId = await _productRepository.adicionarProduto(
       produto,
-      token: _token,
-      userId: _userId,
+      userId: auth.userId!,
     );
 
     final novoProduto = produto.copyWith(id: generateId);
@@ -159,7 +152,6 @@ class ProductProvider with ChangeNotifier {
   Future<void> atualizarProduto(ProductModel produto) async {
     await _productRepository.atualizarProduto(
       produto,
-      token: _token,
       userId: _userId,
     );
 
@@ -170,11 +162,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> deletarProduto(ProductModel produto) async {
-    await _productRepository.deletarProduto(
-      produto.id,
-      token: _token,
-      userId: _userId,
-    );
+    await _productRepository.deletarProduto(produto.id);
 
     final lista = _produtos.where((p) => p.id != produto.id).toList();
 
@@ -194,7 +182,6 @@ class ProductProvider with ChangeNotifier {
     await _productRepository.adicionarOuRemoverFavorito(
       productId: productId,
       isFavorite: product.isFavorite,
-      token: _token,
       userId: _userId,
     );
   }
