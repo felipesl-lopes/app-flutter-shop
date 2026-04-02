@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
@@ -102,19 +100,19 @@ class ProductRepository {
     ProductModel product, {
     required String userId,
   }) async {
-    final body = jsonEncode({
+    final body = {
+      "userId": userId,
       "name": product.name,
       "description": product.description,
       "price": product.price,
-      "imageUrls": product.imageUrls,
-      "userId": userId,
+      "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
       "categories": product.categories,
       "isPromotional": product.isPromotional,
       "discountPercentage": product.discountPercentage,
       "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-    });
+    };
 
-    await client.patch('products', body: body);
+    await client.patch('products/${product.id}', body: body);
   }
 
   Future<void> deletarProduto(String idProduto) async {
