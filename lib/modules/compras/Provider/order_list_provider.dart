@@ -9,13 +9,12 @@ import 'package:flutter/material.dart';
 class OrderListProvider with ChangeNotifier {
   final AuthProvider auth;
   final CartRepository _cartRepository;
+  final OrderRepository _repository;
+
+  OrderListProvider(this.auth, this._cartRepository, this._repository);
 
   List<Order> _items = [];
-  final _repository = OrderRepository();
 
-  OrderListProvider(this.auth, this._cartRepository);
-
-  String get _token => auth.token ?? '';
   String get _userId => auth.userId ?? '';
 
   List<Order> get items {
@@ -27,8 +26,7 @@ class OrderListProvider with ChangeNotifier {
   }
 
   Future<void> loadOrders() async {
-    final data =
-        await _repository.loadOrdersRepository(userId: _userId, token: _token);
+    final data = await _repository.loadOrdersRepository(userId: _userId);
 
     List<Order> items = [];
 
@@ -72,7 +70,6 @@ class OrderListProvider with ChangeNotifier {
 
     final orderId = await _repository.addOrderRepository(
       userId: _userId,
-      token: _token,
       total: cart.totalAmount,
       date: date,
       products: products,

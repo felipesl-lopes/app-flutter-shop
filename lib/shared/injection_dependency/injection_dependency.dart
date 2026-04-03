@@ -4,6 +4,7 @@ import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/modules/categorias/Repository/categorias_repository.dart';
 import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
+import 'package:appshop/modules/compras/Repository/order_repository.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
@@ -32,6 +33,9 @@ void configureDependencies() {
   getIt.registerLazySingleton<CartRepository>(
     () => CartRepository(getIt<IHttpClient>()),
   );
+  getIt.registerLazySingleton<OrderRepository>(
+    () => OrderRepository(getIt<IHttpClient>()),
+  );
 
   getIt.registerLazySingleton<CartProvider>(() => CartProvider(
         getIt<AuthProvider>(),
@@ -51,6 +55,7 @@ void configureDependencies() {
   getIt.registerLazySingleton<OrderListProvider>(() => OrderListProvider(
         getIt<AuthProvider>(),
         getIt<CartRepository>(),
+        getIt<OrderRepository>(),
       ));
 
   getIt.registerLazySingleton<BannersProvider>(
