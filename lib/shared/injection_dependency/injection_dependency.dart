@@ -30,7 +30,7 @@ void configureDependencies() {
     () => ProductRepository(getIt<IHttpClient>()),
   );
   getIt.registerLazySingleton<CartRepository>(
-    () => CartRepository(),
+    () => CartRepository(getIt<IHttpClient>()),
   );
 
   getIt.registerLazySingleton<CartProvider>(() => CartProvider(

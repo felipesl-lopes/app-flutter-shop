@@ -88,7 +88,7 @@ class OrderListProvider with ChangeNotifier {
       ),
     );
 
-    await _cartRepository.limparCarrinho(token: _token, userId: _userId);
+    await _cartRepository.limparCarrinho(userId: _userId);
 
     cart.clear();
     notifyListeners();

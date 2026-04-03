@@ -15,7 +15,6 @@ class CartProvider with ChangeNotifier {
 
   Timer? _debounce;
 
-  String get _token => auth.token ?? '';
   String get _userId => auth.userId ?? '';
 
   List<CartItemModel> get items => [..._items];
@@ -49,10 +48,7 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> loadCart() async {
-    final data = await _cartRepository.getCart(
-      userId: _userId,
-      token: _token,
-    );
+    final data = await _cartRepository.getCart(userId: _userId);
 
     setItems(data);
   }
@@ -89,7 +85,6 @@ class CartProvider with ChangeNotifier {
     }
 
     notifyListeners();
-
     _debounce?.cancel();
 
     _debounce = Timer(Duration(milliseconds: 400), () async {
@@ -100,7 +95,6 @@ class CartProvider with ChangeNotifier {
           productId: item.id,
           quantity: item.quantity,
           userId: _userId,
-          token: _token,
           item: item,
         );
       } catch (e) {
@@ -167,7 +161,6 @@ class CartProvider with ChangeNotifier {
           productId: item.id,
           quantity: item.quantity,
           userId: _userId,
-          token: _token,
           item: item,
         );
       } catch (e) {
