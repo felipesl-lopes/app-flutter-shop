@@ -10,16 +10,18 @@ import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
 import 'package:appshop/shared/services/http_client_service.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
+String get apiurl => dotenv.env['API_URL'] ?? '';
 
 void configureDependencies() {
   getIt.registerLazySingleton<AuthProvider>(() => AuthProvider());
 
   getIt.registerLazySingleton<IHttpClient>(
     () => HttpClientService(
-      baseUrl: 'https://shop-df68d-default-rtdb.firebaseio.com/',
+      baseUrl: apiurl,
       auth: getIt<AuthProvider>(),
     ),
   );
@@ -58,6 +60,8 @@ void configureDependencies() {
         getIt<OrderRepository>(),
       ));
 
-  getIt.registerLazySingleton<BannersProvider>(
-      () => BannersProvider(getIt<AuthProvider>()));
+  getIt.registerLazySingleton<BannersProvider>(() => BannersProvider(
+        getIt<AuthProvider>(),
+        getIt<IHttpClient>(),
+      ));
 }

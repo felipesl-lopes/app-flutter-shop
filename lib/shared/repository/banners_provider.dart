@@ -1,32 +1,26 @@
-import 'dart:convert';
-
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Models/banner_model.dart';
-import 'package:appshop/shared/utils/constants.dart';
+import 'package:appshop/shared/services/i_http_client.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class BannersProvider with ChangeNotifier {
   final AuthProvider auth;
+  final IHttpClient client;
 
-  BannersProvider(this.auth);
-
-  String get _token => auth.token ?? '';
+  BannersProvider(this.auth, this.client);
 
   List<BannerModel> _items = [];
   List<BannerModel> get items => [..._items];
 
   Future<void> loadBanners() async {
-    final url = "${Constants.BANNERS_URL}.json?auth=$_token";
-
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await client.get('banners');
 
-      if (response.body == "null" || response.statusCode != 200) {
+      if (response.data == null || response.statusCode != 200) {
         return;
       }
 
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      final Map<String, dynamic> data = response.data;
       final List<BannerModel> loadedItems = [];
 
       data.forEach((bannerId, bannerData) {
