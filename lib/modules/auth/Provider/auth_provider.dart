@@ -9,6 +9,10 @@ import 'package:appshop/shared/services/secure_storage.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider with ChangeNotifier {
+  final AuthRepository _repository;
+
+  AuthProvider(this._repository);
+
   String? _token;
   String? _refreshToken;
   String? _email;
@@ -17,7 +21,6 @@ class AuthProvider with ChangeNotifier {
   Timer? _logoutTimer;
   final _prefs = PreferenciesValues();
   final _storage = SecureStorage();
-  final _repository = AuthRepository();
 
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;

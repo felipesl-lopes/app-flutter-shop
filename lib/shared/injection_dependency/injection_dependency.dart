@@ -1,4 +1,5 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
+import 'package:appshop/modules/auth/Repository/auth_repository.dart';
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
@@ -17,13 +18,19 @@ final getIt = GetIt.instance;
 String get apiurl => dotenv.env['API_URL'] ?? '';
 
 void configureDependencies() {
-  getIt.registerLazySingleton<AuthProvider>(() => AuthProvider());
-
   getIt.registerLazySingleton<IHttpClient>(
     () => HttpClientService(
       baseUrl: apiurl,
-      auth: getIt<AuthProvider>(),
+      getToken: () => getIt<AuthProvider>().token,
     ),
+  );
+
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepository(getIt<IHttpClient>()),
+  );
+
+  getIt.registerLazySingleton<AuthProvider>(
+    () => AuthProvider(getIt<AuthRepository>()),
   );
 
   getIt.registerLazySingleton<CategoriasRepository>(

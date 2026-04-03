@@ -1,16 +1,16 @@
 import 'dart:convert';
-import 'package:appshop/modules/auth/Provider/auth_provider.dart';
+
 import 'package:appshop/shared/services/http_response.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
 import 'package:http/http.dart' as http;
 
 class HttpClientService implements IHttpClient {
   final String baseUrl;
-  final AuthProvider auth;
+  final String? Function() getToken;
 
   HttpClientService({
     required this.baseUrl,
-    required this.auth,
+    required this.getToken,
   });
 
   Map<String, String> _defaultHeaders() {
@@ -20,7 +20,7 @@ class HttpClientService implements IHttpClient {
   }
 
   Uri _buildUri(String path, [Map<String, dynamic>? query]) {
-    final token = auth.token;
+    final token = getToken();
 
     final queryParams = {
       if (query != null) ...query.map((k, v) => MapEntry(k, v.toString())),
@@ -49,15 +49,28 @@ class HttpClientService implements IHttpClient {
     return httpResponse;
   }
 
+  HttpResponse _rawResponse(http.Response response) {
+    final data = response.body.isNotEmpty ? jsonDecode(response.body) : null;
+    return HttpResponse(
+      data: data,
+      statusCode: response.statusCode,
+      headers: response.headers,
+      statusMessage: response.reasonPhrase,
+    );
+  }
+
   @override
-  Future<HttpResponse> get(String path,
-      {Map<String, dynamic>? queryParameters}) async {
+  Future<HttpResponse> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    bool validateStatus = true,
+  }) async {
     final response = await http.get(
       _buildUri(path, queryParameters),
       headers: _defaultHeaders(),
     );
 
-    return _handleResponse(response);
+    return validateStatus ? _handleResponse(response) : _rawResponse(response);
   }
 
   @override
@@ -73,14 +86,37 @@ class HttpClientService implements IHttpClient {
   }
 
   @override
-  Future<HttpResponse> put(String path, {dynamic body}) async {
+  Future<HttpResponse> put(
+    String path, {
+    dynamic body,
+    Map<String, dynamic>? queryParameters,
+    bool validateStatus = true,
+  }) async {
     final response = await http.put(
-      _buildUri(path),
+      _buildUri(path, queryParameters),
       headers: _defaultHeaders(),
       body: jsonEncode(body),
     );
 
-    return _handleResponse(response);
+    return validateStatus ? _handleResponse(response) : _rawResponse(response);
+  }
+
+  @override
+  Future<HttpResponse> postAbsolute(
+    String url, {
+    Object? body,
+    Map<String, String>? headers,
+  }) async {
+    final uri = Uri.parse(url);
+    final Object? encodedBody = body is Map<String, String>
+        ? body
+        : (body is String ? body : jsonEncode(body));
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: encodedBody,
+    );
+    return _rawResponse(response);
   }
 
   @override
