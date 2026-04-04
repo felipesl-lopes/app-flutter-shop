@@ -24,11 +24,15 @@ class CategoriasProvider with ChangeNotifier {
   }
 
   Future<void> carregarCategorias() async {
-    final categorias = await _categoriasRepository.carregarCategorias(
-      userId: auth.userId ?? '',
-    );
+    try {
+      final categorias = await _categoriasRepository.carregarCategorias(
+        userId: auth.userId ?? '',
+      );
 
-    setCategorias(categorias);
+      setCategorias(categorias);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   List<String> getNomesCategorias(List<String> categoryIds) {

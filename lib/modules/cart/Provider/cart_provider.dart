@@ -48,9 +48,12 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> loadCart() async {
-    final data = await _cartRepository.getCart(userId: _userId);
-
-    setItems(data);
+    try {
+      final data = await _cartRepository.getCart(userId: _userId);
+      setItems(data);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> addItem(dynamic product) async {

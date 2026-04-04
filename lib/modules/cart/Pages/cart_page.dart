@@ -5,6 +5,7 @@ import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:appshop/shared/Widgets/modal_custom.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
+import 'package:appshop/shared/helpers/app_alert.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +37,7 @@ class _CartPageState extends State<CartPage> {
             position: FlushPosition.top);
       } catch (e) {
         debugPrint(e.toString());
-        showAppFlushbar(context,
-            message: "Erro ao finalizar compra.",
-            type: FlushType.error,
-            position: FlushPosition.top);
+        AppAlert.showError(context, message: e.toString());
       } finally {
         setState(() => _isLoading = false);
       }

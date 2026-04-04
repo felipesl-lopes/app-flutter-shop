@@ -26,33 +26,38 @@ class OrderListProvider with ChangeNotifier {
   }
 
   Future<void> loadOrders() async {
-    final data = await _repository.loadOrdersRepository(userId: _userId);
+    try {
+      final data = await _repository.loadOrdersRepository(userId: _userId);
 
-    List<Order> items = [];
+      List<Order> items = [];
 
-    data.forEach(
-      (orderId, orderData) {
-        items.add(Order(
-          id: orderId,
-          date: DateTime.parse(orderData["date"]),
-          total: orderData["total"],
-          products: (orderData["products"] as List<dynamic>).map(
-            (item) {
-              return CartItemModel(
-                id: item["id"],
-                name: item["name"],
-                quantity: item["quantity"],
-                price: item["price"],
-                imageUrl: item["imageUrl"] ?? "",
-              );
-            },
-          ).toList(),
-        ));
-      },
-    );
+      data.forEach(
+        (orderId, orderData) {
+          items.add(Order(
+            id: orderId,
+            date: DateTime.parse(orderData["date"]),
+            total: orderData["total"],
+            products: (orderData["products"] as List<dynamic>).map(
+              (item) {
+                return CartItemModel(
+                  id: item["id"],
+                  name: item["name"],
+                  quantity: item["quantity"],
+                  price: item["price"],
+                  imageUrl: item["imageUrl"] ?? "",
+                );
+              },
+            ).toList(),
+          ));
+        },
+      );
 
-    _items = items.reversed.toList();
-    notifyListeners();
+      _items = items.reversed.toList();
+      notifyListeners();
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   Future<void> addOrder(CartProvider cart) async {

@@ -1,5 +1,6 @@
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
+import 'package:flutter/material.dart';
 
 class CartRepository {
   final IHttpClient client;
@@ -7,19 +8,25 @@ class CartRepository {
   CartRepository(this.client);
 
   Future<List<CartItemModel>> getCart({required String userId}) async {
-    final response = await client.get('cartProducts/$userId');
-    final data = response.data;
+    debugPrint('[CartRepository]: getCart');
 
-    if (data == null) return [];
+    try {
+      final response = await client.get('cartProducts/$userId');
+      final data = response.data;
 
-    final List<CartItemModel> items = [];
+      if (data == null) return [];
 
-    data.forEach((key, value) {
-      if (value is Map<String, dynamic>) {
-        items.add(CartItemModel.fromJson(value));
-      }
-    });
-    return items;
+      final List<CartItemModel> items = [];
+
+      data.forEach((key, value) {
+        if (value is Map<String, dynamic>) {
+          items.add(CartItemModel.fromJson(value));
+        }
+      });
+      return items;
+    } catch (_) {
+      throw Exception('Erro ao carregar carrinho.');
+    }
   }
 
   Future<void> updateItemQuantity({
@@ -28,24 +35,37 @@ class CartRepository {
     required String userId,
     required CartItemModel item,
   }) async {
-    final response = await client.get('cartProducts/$userId/$productId');
+    debugPrint('[CartRepository]: updateItemQuantity');
 
-    if (response.data == null) {
-      await client.put('cartProducts/$userId/$productId', body: item.toJson());
-      return;
-    }
+    try {
+      final response = await client.get('cartProducts/$userId/$productId');
 
-    if (quantity <= 0) {
-      await client.delete('cartProducts/$userId/$productId');
-    } else {
-      await client.patch(
-        'cartProducts/$userId/$productId',
-        body: {'quantity': quantity},
-      );
+      if (response.data == null) {
+        await client.put('cartProducts/$userId/$productId',
+            body: item.toJson());
+        return;
+      }
+
+      if (quantity <= 0) {
+        await client.delete('cartProducts/$userId/$productId');
+      } else {
+        await client.patch(
+          'cartProducts/$userId/$productId',
+          body: {'quantity': quantity},
+        );
+      }
+    } catch (_) {
+      throw Exception('Erro ao adicionar/remover quantidade.');
     }
   }
 
   Future<void> limparCarrinho({required String userId}) async {
-    await client.delete('cartProducts/$userId');
+    debugPrint('[CartRepository]: limparCarrinho');
+
+    try {
+      await client.delete('cartProducts/$userId');
+    } catch (_) {
+      throw Exception('Erro ao limpar carrinho.');
+    }
   }
 }
