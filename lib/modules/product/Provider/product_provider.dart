@@ -47,43 +47,54 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> carregarProdutos() async {
-    final produtos = await _productRepository.carregarProdutos();
-    final favoritos = await _productRepository.carregarFavoritos(
-      userId: _userId,
-    );
+    try {
+      final produtos = await _productRepository.carregarProdutos();
 
-    DateTime today = DateTime.now();
-    today = DateTime(today.year, today.month, today.day);
+      List<String> favoritos = [];
 
-    final List<ProductModel> atualizados = [];
-
-    for (var product in produtos) {
-      if (product.isPromotional &&
-          product.promotionEndDate != null &&
-          product.promotionEndDate!.isBefore(today)) {
-        final novoProduto = product.copyWith(
-          isPromotional: false,
-          discountPercentage: () => null,
-          promotionEndDate: () => null,
-        );
-
-        await _productRepository.atualizarProduto(
-          novoProduto,
+      try {
+        favoritos = await _productRepository.carregarFavoritos(
           userId: _userId,
         );
-        atualizados.add(novoProduto);
-      } else {
-        atualizados.add(product);
+      } catch (e) {
+        debugPrint(e.toString());
       }
+
+      DateTime today = DateTime.now();
+      today = DateTime(today.year, today.month, today.day);
+
+      final List<ProductModel> atualizados = [];
+
+      for (var product in produtos) {
+        if (product.isPromotional &&
+            product.promotionEndDate != null &&
+            product.promotionEndDate!.isBefore(today)) {
+          final novoProduto = product.copyWith(
+            isPromotional: false,
+            discountPercentage: () => null,
+            promotionEndDate: () => null,
+          );
+
+          await _productRepository.atualizarProduto(
+            novoProduto,
+            userId: _userId,
+          );
+          atualizados.add(novoProduto);
+        } else {
+          atualizados.add(product);
+        }
+      }
+
+      final produtosAtualizados = atualizados.map((produto) {
+        return produto.copyWith(
+          isFavorite: favoritos.contains(produto.id),
+        );
+      }).toList();
+
+      setProdutos(produtosAtualizados);
+    } catch (e) {
+      debugPrint(e.toString());
     }
-
-    final produtosAtualizados = atualizados.map((produto) {
-      return produto.copyWith(
-        isFavorite: favoritos.contains(produto.id),
-      );
-    }).toList();
-
-    setProdutos(produtosAtualizados);
   }
 
   List<ProductModel> searchByName(String query) {
@@ -175,14 +186,21 @@ class ProductProvider with ChangeNotifier {
     if (index < 0) return;
 
     final product = _produtos[index];
+    final oldValue = product.isFavorite;
 
     product.isFavorite = !product.isFavorite;
     notifyListeners();
 
-    await _productRepository.adicionarOuRemoverFavorito(
-      productId: productId,
-      isFavorite: product.isFavorite,
-      userId: _userId,
-    );
+    try {
+      await _productRepository.adicionarOuRemoverFavorito(
+        productId: productId,
+        isFavorite: product.isFavorite,
+        userId: _userId,
+      );
+    } catch (e) {
+      product.isFavorite = oldValue;
+      notifyListeners();
+      rethrow;
+    }
   }
 }

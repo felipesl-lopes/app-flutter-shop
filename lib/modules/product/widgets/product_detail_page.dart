@@ -87,9 +87,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         await productList.adicionarOuRemoverFavorito(product.id);
       } catch (e) {
         showAppFlushbar(context,
-            message: "Não foi possível realizar a ação.",
+            message: e.toString().replaceAll('Exception:', ''),
             type: FlushType.error);
-        debugPrint("Erro: $e");
       }
     }
 

@@ -7,6 +7,7 @@ import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
+import 'package:appshop/shared/helpers/app_alert.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:appshop/shared/utils/product_validators.dart';
@@ -116,19 +117,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
       _initialFormData = _getCurrentFormData();
       _hasChanges = false;
     } catch (error) {
-      await showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text("Ocorreu um erro."),
-          content: Text("Ocorreu um erro ao salvar o produto."),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text("Ok"),
-            ),
-          ],
-        ),
-      );
+      await AppAlert.showError(context, message: error.toString());
     } finally {
       setState(() => _isLoading = true);
       Navigator.of(context).pop();
@@ -335,6 +324,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                               } on GenericExeption catch (error) {
                                 msg.showSnackBar(
                                     SnackBar(content: Text(error.toString())));
+                              } catch (error) {
+                                AppAlert.showError(context,
+                                    message: error.toString());
                               }
                             },
                           ),

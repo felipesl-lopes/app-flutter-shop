@@ -2,6 +2,7 @@ import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
+import 'package:flutter/material.dart';
 
 class ProductRepository {
   final IHttpClient client;
@@ -9,120 +10,149 @@ class ProductRepository {
   ProductRepository(this.client);
 
   Future<List<ProductModel>> carregarProdutos() async {
-    final response = await client.get("products");
+    debugPrint('[ProductRepository]: carregarProdutos:');
 
-    if (response.data == "null") {
-      return [];
+    try {
+      final response = await client.get("products");
+
+      if (response.data == "null") {
+        return [];
+      }
+
+      final data = response.data;
+      final List<ProductModel> produtos = [];
+      if (data == null) return [];
+
+      data.forEach(
+        (productId, productData) {
+          final List imageData = (productData['imageUrls'] ?? []) as List;
+          final promotionDateRaw = productData['promotionEndDate'] ??
+              productData['promotionValidUntil'];
+
+          produtos.add(
+            ProductModel(
+              id: productId,
+              name: productData["name"],
+              description: productData["description"],
+              price: productData["price"],
+              imageUrls:
+                  imageData.map((e) => ProductImageModel.fromMap(e)).toList(),
+              categories: productData['categories'] == null
+                  ? []
+                  : List<String>.from(productData['categories']),
+              userId: productData["userId"],
+              isPromotional: productData['isPromotional'] ?? false,
+              discountPercentage: productData['discountPercentage'] != null
+                  ? (productData['discountPercentage'] as num).toInt()
+                  : null,
+              promotionEndDate: promotionDateRaw != null
+                  ? DateTime.parse(promotionDateRaw as String)
+                  : null,
+            ),
+          );
+        },
+      );
+      return produtos;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception("Erro ao carregar produtos.");
     }
-
-    final data = response.data;
-
-    final List<ProductModel> produtos = [];
-
-    if (data == null) return [];
-
-    data.forEach(
-      (productId, productData) {
-        final List imageData = (productData['imageUrls'] ?? []) as List;
-        final promotionDateRaw = productData['promotionEndDate'] ??
-            productData['promotionValidUntil'];
-
-        produtos.add(
-          ProductModel(
-            id: productId,
-            name: productData["name"],
-            description: productData["description"],
-            price: productData["price"],
-            imageUrls:
-                imageData.map((e) => ProductImageModel.fromMap(e)).toList(),
-            categories: productData['categories'] == null
-                ? []
-                : List<String>.from(productData['categories']),
-            userId: productData["userId"],
-            isPromotional: productData['isPromotional'] ?? false,
-            discountPercentage: productData['discountPercentage'] != null
-                ? (productData['discountPercentage'] as num).toInt()
-                : null,
-            promotionEndDate: promotionDateRaw != null
-                ? DateTime.parse(promotionDateRaw as String)
-                : null,
-          ),
-        );
-      },
-    );
-    return produtos;
   }
 
   Future<List<String>> carregarFavoritos({
     required String userId,
   }) async {
-    final response = await client.get("userFavorites/$userId");
+    debugPrint('[ProductRepository]: carregarFavoritos:');
 
-    if (response.data == null) return [];
+    try {
+      final response = await client.get("userFavorites/$userId");
+      if (response.data == null) return [];
+      final data = response.data as Map<String, dynamic>;
+      final List<String> favoritos = [];
 
-    final data = response.data as Map<String, dynamic>;
+      data.forEach((productId, isFavorite) {
+        if (isFavorite == true) {
+          favoritos.add(productId);
+        }
+      });
 
-    final List<String> favoritos = [];
-
-    data.forEach((productId, isFavorite) {
-      if (isFavorite == true) {
-        favoritos.add(productId);
-      }
-    });
-
-    return favoritos;
+      return favoritos;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao carregar favoritos.');
+    }
   }
 
   Future<String> adicionarProduto(
     ProductModel product, {
     required String userId,
   }) async {
-    final body = {
-      "userId": userId,
-      "name": product.name,
-      "description": product.description,
-      "price": product.price,
-      "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
-      "categories": product.categories,
-      "isPromotional": product.isPromotional,
-      "discountPercentage": product.discountPercentage,
-      "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-    };
+    debugPrint('[ProductRepository]: adicionarProduto:');
 
-    final response = await client.post('products', body: body);
+    try {
+      final body = {
+        "userId": userId,
+        "name": product.name,
+        "description": product.description,
+        "price": product.price,
+        "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
+        "categories": product.categories,
+        "isPromotional": product.isPromotional,
+        "discountPercentage": product.discountPercentage,
+        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
+      };
 
-    final data = response.data;
+      final response = await client.post('products', body: body);
+      final data = response.data;
 
-    return data['name'];
+      return data['name'];
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao adicionar produto.');
+    }
   }
 
   Future<void> atualizarProduto(
     ProductModel product, {
     required String userId,
   }) async {
-    final body = {
-      "userId": userId,
-      "name": product.name,
-      "description": product.description,
-      "price": product.price,
-      "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
-      "categories": product.categories,
-      "isPromotional": product.isPromotional,
-      "discountPercentage": product.discountPercentage,
-      "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-    };
+    debugPrint('[ProductRepository]: atualizarProduto:');
 
-    await client.patch('products/${product.id}', body: body);
+    try {
+      final body = {
+        "userId": userId,
+        "name": product.name,
+        "description": product.description,
+        "price": product.price,
+        "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
+        "categories": product.categories,
+        "isPromotional": product.isPromotional,
+        "discountPercentage": product.discountPercentage,
+        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
+      };
+
+      await client.patch('products/${product.id}', body: body);
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao atualizar produto.');
+    }
   }
 
   Future<void> deletarProduto(String idProduto) async {
-    final response = await client.delete('products/$idProduto');
+    debugPrint('[ProductRepository]: deletarProduto:');
 
-    if (response.statusCode >= 400) {
-      throw GenericExeption.ExceptionMsg(
-        msg: "Não foi possivel excluir o produto.",
-        statusCode: response.statusCode,
-      );
+    try {
+      final response = await client.delete('products/$idProduto');
+
+      if (response.statusCode >= 400) {
+        throw GenericExeption.ExceptionMsg(
+          msg: "Não foi possivel excluir o produto.",
+          statusCode: response.statusCode,
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao deletar produto.');
     }
   }
 
@@ -131,12 +161,19 @@ class ProductRepository {
     required bool isFavorite,
     required String userId,
   }) async {
-    final path = 'userFavorites/$userId/$productId';
+    debugPrint('[ProductRepository]: adicionarOuRemoverFavorito:');
 
-    if (isFavorite) {
-      await client.put(path, body: true);
-    } else {
-      await client.delete(path);
+    try {
+      final path = 'userFavorites/$userId/$productId';
+
+      if (isFavorite) {
+        await client.put(path, body: true);
+      } else {
+        await client.delete(path);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao adicionar/remover favorito');
     }
   }
 }
