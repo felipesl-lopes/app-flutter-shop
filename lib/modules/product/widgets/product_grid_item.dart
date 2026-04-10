@@ -4,6 +4,7 @@ import 'package:appshop/modules/product/widgets/discount_badge.dart';
 import 'package:appshop/modules/product/widgets/product_detail_page.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +30,10 @@ class ProductGridItem extends StatelessWidget {
       onTap: () => _navegar(context),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.grey.shade100,
+            color: AppColors.grey.withOpacity(0.1),
             border: Border.all(
               width: 1,
-              color: Colors.grey.shade300,
+              color: AppColors.grey.withOpacity(0.3),
             ),
             borderRadius: BorderRadius.circular(4)),
         child: Column(
@@ -68,7 +69,7 @@ class ProductGridItem extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.4),
+                        color: AppColors.grey.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: InkWell(
@@ -80,7 +81,7 @@ class ProductGridItem extends StatelessWidget {
                         child: const Icon(
                           Icons.shopping_cart,
                           size: 20,
-                          color: Colors.purple,
+                          color: AppColors.primary,
                         ),
                       ),
                     ),
@@ -112,8 +113,8 @@ class ProductGridItem extends StatelessWidget {
                           formatPrice(product.price),
                           style: TextStyle(
                               decoration: TextDecoration.lineThrough,
-                              decorationColor: Colors.black45,
-                              color: Colors.black45),
+                              decorationColor: AppColors.black.withOpacity(0.5),
+                              color: AppColors.black.withOpacity(0.5)),
                         ),
                       ),
                     FittedBox(

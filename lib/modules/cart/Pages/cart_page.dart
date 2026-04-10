@@ -4,6 +4,7 @@ import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:appshop/shared/Widgets/modal_custom.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/helpers/app_alert.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
@@ -55,26 +56,28 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       Icon(
                         Icons.remove_shopping_cart,
-                        color: Colors.black45,
+                        color: AppColors.black.withOpacity(0.45),
                         size: 60,
                       ),
                       SizedBox(height: 16),
                       Text(
                         "Nenhum item encontrado no carrinho.",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black45, fontSize: 16),
+                        style: TextStyle(
+                            color: AppColors.black.withOpacity(0.45),
+                            fontSize: 16),
                       ),
                       SizedBox(height: 40),
                       ElevatedButton.icon(
                         onPressed: () => Navigator.of(context)
                             .pushNamed(AppRoutes.SEARCH_PRODUCT),
-                        icon: Icon(Icons.storefront, color: Colors.white),
+                        icon: Icon(Icons.storefront, color: AppColors.white),
                         label: Text(
                           "Explorar produtos",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: AppColors.white),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor: AppColors.primary,
                           padding: EdgeInsets.symmetric(
                               horizontal: 24, vertical: 14),
                           shape: RoundedRectangleBorder(
@@ -103,7 +106,7 @@ class _CartPageState extends State<CartPage> {
                               formatPrice(_cart.totalAmount),
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.purple,
+                                color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -112,7 +115,7 @@ class _CartPageState extends State<CartPage> {
                               height: 44,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Colors.purple,
+                                color: AppColors.primary,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: TextButton(
@@ -128,7 +131,7 @@ class _CartPageState extends State<CartPage> {
                                 },
                                 child: Text(
                                   "COMPRAR",
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: AppColors.white),
                                 ),
                               ),
                             )
@@ -147,9 +150,9 @@ class _CartPageState extends State<CartPage> {
                 ),
           if (_isLoading)
             Container(
-              color: Colors.black45,
+              color: AppColors.black.withOpacity(0.45),
               child: Center(
-                child: CircularProgressIndicator(color: Colors.white),
+                child: CircularProgressIndicator(color: AppColors.white),
               ),
             ),
         ],

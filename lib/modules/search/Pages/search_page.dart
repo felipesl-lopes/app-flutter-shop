@@ -1,6 +1,7 @@
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
 import 'package:appshop/modules/search/Models/search_model.dart';
+import 'package:appshop/modules/search/Pages/modal_filtro_produto.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => modalFiltroProduto(context: context),
             icon: Icon(
               Icons.tune,
               color: Colors.white,

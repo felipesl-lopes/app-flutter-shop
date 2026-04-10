@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class QuantityButton extends StatelessWidget {
@@ -6,7 +7,9 @@ class QuantityButton extends StatelessWidget {
   final Color color;
 
   const QuantityButton(
-      {required this.onTap, this.color = Colors.purple, required this.icon});
+      {required this.onTap,
+      this.color = AppColors.primary,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class QuantityButton extends StatelessWidget {
         onTap: onTap,
         child: Icon(
           icon,
-          color: Colors.white,
+          color: AppColors.white,
           size: 20,
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ImageAvatar extends StatelessWidget {
@@ -12,7 +13,10 @@ class ImageAvatar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(width: 2, color: Colors.grey.shade300),
+        border: Border.all(
+          width: 2,
+          color: AppColors.grey.withOpacity(0.3),
+        ),
         borderRadius: BorderRadius.circular(40),
       ),
       child: ClipRRect(

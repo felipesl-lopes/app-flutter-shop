@@ -11,6 +11,7 @@ import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
@@ -48,7 +49,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         widget.product ?? _productFromRouteOrProvider(context);
     if (initialProduct == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Produto'), backgroundColor: Colors.purple),
+        appBar:
+            AppBar(title: Text('Produto'), backgroundColor: AppColors.primary),
         body: Center(child: Text('Produto não encontrado.')),
       );
     }
@@ -102,7 +104,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Navigator.of(context).pushNamed(AppRoutes.CART),
                 icon: Icon(
                   Icons.shopping_cart,
-                  color: Colors.white,
+                  color: AppColors.white,
                 )),
             builder: (ctx, cart, child) => Badgee(
               value: cart.itemsCount.toString(),
@@ -178,11 +180,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         product.price,
                       ),
                       style: TextStyle(
-                        fontSize: 15,
-                        decoration: TextDecoration.lineThrough,
-                        decorationColor: Colors.black45,
-                        color: Colors.black45,
-                      ),
+                          fontSize: 15,
+                          decoration: TextDecoration.lineThrough,
+                          decorationColor: AppColors.black.withOpacity(0.5),
+                          color: AppColors.black.withOpacity(0.5)),
                     ),
                   Text(
                     formatPrice(
@@ -242,10 +243,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.shopping_cart, color: Colors.purple),
+                        Icon(Icons.shopping_cart, color: AppColors.primary),
                         SizedBox(width: 12),
                         Text("Adicionar ao carrinho",
-                            style: TextStyle(color: Colors.purple)),
+                            style: TextStyle(color: AppColors.primary)),
                       ],
                     ),
                   ),

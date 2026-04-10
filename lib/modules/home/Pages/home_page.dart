@@ -9,6 +9,7 @@ import 'package:appshop/modules/search/Models/search_model.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class _HomePageState extends State<HomePage> {
           onSubmitted: (_) => FocusScope.of(context).unfocus(),
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
-            fillColor: Colors.white,
+            fillColor: AppColors.white,
             filled: true,
             hintText: "Buscar produto",
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context).pushNamed(AppRoutes.CART),
                 icon: Icon(
                   Icons.shopping_cart,
-                  color: Colors.white,
+                  color: AppColors.white,
                 )),
             builder: (ctx, cart, child) => Badgee(
               value: cart.itemsCount.toString(),
@@ -124,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(),
               )
             : Container(
-                color: Colors.grey.shade100,
+                color: AppColors.grey.withOpacity(0.09),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [

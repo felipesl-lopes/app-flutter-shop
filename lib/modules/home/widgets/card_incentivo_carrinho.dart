@@ -1,4 +1,5 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -37,14 +38,14 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.1),
+                    color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     _carrinhoVazio
                         ? Icons.add_shopping_cart
                         : Icons.shopping_cart,
-                    color: Colors.purple,
+                    color: AppColors.primary,
                     size: 28,
                   ),
                 ),
@@ -60,7 +61,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
+                          color: AppColors.black.withOpacity(0.6),
                         ),
                       ),
                       SizedBox(height: 4),
@@ -70,7 +71,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                             : "${_cartItens.itemsCount} ${_cartItens.items.length == 1 ? 'item' : 'itens'} • ${formatPrice(_cartItens.totalAmount)}",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: AppColors.black.withOpacity(0.6),
                         ),
                       ),
                     ],
@@ -78,7 +79,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.grey.shade500,
+                  color: AppColors.black.withOpacity(0.4),
                 ),
               ],
             ),

@@ -2,6 +2,7 @@ import 'package:appshop/modules/manage_products/widgets/manage_product_grid.dart
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,13 +40,13 @@ class ManageProductsPage extends StatelessWidget {
                       SizedBox(height: 24),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor: AppColors.primary,
                         ),
                         onPressed: () => Navigator.of(context)
                             .pushNamed(AppRoutes.MANAGE_PRODUCT_FORM),
                         child: Text("Cadastre agora",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16)),
+                            style: TextStyle(
+                                color: AppColors.white, fontSize: 16)),
                       ),
                     ],
                   ),

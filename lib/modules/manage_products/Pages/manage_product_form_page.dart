@@ -6,6 +6,7 @@ import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
 import 'package:appshop/shared/helpers/app_alert.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
@@ -358,9 +359,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         DropdownMenu<String>(
                           menuHeight: 350,
                           inputDecorationTheme: InputDecorationTheme(
-                            fillColor: Colors.white,
+                            fillColor: AppColors.white,
                             filled: true,
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: AppColors.grey),
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 2),
                             border: OutlineInputBorder(
@@ -445,7 +446,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                               border: Border.all(
-                                                  color: Colors.grey,
+                                                  color: AppColors.grey,
                                                   width: 1)),
                                           child: ClipRRect(
                                             borderRadius:
@@ -465,8 +466,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                             width: 28,
                                             height: 28,
                                             decoration: BoxDecoration(
-                                              color:
-                                                  Colors.grey.withOpacity(0.7),
+                                              color: AppColors.grey
+                                                  .withOpacity(0.7),
                                               borderRadius:
                                                   BorderRadius.circular(40),
                                             ),
@@ -496,8 +497,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     color: _produtoPromocional
-                                        ? Colors.grey.shade800
-                                        : Colors.grey.shade500,
+                                        ? AppColors.black.withOpacity(0.7)
+                                        : AppColors.black.withOpacity(0.4),
                                   ),
                                 ),
                                 Switch(
@@ -663,10 +664,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: _hasChanges && !_isLoading ? _submitForm : null,
             backgroundColor:
-                _hasChanges && !_isLoading ? Colors.purple : Colors.grey,
+                _hasChanges && !_isLoading ? AppColors.primary : AppColors.grey,
             label: Text(
               "Salvar",
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: AppColors.white, fontSize: 16),
             ),
           ),
         ),

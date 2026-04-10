@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DrawerAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -18,13 +19,13 @@ class DrawerAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: centerTitle,
-      backgroundColor: Colors.purple,
-      iconTheme: IconThemeData(color: Colors.white),
+      backgroundColor: AppColors.primary,
+      iconTheme: IconThemeData(color: AppColors.white),
       title: titleWidget ??
           Text(
             title ?? '',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.white,
             ),
           ),
       actions: actions,

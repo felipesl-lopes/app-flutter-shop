@@ -1,5 +1,6 @@
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -68,8 +69,8 @@ class _CarouselImagesProductState extends State<CarouselImagesProduct> {
                   height: 6,
                   decoration: BoxDecoration(
                     color: _currentIndex == index
-                        ? Colors.black87
-                        : Colors.black38,
+                        ? AppColors.black.withOpacity(0.8)
+                        : AppColors.black.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

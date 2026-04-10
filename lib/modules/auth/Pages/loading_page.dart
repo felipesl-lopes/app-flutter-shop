@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatelessWidget {
@@ -19,7 +20,7 @@ class LoadingPage extends StatelessWidget {
             SizedBox(
               height: 28,
               width: 28,
-              child: CircularProgressIndicator(color: Colors.purple),
+              child: CircularProgressIndicator(color: AppColors.primary),
             ),
           ],
         ),

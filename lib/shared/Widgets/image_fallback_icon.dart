@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ImageFallbackIcon extends StatelessWidget {
@@ -9,7 +10,7 @@ class ImageFallbackIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Icon(
       Icons.image_not_supported,
-      color: Colors.grey,
+      color: AppColors.grey,
       size: size,
     );
   }

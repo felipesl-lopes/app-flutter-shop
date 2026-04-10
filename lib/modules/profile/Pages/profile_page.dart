@@ -1,6 +1,7 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/get_iniciais.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Colors.purple;
+    final themeColor = AppColors.primary;
     final _auth = Provider.of<AuthProvider>(context);
 
     final List<(IconData, String, VoidCallback?)> topics = [

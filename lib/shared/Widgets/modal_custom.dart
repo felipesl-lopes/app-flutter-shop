@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 Future<dynamic> modalCustom({
@@ -26,7 +27,7 @@ Future<dynamic> modalCustom({
             Container(
               padding: EdgeInsets.all(20),
               alignment: Alignment.center,
-              child: Icon(icon, size: 40, color: Colors.grey),
+              child: Icon(icon, size: 40, color: AppColors.grey),
             ),
             Text(
               text,
@@ -38,13 +39,13 @@ Future<dynamic> modalCustom({
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child:
-                      Text("CANCELAR", style: TextStyle(color: Colors.purple)),
+                  child: Text("CANCELAR",
+                      style: TextStyle(color: AppColors.black)),
                 ),
                 SizedBox(width: 8),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -52,7 +53,7 @@ Future<dynamic> modalCustom({
                   onPressed: onTap,
                   child: Text(
                     "CONFIRMAR",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: AppColors.white),
                   ),
                 ),
               ],

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:appshop/shared/Models/banner_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BannerCarousel extends StatefulWidget {
@@ -95,8 +96,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
                   width: _currentIndex == index ? 10 : 6,
                   height: 6,
                   decoration: BoxDecoration(
-                    color:
-                        _currentIndex == index ? Colors.white : Colors.white60,
+                    color: _currentIndex == index
+                        ? AppColors.white
+                        : AppColors.white.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

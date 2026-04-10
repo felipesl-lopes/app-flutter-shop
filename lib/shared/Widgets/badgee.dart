@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Badgee extends StatelessWidget {
@@ -27,7 +28,7 @@ class Badgee extends StatelessWidget {
                 color: color ?? Colors.redAccent),
             child: Text(
               value,
-              style: TextStyle(fontSize: 10, color: Colors.white),
+              style: TextStyle(fontSize: 10, color: AppColors.white),
               textAlign: TextAlign.center,
             ),
             constraints: BoxConstraints(

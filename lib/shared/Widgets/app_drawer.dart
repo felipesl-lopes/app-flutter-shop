@@ -1,5 +1,6 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Widgets/modal_custom.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,13 +16,13 @@ class AppDrawer extends StatelessWidget {
         children: [
           AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.purple,
-            iconTheme: IconThemeData(color: Colors.white),
+            backgroundColor: AppColors.primary,
+            iconTheme: IconThemeData(color: AppColors.white),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Bem vindo(a) ${user?.name}",
-                    style: TextStyle(color: Colors.white, fontSize: 20)),
+                    style: TextStyle(color: AppColors.white, fontSize: 20)),
               ],
             ),
           ),
@@ -67,8 +68,8 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.logout, color: Colors.purple),
-            title: Text("Sair", style: TextStyle(color: Colors.purple)),
+            leading: Icon(Icons.logout, color: AppColors.primary),
+            title: Text("Sair", style: TextStyle(color: AppColors.primary)),
             onTap: () {
               modalCustom(
                 context: context,

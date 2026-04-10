@@ -1,6 +1,7 @@
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/order.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
@@ -83,7 +84,7 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                                 "${product.quantity}x ${formatPrice(product.price)}",
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.black54,
+                                  color: AppColors.black.withOpacity(0.54),
                                 ),
                               ),
                             ],

@@ -1,6 +1,7 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/auth/enum/auth_mode.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/services/preferencies_values.dart';
 import 'package:appshop/shared/utils/auth_validators.dart';
 import 'package:flutter/material.dart';
@@ -152,10 +153,10 @@ class _AuthFormState extends State<AuthForm> {
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
-                fillColor: Colors.white,
+                fillColor: AppColors.white,
                 filled: true,
                 hintText: "Senha",
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(color: AppColors.grey),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 border:
@@ -191,10 +192,10 @@ class _AuthFormState extends State<AuthForm> {
                   TextFormField(
                       controller: _passwordConfirmController,
                       decoration: InputDecoration(
-                        fillColor: Colors.white,
+                        fillColor: AppColors.white,
                         filled: true,
                         hintText: "Confirme a senha",
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: TextStyle(color: AppColors.grey),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         border: OutlineInputBorder(
@@ -236,10 +237,11 @@ class _AuthFormState extends State<AuthForm> {
                     child: Row(
                       children: [
                         Checkbox(
-                            value: _keepLogged,
-                            onChanged: (_) => _toggleKeepLogged(),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap),
+                          value: _keepLogged,
+                          onChanged: (_) => _toggleKeepLogged(),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                        ),
                         Text("Permanecer conectado"),
                       ],
                     ),
@@ -254,7 +256,7 @@ class _AuthFormState extends State<AuthForm> {
                       onPressed: () {},
                       child: Text(
                         "Recuperar senha",
-                        style: TextStyle(color: Colors.purple),
+                        style: TextStyle(color: AppColors.black),
                       ),
                     ),
                   ),
@@ -267,7 +269,7 @@ class _AuthFormState extends State<AuthForm> {
                 onPressed: _isLoading ? () {} : _submitForm,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(12),
-                  backgroundColor: Colors.purple,
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -277,11 +279,11 @@ class _AuthFormState extends State<AuthForm> {
                         height: 23,
                         width: 23,
                         child: CircularProgressIndicator(
-                            color: Colors.white, strokeWidth: 3),
+                            color: AppColors.white, strokeWidth: 3),
                       )
                     : Text(
                         _isLogin() ? "Entrar" : "Registrar",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(color: AppColors.white, fontSize: 16),
                       ),
               ),
             ),
@@ -300,7 +302,7 @@ class _AuthFormState extends State<AuthForm> {
                   onPressed: _isLoading ? null : _switchFormMode,
                   child: Text(
                     _isLogin() ? "Registre-se" : "Logar",
-                    style: TextStyle(color: Colors.purple),
+                    style: TextStyle(color: AppColors.primary),
                   ),
                 ),
               ],

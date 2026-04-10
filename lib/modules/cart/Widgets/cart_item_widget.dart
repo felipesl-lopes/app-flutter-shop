@@ -2,6 +2,7 @@ import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Widgets/quantity_button.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Widgets/image_avatar.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,8 +100,8 @@ class CartItemWidget extends StatelessWidget {
                             margin: EdgeInsets.symmetric(horizontal: 4),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                border:
-                                    Border.all(width: 1.5, color: Colors.grey),
+                                border: Border.all(
+                                    width: 1.5, color: AppColors.grey),
                                 borderRadius: BorderRadius.circular(8)),
                           ),
                           QuantityButton(
