@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:appshop/modules/categorias/Models/categorias_model.dart';
 import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/product_image_model.dart';
@@ -33,8 +34,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _percentageController = TextEditingController();
   final _promotionDateController = TextEditingController();
 
-  String? _selectedCategory;
-
+  List<String> _selectedCategories = [];
   List<ProductImageModel> _imageUrls = [];
   bool _isInit = true;
   bool _isLoading = false;
@@ -68,7 +68,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final price = double.parse(_priceController.text);
     final description = _descriptionController.text.trim();
     final imageUrls = _imageUrls;
-    final categories = _selectedCategory == null ? [] : [_selectedCategory!];
+    final categories = _selectedCategories;
 
     final data = <String, Object>{
       "name": name,
@@ -80,10 +80,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     if ((_percentageController.value.text.isNotEmpty ||
             _promotionDateController.value.text.isNotEmpty) &&
-        _produtoPromocional == false) {
-      // TODO: implementar a caixa de diálogo para confirmar a ação.
-      // Se SIM, então salva.
-    }
+        _produtoPromocional == false) {}
 
     if (_produtoPromocional) {
       final percentage = int.tryParse(
@@ -203,9 +200,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _priceController.text = _editedProduct!.price.toString();
         _descriptionController.text = _editedProduct!.description;
         _imageUrls = List.from(_editedProduct!.imageUrls);
-        _selectedCategory = _editedProduct!.categories.isNotEmpty
-            ? _editedProduct!.categories.first
-            : null;
+        _selectedCategories = List.from(_editedProduct!.categories);
         _percentageController.text = _editedProduct!.discountPercentage != null
             ? _editedProduct!.discountPercentage.toString()
             : "";
@@ -226,7 +221,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
       'price': _priceController.text.trim(),
       'description': _descriptionController.text.trim(),
       'imageUrls': _imageUrls.map((e) => e.value).toList(),
-      'selectedCategory': _selectedCategory,
+      'selectedCategories': List<String>.from(_selectedCategories)..sort(),
       'discountPercentage': _percentageController.text.trim(),
       'promotionEndDate': _promotionDateController.text.trim(),
     };
@@ -238,7 +233,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final hasChanged = current['name'] != _initialFormData['name'] ||
         current['price'] != _initialFormData['price'] ||
         current['description'] != _initialFormData['description'] ||
-        current['selectedCategory'] != _initialFormData['selectedCategory'] ||
+        !_listEquals(
+          current['selectedCategories'],
+          _initialFormData['selectedCategories'],
+        ) ||
         !_listEquals(
           current['imageUrls'],
           _initialFormData['imageUrls'],
@@ -356,43 +354,70 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           validator: (value) => isValidName(value ?? ""),
                         ),
                         SizedBox(height: 20),
-                        DropdownMenu<String>(
-                          menuHeight: 350,
-                          inputDecorationTheme: InputDecorationTheme(
-                            fillColor: AppColors.white,
-                            filled: true,
-                            hintStyle: TextStyle(color: AppColors.grey),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 2),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(12),
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            dense: true,
+                            minVerticalPadding: 0,
+                            visualDensity: VisualDensity.compact,
+                            title: Text(
+                              'Selecionar categoria',
+                              style: TextStyle(
+                                  fontSize: 16, color: AppColors.grey),
                             ),
-                            errorStyle: TextStyle(
-                              fontSize: 14,
-                              height: 0,
-                            ),
-                            isDense: true,
+                            trailing: Icon(Icons.arrow_drop_down),
+                            onTap: () {
+                              setState(() {
+                                _checkForChanges();
+                              });
+                              selecionarCategorias(context, categorias);
+                            },
                           ),
-                          width: MediaQuery.of(context).size.width - 40,
-                          initialSelection: _selectedCategory,
-                          hintText: "Categoria",
-                          onSelected: (value) {
-                            setState(() {
-                              _selectedCategory = value;
-                              _categoriesController.text = value ?? '';
-                              _checkForChanges();
-                            });
-                          },
-                          dropdownMenuEntries: categorias.map((categoria) {
-                            return DropdownMenuEntry<String>(
-                              value: categoria.id,
-                              label: categoria.nome,
-                            );
-                          }).toList(),
+                        ),
+                        SizedBox(height: 8),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _selectedCategories.map((id) {
+                              final categoria =
+                                  categorias.firstWhere((c) => c.id == id);
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
+                                margin: EdgeInsets.only(right: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(categoria.nome),
+                                    IconButton(
+                                      constraints: BoxConstraints(),
+                                      padding: EdgeInsets.zero,
+                                      style: ButtonStyle(
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {});
+                                        _selectedCategories
+                                            .remove(categoria.id);
+                                        _checkForChanges();
+                                      },
+                                      icon: Icon(Icons.close, size: 18),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                         SizedBox(height: 20),
                         TextFormField(
@@ -672,6 +697,69 @@ class _ProductFormPageState extends State<ProductFormPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<dynamic> selecionarCategorias(
+      BuildContext context, List<CategoriasModel> categorias) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Selecionar categoria', textAlign: TextAlign.center),
+              content: SizedBox(
+                height: 400,
+                width: double.maxFinite,
+                child: ListView.builder(
+                  itemCount: categorias.length,
+                  itemBuilder: (context, index) {
+                    final categoria = categorias[index];
+                    return CheckboxListTile(
+                      title: Text(categoria.nome),
+                      value: _selectedCategories.contains(categoria.id),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == true) {
+                            if (_selectedCategories.length == 3) {
+                              showAppFlushbar(
+                                context,
+                                message:
+                                    'Você pode selecionar no máximo 3 categorias.',
+                                type: FlushType.error,
+                                position: FlushPosition.top,
+                              );
+                              return;
+                            }
+                            _selectedCategories.add(categoria.id);
+                          } else {
+                            _selectedCategories.remove(categoria.id);
+                          }
+                        });
+                        _checkForChanges();
+                      },
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      setState(() {});
+                      Navigator.pop(context);
+                    },
+                    child: Text('Fechar'))
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
