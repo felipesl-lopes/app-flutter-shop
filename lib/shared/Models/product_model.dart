@@ -8,6 +8,7 @@ class ProductModel {
   final List<ProductImageModel> imageUrls;
   final List<String> categories;
   final String userId;
+  final int quantity;
   bool isFavorite;
   final bool isPromotional;
   final int? discountPercentage;
@@ -21,6 +22,7 @@ class ProductModel {
     required this.imageUrls,
     required this.categories,
     required this.userId,
+    required this.quantity,
     this.isFavorite = false,
     this.isPromotional = false,
     this.discountPercentage,
@@ -33,6 +35,7 @@ class ProductModel {
       name: json['name'],
       description: json['description'],
       price: (json['price'] as num).toDouble(),
+      quantity: json['quantity'] == null ? 1 : json['quantity'],
       imageUrls: (json['imageUrls'] as List)
           .map((e) => ProductImageModel.fromJson(e))
           .toList(),
@@ -61,6 +64,7 @@ class ProductModel {
       'isPromotional': isPromotional,
       'discountPercentage': discountPercentage,
       'promotionEndDate': promotionEndDate?.toIso8601String(),
+      'quantity': quantity,
     };
   }
 
@@ -76,12 +80,14 @@ class ProductModel {
     bool? isPromotional,
     int? Function()? discountPercentage,
     DateTime? Function()? promotionEndDate,
+    int? quantity,
   }) {
     return ProductModel(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
       imageUrls: imageUrls,
       categories: categories ?? this.categories,
       userId: userId ?? this.userId,
@@ -101,6 +107,7 @@ class ProductModel {
       name: map['name'],
       description: map['description'],
       price: (map['price'] as num).toDouble(),
+      quantity: map['quantity'] == null ? 1 : map['quantity'],
       imageUrls: (map['imageUrls'] as List)
           .map((e) => ProductImageModel.fromMap(e))
           .toList(),
@@ -123,6 +130,7 @@ class ProductModel {
       'name': name,
       'description': description,
       'price': price,
+      'quantity': quantity,
       'imageUrls': imageUrls.map((e) => e.toMap()).toList(),
       'categories': categories,
       'userId': userId,

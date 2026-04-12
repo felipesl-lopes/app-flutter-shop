@@ -134,6 +134,7 @@ class ProductProvider with ChangeNotifier {
       name: data["name"] as String,
       description: data["description"] as String,
       price: data["price"] as double,
+      quantity: data['quantity'] as int,
       imageUrls: data["imageUrls"] as List<ProductImageModel>,
       categories: List<String>.from(data['categories'] as List<String>),
       userId: _userId,

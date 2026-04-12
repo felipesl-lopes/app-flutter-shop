@@ -29,6 +29,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _imageUrlController = TextEditingController();
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
+  final _quantityController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _categoriesController = TextEditingController();
   final _percentageController = TextEditingController();
@@ -66,6 +67,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     final name = _nameController.text.trim();
     final price = double.parse(_priceController.text);
+    final quantity = int.parse(_quantityController.text);
     final description = _descriptionController.text.trim();
     final imageUrls = _imageUrls;
     final categories = _selectedCategories;
@@ -73,6 +75,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final data = <String, Object>{
       "name": name,
       "price": price,
+      "quantity": quantity,
       "description": description,
       "imageUrls": imageUrls,
       "categories": categories,
@@ -198,6 +201,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
         _nameController.text = _editedProduct!.name;
         _priceController.text = _editedProduct!.price.toString();
+        _quantityController.text = _editedProduct!.quantity.toString();
         _descriptionController.text = _editedProduct!.description;
         _imageUrls = List.from(_editedProduct!.imageUrls);
         _selectedCategories = List.from(_editedProduct!.categories);
@@ -219,6 +223,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     return {
       'name': _nameController.text.trim(),
       'price': _priceController.text.trim(),
+      'quantity': _quantityController.text.trim(),
       'description': _descriptionController.text.trim(),
       'imageUrls': _imageUrls.map((e) => e.value).toList(),
       'selectedCategories': List<String>.from(_selectedCategories)..sort(),
@@ -243,7 +248,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
         ) ||
         current['discountPercentage'] !=
             _initialFormData['discountPercentage'] ||
-        current['promotionEndDate'] != _initialFormData['promotionEndDate'];
+        current['promotionEndDate'] != _initialFormData['promotionEndDate'] ||
+        current['quantity'] != _initialFormData['quantity'];
 
     if (hasChanged != _hasChanges) {
       setState(() => _hasChanges = hasChanged);
@@ -267,6 +273,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     _imageUrlController.dispose();
     _categoriesController.dispose();
     _percentageController.dispose();
+    _quantityController.dispose();
     _promotionDateController.dispose();
   }
 
@@ -350,7 +357,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         TextFormField(
                           controller: _nameController,
                           onChanged: (_) => _checkForChanges(),
-                          decoration: getInputDecoration("Nome"),
+                          decoration: getInputDecoration("Nome do produto",
+                              activityLabel: true),
                           validator: (value) => isValidName(value ?? ""),
                         ),
                         SizedBox(height: 20),
@@ -420,19 +428,40 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        TextFormField(
-                          controller: _priceController,
-                          onChanged: (_) => _checkForChanges(),
-                          decoration: getInputDecoration("Preço"),
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
-                          validator: (value) => isValidPrice(value ?? ""),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _priceController,
+                                onChanged: (_) => _checkForChanges(),
+                                decoration: getInputDecoration("Preço unitário",
+                                    activityLabel: true),
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true),
+                                validator: (value) => isValidPrice(value ?? ""),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _quantityController,
+                                onChanged: (_) => _checkForChanges(),
+                                decoration: getInputDecoration("Unidades",
+                                    activityLabel: true),
+                                keyboardType: TextInputType.number,
+                                validator: (value) =>
+                                    isValidQuantity(value ?? ""),
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 20),
                         TextFormField(
                           controller: _descriptionController,
                           onChanged: (_) => _checkForChanges(),
-                          decoration: getInputDecoration("Descrição"),
+                          decoration: getInputDecoration(
+                              "Adicione todas as descrições do produto.",
+                              activityHint: true),
                           keyboardType: TextInputType.multiline,
                           maxLines: 5,
                           validator: (value) => isValidDescription(value ?? ""),
@@ -446,8 +475,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                 Expanded(
                                   child: TextFormField(
                                     controller: _imageUrlController,
-                                    decoration:
-                                        getInputDecoration("URL da imagem"),
+                                    decoration: getInputDecoration(
+                                        "URL da imagem",
+                                        activityLabel: true),
                                     keyboardType: TextInputType.url,
                                   ),
                                 ),

@@ -138,14 +138,15 @@ class _AuthFormState extends State<AuthForm> {
                 children: [
                   TextFormField(
                       controller: _nameController,
-                      decoration: getInputDecoration("Nome"),
+                      decoration:
+                          getInputDecoration("Nome", activityLabel: true),
                       validator: (value) => isValidName(value ?? '')),
                   SizedBox(height: 28),
                 ],
               ),
             TextFormField(
               controller: _emailController,
-              decoration: getInputDecoration("E-mail"),
+              decoration: getInputDecoration("E-mail", activityLabel: true),
               keyboardType: TextInputType.emailAddress,
               validator: (value) => isValidEmail(value ?? ""),
             ),
@@ -155,8 +156,8 @@ class _AuthFormState extends State<AuthForm> {
               decoration: InputDecoration(
                 fillColor: AppColors.white,
                 filled: true,
-                hintText: "Senha",
-                hintStyle: TextStyle(color: AppColors.grey),
+                labelText: 'Senha',
+                labelStyle: TextStyle(color: AppColors.grey),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 border:
@@ -194,8 +195,8 @@ class _AuthFormState extends State<AuthForm> {
                       decoration: InputDecoration(
                         fillColor: AppColors.white,
                         filled: true,
-                        hintText: "Confirme a senha",
-                        hintStyle: TextStyle(color: AppColors.grey),
+                        labelText: 'Confirme a senha',
+                        labelStyle: TextStyle(color: AppColors.grey),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         border: OutlineInputBorder(

@@ -28,15 +28,23 @@ String? isValidCategory(String category) {
 }
 
 String? isValidPrice(String priceValue) {
-  if (priceValue.endsWith('.')) {
-    return "Digite um valor válido.";
-  }
+  final price = double.tryParse(priceValue);
   if (priceValue.trim().isEmpty) {
     return "Preço é obrigatório.";
   }
-  final price = double.tryParse(priceValue);
-  if (price == null || price <= 0.0) {
+  if (price == null || price <= 0.0 || priceValue.endsWith('.')) {
     return "Digite um valor válido.";
+  }
+  return null;
+}
+
+String? isValidQuantity(String quantity) {
+  final quant = int.tryParse(quantity);
+  if (quantity.trim().isEmpty) {
+    "Quantidade é obrigatória.";
+  }
+  if (quant == null || quant <= 0 || quantity.endsWith('.')) {
+    return "Digite uma quantidade válida.";
   }
   return null;
 }

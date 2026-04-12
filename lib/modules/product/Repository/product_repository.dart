@@ -35,6 +35,8 @@ class ProductRepository {
               name: productData["name"],
               description: productData["description"],
               price: productData["price"],
+              quantity:
+                  productData['quantity'] == null ? 1 : productData['quantity'],
               imageUrls:
                   imageData.map((e) => ProductImageModel.fromMap(e)).toList(),
               categories: productData['categories'] == null
@@ -95,6 +97,7 @@ class ProductRepository {
         "name": product.name,
         "description": product.description,
         "price": product.price,
+        "quantity": product.quantity,
         "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
         "categories": product.categories,
         "isPromotional": product.isPromotional,
@@ -124,6 +127,7 @@ class ProductRepository {
         "name": product.name,
         "description": product.description,
         "price": product.price,
+        "quantity": product.quantity,
         "imageUrls": product.imageUrls.map((e) => e.toJson()).toList(),
         "categories": product.categories,
         "isPromotional": product.isPromotional,

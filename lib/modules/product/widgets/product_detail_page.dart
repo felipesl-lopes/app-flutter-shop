@@ -64,6 +64,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       product = initialProduct;
     }
 
+    late int unidadesArredondadas;
+
+    if (product.quantity >= 100) {
+      unidadesArredondadas = (product.quantity / 100).floor() * 100;
+    } else if (product.quantity >= 10) {
+      unidadesArredondadas = (product.quantity / 10).floor() * 10;
+    } else {
+      unidadesArredondadas = product.quantity;
+    }
+
     final cart = Provider.of<CartProvider>(context);
 
     final _categories = Provider.of<CategoriasProvider>(context, listen: false);
@@ -201,27 +211,42 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   SizedBox(height: 8),
                   Divider(),
                   SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                              _nomesCategorias.length > 1
+                                  ? "Categorias: "
+                                  : "Categoria: ",
+                              style: TextStyle(fontWeight: FontWeight.w600)),
+                          Text(_nomesCategorias.join((', '))),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Text("Descrição:",
+                          style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text(product.description),
+                      SizedBox(height: 8),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.grey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
                           children: [
                             Text(
-                                _nomesCategorias.length > 1
-                                    ? "Categorias: "
-                                    : "Categoria: ",
-                                style: TextStyle(fontWeight: FontWeight.w600)),
-                            Text(_nomesCategorias.join((', '))),
+                              unidadesArredondadas < product.quantity
+                                  ? 'Unidades disponíveis: + de $unidadesArredondadas'
+                                  : 'Unidades disponíveis: ${product.quantity}',
+                              style: TextStyle(fontSize: 15),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 8),
-                        Text("Descrição:",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
-                        Text(product.description),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 12),
                   Container(
