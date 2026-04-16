@@ -15,6 +15,7 @@ import 'package:appshop/shared/utils/formatters.dart';
 import 'package:appshop/shared/utils/product_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProductFormPage extends StatefulWidget {
@@ -47,6 +48,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
   bool _maxDateWarningShown = false;
   bool _maxPercentageWarningShown = false;
 
+  double parsePrice(String value) {
+    final clean = value.replaceAll('.', '').replaceAll(',', '.').trim();
+    return double.tryParse(clean) ?? 0;
+  }
+
   Future<void> _submitForm() async {
     final isValidy = _formKey.currentState?.validate() ?? false;
     if (!isValidy) {
@@ -66,7 +72,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() => _isLoading = true);
 
     final name = _nameController.text.trim();
-    final price = double.parse(_priceController.text);
+    final price = parsePrice(_priceController.text);
     final quantity = int.parse(_quantityController.text);
     final description = _descriptionController.text.trim();
     final imageUrls = _imageUrls;
@@ -432,13 +438,45 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           children: [
                             Expanded(
                               child: TextFormField(
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction(
+                                      (oldValue, newValue) {
+                                    String digits = newValue.text
+                                        .replaceAll(RegExp(r'\D'), '');
+
+                                    if (digits.isEmpty) {
+                                      return newValue.copyWith(text: '');
+                                    }
+
+                                    double value = double.parse(digits) / 100;
+
+                                    final formatter = NumberFormat.currency(
+                                      locale: 'pt_BR',
+                                      symbol: '',
+                                    );
+
+                                    final newText = formatter.format(value);
+
+                                    return TextEditingValue(
+                                      text: newText,
+                                      selection: TextSelection.collapsed(
+                                          offset: newText.length),
+                                    );
+                                  }),
+                                ],
                                 controller: _priceController,
                                 onChanged: (_) => _checkForChanges(),
                                 decoration: getInputDecoration("Preço unitário",
                                     activityLabel: true),
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true),
-                                validator: (value) => isValidPrice(value ?? ""),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty)
+                                    return 'Informe um valor';
+                                  final price = parsePrice(value);
+                                  if (price <= 0) return 'Valor inválido';
+                                  return null;
+                                },
                               ),
                             ),
                             SizedBox(width: 20),
@@ -623,8 +661,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                               keyboardType: TextInputType
                                                   .numberWithOptions(
                                                       decimal: true),
-                                              validator: (value) =>
-                                                  isValidPrice(value ?? ""),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty)
+                                                  return 'Informe um valor';
+                                                final price = parsePrice(value);
+                                                if (price <= 0)
+                                                  return 'Valor inválido';
+                                                return null;
+                                              },
                                             ),
                                           ),
                                           Text(" % de desconto.")

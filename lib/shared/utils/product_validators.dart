@@ -27,17 +27,6 @@ String? isValidCategory(String category) {
   return null;
 }
 
-String? isValidPrice(String priceValue) {
-  final price = double.tryParse(priceValue);
-  if (priceValue.trim().isEmpty) {
-    return "Preço é obrigatório.";
-  }
-  if (price == null || price <= 0.0 || priceValue.endsWith('.')) {
-    return "Digite um valor válido.";
-  }
-  return null;
-}
-
 String? isValidQuantity(String quantity) {
   final quant = int.tryParse(quantity);
   if (quantity.trim().isEmpty) {
