@@ -49,6 +49,7 @@ void configureDependencies() {
   getIt.registerLazySingleton<CartProvider>(() => CartProvider(
         getIt<AuthProvider>(),
         getIt<CartRepository>(),
+        getIt<ProductProvider>(),
       ));
 
   getIt.registerLazySingleton<ProductProvider>(() => ProductProvider(
@@ -65,6 +66,7 @@ void configureDependencies() {
         getIt<AuthProvider>(),
         getIt<CartRepository>(),
         getIt<OrderRepository>(),
+        getIt<ProductProvider>(),
       ));
 
   getIt.registerLazySingleton<BannersProvider>(() => BannersProvider(

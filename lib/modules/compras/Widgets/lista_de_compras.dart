@@ -27,7 +27,7 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
       final productList =
           Provider.of<ProductProvider>(context, listen: false).produtos;
 
-      final product = productList.where((p) => p.id == item.id).firstOrNull;
+      final product = productList.where((p) => p.id == item.product.id).firstOrNull;
       if (product == null) {
         showAppFlushbar(
           context,
@@ -61,11 +61,11 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                 child: Column(
                   children: widget.order.products.asMap().entries.map((entry) {
                     final index = entry.key;
-                    final product = entry.value;
+                    final cartItem = entry.value;
                     return Column(
                       children: [
                         InkWell(
-                          onTap: () => _selectPage(context, product),
+                          onTap: () => _selectPage(context, cartItem),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -73,7 +73,7 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                                 child: Text(
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
-                                  product.name,
+                                  cartItem.product.name,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                                 ),
                               ),
                               Text(
-                                "${product.quantity}x ${formatPrice(product.price)}",
+                                "${cartItem.quantity}x ${formatPrice(cartItem.product.price)}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: AppColors.black.withOpacity(0.54),

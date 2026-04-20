@@ -21,8 +21,8 @@ class CartItemWidget extends StatelessWidget {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text("Remover"),
-          content:
-              Text("Deseja remover o produto ${cartItem.name} do carrinho?"),
+          content: Text(
+              "Deseja remover o produto ${cartItem.product.name} do carrinho?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
@@ -31,7 +31,7 @@ class CartItemWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Provider.of<CartProvider>(context, listen: false)
-                    .removeSingleItem(cartItem.id);
+                    .removeSingleItem(cartItem.product.id);
                 Navigator.of(ctx).pop(true);
               },
               child: Text("Sim"),
@@ -48,7 +48,9 @@ class CartItemWidget extends StatelessWidget {
         child: Row(
           children: [
             ImageAvatar(
-              imageUrl: cartItem.imageUrl.isNotEmpty ? cartItem.imageUrl : null,
+              imageUrl: cartItem.product.imageUrls.isNotEmpty
+                  ? cartItem.product.imageUrls.first.value
+                  : '',
             ),
             Expanded(
               child: Row(
@@ -61,14 +63,14 @@ class CartItemWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${cartItem.name}",
+                            "${cartItem.product.name}",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           Text(
-                            "Total: ${formatPrice(cartItem.price * cartItem.quantity)}",
+                            "Total: ${formatPrice(cartItem.product.price * cartItem.quantity)}",
                             style: TextStyle(fontSize: 16),
                           ),
                         ],
@@ -78,14 +80,14 @@ class CartItemWidget extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatPrice(cartItem.price)),
+                      Text(formatPrice(cartItem.product.price)),
                       Row(
                         children: [
                           QuantityButton(
                             onTap: () => {
                               cartItem.quantity == 1
                                   ? showRemoveItemDialog()
-                                  : cart.removeSingleItem(cartItem.id)
+                                  : cart.removeSingleItem(cartItem.product.id)
                             },
                             icon: Icons.remove,
                           ),
@@ -105,7 +107,7 @@ class CartItemWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8)),
                           ),
                           QuantityButton(
-                              onTap: () => cart.addItem(cartItem),
+                              onTap: () => cart.addItem(cartItem.product),
                               icon: Icons.add),
                         ],
                       ),

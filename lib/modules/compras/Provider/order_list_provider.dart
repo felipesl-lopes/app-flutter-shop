@@ -2,6 +2,7 @@ import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
+import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,14 @@ class OrderListProvider with ChangeNotifier {
   final AuthProvider auth;
   final CartRepository _cartRepository;
   final OrderRepository _repository;
+  final ProductProvider _productProvider;
 
-  OrderListProvider(this.auth, this._cartRepository, this._repository);
+  OrderListProvider(
+    this.auth,
+    this._cartRepository,
+    this._repository,
+    this._productProvider,
+  );
 
   List<Order> _items = [];
 
@@ -27,32 +34,41 @@ class OrderListProvider with ChangeNotifier {
 
   Future<void> loadOrders() async {
     try {
-      final data = await _repository.loadOrdersRepository(userId: _userId);
+      final data = await _repository.loadOrdersRepository(
+        userId: _userId,
+      );
+
+      final productsMap = {
+        for (var p in _productProvider.produtos) p.id: p,
+      };
 
       List<Order> items = [];
 
-      data.forEach(
-        (orderId, orderData) {
-          items.add(Order(
+      data.forEach((orderId, orderData) {
+        items.add(
+          Order(
             id: orderId,
             date: DateTime.parse(orderData["date"]),
             total: orderData["total"],
-            products: (orderData["products"] as List<dynamic>).map(
-              (item) {
-                return CartItemModel(
-                  id: item["id"],
-                  name: item["name"],
-                  quantity: item["quantity"],
-                  price: item["price"],
-                  imageUrl: item["imageUrl"] ?? "",
-                );
-              },
-            ).toList(),
-          ));
-        },
-      );
+            products: (orderData["products"] as List<dynamic>)
+                .map((item) {
+                  final product = productsMap[item['id']];
+
+                  if (product == null) return null;
+
+                  return CartItemModel(
+                    product: product,
+                    quantity: item['quantity'],
+                  );
+                })
+                .whereType<CartItemModel>()
+                .toList(),
+          ),
+        );
+      });
 
       _items = items.reversed.toList();
+
       notifyListeners();
     } catch (e) {
       debugPrint(e.toString());
@@ -65,11 +81,11 @@ class OrderListProvider with ChangeNotifier {
 
     final products = cart.items
         .map((cartItem) => {
-              'id': cartItem.id,
-              'name': cartItem.name,
+              'id': cartItem.product.id,
+              'name': cartItem.product.name,
               'quantity': cartItem.quantity,
-              'price': cartItem.price,
-              'imageUrl': cartItem.imageUrl,
+              'price': cartItem.product.price,
+              'imageUrl': cartItem.product.imageUrls.first,
             })
         .toList();
 

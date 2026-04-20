@@ -1,4 +1,5 @@
 import 'package:appshop/shared/Models/cart_item_model.dart';
+import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
 import 'package:flutter/material.dart';
 
@@ -7,9 +8,11 @@ class CartRepository {
 
   CartRepository(this.client);
 
-  Future<List<CartItemModel>> getCart({required String userId}) async {
+  Future<List<CartItemModel>> getCart({
+    required String userId,
+    required Map<String, ProductModel> productsMap,
+  }) async {
     debugPrint('[CartRepository]: getCart');
-
     try {
       final response = await client.get('cartProducts/$userId');
       final data = response.data;
@@ -19,8 +22,15 @@ class CartRepository {
       final List<CartItemModel> items = [];
 
       data.forEach((key, value) {
-        if (value is Map<String, dynamic>) {
-          items.add(CartItemModel.fromJson(value));
+        final item = Map<String, dynamic>.from(value);
+
+        final productId = key;
+        final product = productsMap[productId];
+
+        if (product != null) {
+          items.add(
+            CartItemModel.fromJson(item, product),
+          );
         }
       });
       return items;
@@ -33,7 +43,6 @@ class CartRepository {
     required String productId,
     required int quantity,
     required String userId,
-    required CartItemModel item,
   }) async {
     debugPrint('[CartRepository]: updateItemQuantity');
 
@@ -42,7 +51,7 @@ class CartRepository {
 
       if (response.data == null) {
         await client.put('cartProducts/$userId/$productId',
-            body: item.toJson());
+            body: {'productId': productId, 'quantity': quantity});
         return;
       }
 
