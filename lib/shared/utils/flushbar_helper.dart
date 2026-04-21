@@ -38,7 +38,7 @@ void showAppFlushbar(
         ? FlushbarPosition.TOP
         : FlushbarPosition.BOTTOM,
     messageSize: 18,
-    message: message,
+    message: message.replaceAll('Exception:', ''),
     backgroundColor: bg,
     duration: Duration(seconds: 2),
     borderRadius: BorderRadius.circular(8),

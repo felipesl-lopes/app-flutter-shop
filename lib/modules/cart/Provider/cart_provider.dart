@@ -67,6 +67,10 @@ class CartProvider with ChangeNotifier {
     if (index >= 0) {
       final existing = _carrinhoDeProdutos[index];
 
+      if (existing.quantity == product.quantity) {
+        throw Exception("Quantidade máxima atingida.");
+      }
+
       updatedItem = CartItemModel(
         product: existing.product,
         quantity: existing.quantity + 1,
