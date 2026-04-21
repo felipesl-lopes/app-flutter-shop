@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
     categorias.carregarCategorias();
     banners.loadBanners();
-    cart.loadCart();
+    cart.carregarCarrinho();
 
     produtos.carregarProdutos().then((_) {
       setState(() => _isLoading = false);
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                   color: AppColors.white,
                 )),
             builder: (ctx, cart, child) => Badgee(
-              value: cart.itemsCount.toString(),
+              value: cart.totalDeItens.toString(),
               child: child!,
             ),
           ),

@@ -8,7 +8,7 @@ class CartRepository {
 
   CartRepository(this.client);
 
-  Future<List<CartItemModel>> getCart({
+  Future<List<CartItemModel>> carregarCarrinho({
     required String userId,
     required Map<String, ProductModel> productsMap,
   }) async {
@@ -39,7 +39,7 @@ class CartRepository {
     }
   }
 
-  Future<void> updateItemQuantity({
+  Future<void> atualizarQuantidadeDeItens({
     required String productId,
     required int quantity,
     required String userId,

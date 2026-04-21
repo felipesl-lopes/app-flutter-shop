@@ -107,7 +107,7 @@ class CartItemWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8)),
                           ),
                           QuantityButton(
-                              onTap: () => cart.addItem(cartItem.product),
+                              onTap: () => cart.adcItemAoCarrinho(cartItem.product),
                               icon: Icons.add),
                         ],
                       ),

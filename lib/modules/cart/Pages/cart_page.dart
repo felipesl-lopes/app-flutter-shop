@@ -23,8 +23,7 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     final CartProvider _cart = Provider.of<CartProvider>(context);
-    final _items = _cart.items.toList();
-    bool _carrinhoVazio = _items.length == 0;
+    final _items = _cart.carrinhoDeProdutos.toList();
 
     Future<void> handleBuy() async {
       setState(() => _isLoading = true);
@@ -49,7 +48,7 @@ class _CartPageState extends State<CartPage> {
       drawer: AppDrawer(),
       body: Stack(
         children: [
-          _carrinhoVazio
+          _items.isEmpty
               ? Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -103,7 +102,7 @@ class _CartPageState extends State<CartPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              formatPrice(_cart.totalAmount),
+                              formatPrice(_cart.valorTotal),
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.primary,

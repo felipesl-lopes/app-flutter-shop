@@ -11,31 +11,35 @@ class CartProvider with ChangeNotifier {
   final CartRepository _cartRepository;
   final ProductProvider _productProvider;
 
-  CartProvider(this.auth, this._cartRepository, this._productProvider);
+  CartProvider(
+    this.auth,
+    this._cartRepository,
+    this._productProvider,
+  );
 
   Timer? _debounce;
   String get _userId => auth.userId ?? '';
 
-  List<CartItemModel> _items = [];
-  List<CartItemModel> get items => [..._items];
+  List<CartItemModel> _carrinhoDeProdutos = [];
+  List<CartItemModel> get carrinhoDeProdutos => [..._carrinhoDeProdutos];
 
-  void setItems(List<CartItemModel> value) {
-    _items = value;
+  void setCarrinhoDeProdutos(List<CartItemModel> value) {
+    _carrinhoDeProdutos = value;
     notifyListeners();
   }
 
-  int get itemsCount {
-    return _items.length;
+  int get totalDeItens {
+    return _carrinhoDeProdutos.length;
   }
 
-  double get totalAmount {
-    return _items.fold(
+  double get valorTotal {
+    return _carrinhoDeProdutos.fold(
       0.0,
       (total, item) => total + (item.product.price * item.quantity),
     );
   }
 
-  Future<void> loadCart() async {
+  Future<void> carregarCarrinho() async {
     try {
       if (_productProvider.produtos.isEmpty) {
         await _productProvider.carregarProdutos();
@@ -43,38 +47,39 @@ class CartProvider with ChangeNotifier {
 
       final productsMap = {for (var p in _productProvider.produtos) p.id: p};
 
-      final data = await _cartRepository.getCart(
+      final data = await _cartRepository.carregarCarrinho(
         userId: _userId,
         productsMap: productsMap,
       );
 
-      setItems(data);
+      setCarrinhoDeProdutos(data);
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Future<void> addItem(dynamic product) async {
-    final index = _items.indexWhere((e) => e.product.id == product.id);
+  Future<void> adcItemAoCarrinho(dynamic product) async {
+    final index =
+        _carrinhoDeProdutos.indexWhere((e) => e.product.id == product.id);
 
     late CartItemModel updatedItem;
 
     if (index >= 0) {
-      final existing = _items[index];
+      final existing = _carrinhoDeProdutos[index];
 
       updatedItem = CartItemModel(
         product: existing.product,
         quantity: existing.quantity + 1,
       );
 
-      _items[index] = updatedItem;
+      _carrinhoDeProdutos[index] = updatedItem;
     } else {
       updatedItem = CartItemModel(
         product: product,
         quantity: 1,
       );
 
-      _items.add(updatedItem);
+      _carrinhoDeProdutos.add(updatedItem);
     }
 
     notifyListeners();
@@ -82,10 +87,10 @@ class CartProvider with ChangeNotifier {
 
     _debounce = Timer(Duration(milliseconds: 400), () async {
       try {
-        final item =
-            _items.firstWhere((e) => e.product.id == updatedItem.product.id);
+        final item = _carrinhoDeProdutos
+            .firstWhere((e) => e.product.id == updatedItem.product.id);
 
-        await _cartRepository.updateItemQuantity(
+        await _cartRepository.atualizarQuantidadeDeItens(
           productId: item.product.id,
           quantity: item.quantity,
           userId: _userId,
@@ -93,17 +98,17 @@ class CartProvider with ChangeNotifier {
       } catch (e) {
         debugPrint('Erro ao adicionar produto: $e');
 
-        final index =
-            _items.indexWhere((e) => e.product.id == updatedItem.product.id);
+        final index = _carrinhoDeProdutos
+            .indexWhere((e) => e.product.id == updatedItem.product.id);
 
         if (index >= 0) {
-          if (_items[index].quantity > 1) {
-            _items[index] = CartItemModel(
+          if (_carrinhoDeProdutos[index].quantity > 1) {
+            _carrinhoDeProdutos[index] = CartItemModel(
               product: updatedItem.product,
-              quantity: _items[index].quantity - 1,
+              quantity: _carrinhoDeProdutos[index].quantity - 1,
             );
           } else {
-            _items.removeAt(index);
+            _carrinhoDeProdutos.removeAt(index);
           }
         }
 
@@ -113,16 +118,17 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> removeSingleItem(String productId) async {
-    final index = _items.indexWhere((e) => e.product.id == productId);
+    final index =
+        _carrinhoDeProdutos.indexWhere((e) => e.product.id == productId);
 
     if (index < 0) return;
 
-    final existing = _items[index];
+    final existing = _carrinhoDeProdutos[index];
 
     if (existing.quantity == 1) {
-      _items.removeAt(index);
+      _carrinhoDeProdutos.removeAt(index);
     } else {
-      _items[index] = CartItemModel(
+      _carrinhoDeProdutos[index] = CartItemModel(
         product: existing.product,
         quantity: existing.quantity - 1,
       );
@@ -134,13 +140,14 @@ class CartProvider with ChangeNotifier {
 
     _debounce = Timer(Duration(milliseconds: 400), () async {
       try {
-        final itemIndex = _items.indexWhere(
+        final itemIndex = _carrinhoDeProdutos.indexWhere(
           (e) => e.product.id == productId,
         );
 
-        final quantity = itemIndex >= 0 ? _items[itemIndex].quantity : 0;
+        final quantity =
+            itemIndex >= 0 ? _carrinhoDeProdutos[itemIndex].quantity : 0;
 
-        await _cartRepository.updateItemQuantity(
+        await _cartRepository.atualizarQuantidadeDeItens(
           productId: productId,
           quantity: quantity,
           userId: _userId,
@@ -151,8 +158,8 @@ class CartProvider with ChangeNotifier {
     });
   }
 
-  void clear() {
-    _items = [];
+  void limparCarrinho() {
+    _carrinhoDeProdutos = [];
     notifyListeners();
   }
 }

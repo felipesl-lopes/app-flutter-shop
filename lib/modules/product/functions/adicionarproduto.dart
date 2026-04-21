@@ -21,7 +21,7 @@ class ProductMethod {
     );
 
     try {
-      await cart.addItem(product);
+      await cart.adcItemAoCarrinho(product);
     } catch (e) {
       debugPrint(e.toString());
       ShowSnackbar.snackbarMessage(

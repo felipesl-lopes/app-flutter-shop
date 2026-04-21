@@ -16,7 +16,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
   @override
   Widget build(BuildContext context) {
     final CartProvider _cartItens = Provider.of<CartProvider>(context);
-    final bool _carrinhoVazio = _cartItens.items.isEmpty;
+    final bool _carrinhoVazio = _cartItens.carrinhoDeProdutos.isEmpty;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -68,7 +68,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                       Text(
                         _carrinhoVazio
                             ? "Explore nossos produtos e encontre o que você precisa"
-                            : "${_cartItens.itemsCount} ${_cartItens.items.length == 1 ? 'item' : 'itens'} • ${formatPrice(_cartItens.totalAmount)}",
+                            : "${_cartItens.totalDeItens} ${_cartItens.carrinhoDeProdutos.length == 1 ? 'item' : 'itens'} • ${formatPrice(_cartItens.valorTotal)}",
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.black.withOpacity(0.6),

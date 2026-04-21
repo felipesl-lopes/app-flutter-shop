@@ -79,7 +79,7 @@ class OrderListProvider with ChangeNotifier {
   Future<void> addOrder(CartProvider cart) async {
     final date = DateTime.now();
 
-    final products = cart.items
+    final products = cart.carrinhoDeProdutos
         .map((cartItem) => {
               'id': cartItem.product.id,
               'name': cartItem.product.name,
@@ -91,7 +91,7 @@ class OrderListProvider with ChangeNotifier {
 
     final orderId = await _repository.addOrderRepository(
       userId: _userId,
-      total: cart.totalAmount,
+      total: cart.valorTotal,
       date: date,
       products: products,
     );
@@ -100,15 +100,15 @@ class OrderListProvider with ChangeNotifier {
       0,
       Order(
         id: orderId,
-        total: cart.totalAmount,
+        total: cart.valorTotal,
         date: date,
-        products: cart.items.toList(),
+        products: cart.carrinhoDeProdutos.toList(),
       ),
     );
 
     await _cartRepository.limparCarrinho(userId: _userId);
 
-    cart.clear();
+    cart.limparCarrinho();
     notifyListeners();
   }
 }

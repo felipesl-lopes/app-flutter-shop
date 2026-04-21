@@ -90,7 +90,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             .toList();
 
     void handleBuy() {
-      cart.addItem(product);
+      cart.adcItemAoCarrinho(product);
       Navigator.of(context).pushNamed(AppRoutes.CART);
     }
 
@@ -117,7 +117,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   color: AppColors.white,
                 )),
             builder: (ctx, cart, child) => Badgee(
-              value: cart.itemsCount.toString(),
+              value: cart.totalDeItens.toString(),
               child: child!,
             ),
           ),
