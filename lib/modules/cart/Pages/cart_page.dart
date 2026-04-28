@@ -87,65 +87,9 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                 )
-              : Column(
-                  children: [
-                    Card(
-                      margin: EdgeInsets.all(20),
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Valor total",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              formatPrice(_cart.valorTotal),
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Spacer(),
-                            Container(
-                              height: 44,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: TextButton(
-                                onPressed: () {
-                                  modalCustom(
-                                    context: context,
-                                    onTap: handleBuy,
-                                    title: "Confirmar compra?",
-                                    text:
-                                        "Deseja finalizar a compra dos produtos do carrinho?",
-                                    icon: Icons.card_travel,
-                                  );
-                                },
-                                child: Text(
-                                  "COMPRAR",
-                                  style: TextStyle(color: AppColors.white),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: _items.length,
-                        itemBuilder: (ctx, index) =>
-                            CartItemWidget(_items[index]),
-                      ),
-                    ),
-                  ],
+              : ListView.builder(
+                  itemCount: _items.length,
+                  itemBuilder: (ctx, index) => CartItemWidget(_items[index]),
                 ),
           if (_isLoading)
             Container(
@@ -155,6 +99,58 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
         ],
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      "Valor total",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        formatPrice(_cart.valorTotal),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  modalCustom(
+                    context: context,
+                    onTap: handleBuy,
+                    title: "Confirmar compra?",
+                    text: "Deseja finalizar a compra dos produtos do carrinho?",
+                    icon: Icons.card_travel,
+                  );
+                },
+                child: Text(
+                  "COMPRAR",
+                  style: TextStyle(color: AppColors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

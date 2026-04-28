@@ -44,6 +44,13 @@ class CartItemWidget extends StatelessWidget {
       );
     }
 
+    final _productWithDiscount = product.isPromotional
+        ? discountPercentageAsDouble(
+            product.discountPercentage.toString(),
+            product.price.toString(),
+          )
+        : null;
+
     return Card(
       margin: EdgeInsets.fromLTRB(20, 0, 20, 12),
       child: Padding(
@@ -77,13 +84,33 @@ class CartItemWidget extends StatelessWidget {
                         children: [
                           Text(
                               'Unid. disponíveis: ${product.quantity.toString()}'),
-                          Text(formatPrice(product.price)),
+                          Row(
+                            children: [
+                              Text(
+                                formatPrice(product.price),
+                                style: _productWithDiscount == null
+                                    ? null
+                                    : TextStyle(
+                                        fontSize: 15,
+                                        decoration: TextDecoration.lineThrough,
+                                        decorationColor:
+                                            AppColors.black.withOpacity(0.5),
+                                        color: AppColors.black.withOpacity(0.5),
+                                      ),
+                              ),
+                              SizedBox(width: 6),
+                              if (_productWithDiscount != null)
+                                Text(formatPrice(_productWithDiscount)),
+                            ],
+                          ),
                         ],
                       ),
                       Column(
                         children: [
-                          Text(formatPrice(
-                              cartItem.product.price * cartItem.quantity)),
+                          Text(
+                            formatPrice(_productWithDiscount ??
+                                cartItem.product.price * cartItem.quantity),
+                          ),
                           Row(
                             children: [
                               QuantityButton(
