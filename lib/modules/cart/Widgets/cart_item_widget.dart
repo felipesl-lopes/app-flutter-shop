@@ -50,10 +50,12 @@ class CartItemWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            ImageAvatar(
-              imageUrl: product.imageUrls.isNotEmpty
-                  ? product.imageUrls.first.value
-                  : '',
+            InkWell(
+              child: ImageAvatar(
+                imageUrl: product.imageUrls.isNotEmpty
+                    ? product.imageUrls.first.value
+                    : '',
+              ),
             ),
             SizedBox(width: 16),
             Expanded(
