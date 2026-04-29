@@ -120,12 +120,7 @@ class ProductGridItem extends StatelessWidget {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        formatPrice(
-                          discountPercentageAsDouble(
-                            product.discountPercentage.toString(),
-                            product.price.toString(),
-                          ),
-                        ),
+                        formatPrice(product.valorFinalDoProduto()),
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),

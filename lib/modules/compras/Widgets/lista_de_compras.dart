@@ -27,7 +27,8 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
       final productList =
           Provider.of<ProductProvider>(context, listen: false).produtos;
 
-      final product = productList.where((p) => p.id == item.product.id).firstOrNull;
+      final product =
+          productList.where((p) => p.id == item.product.id).firstOrNull;
       if (product == null) {
         showAppFlushbar(
           context,
@@ -81,7 +82,7 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                                 ),
                               ),
                               Text(
-                                "${cartItem.quantity}x ${formatPrice(cartItem.product.price)}",
+                                "${cartItem.quantity}x ${formatPrice(cartItem.product.valorFinalDoProduto())}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: AppColors.black.withOpacity(0.54),

@@ -29,6 +29,21 @@ class ProductModel {
     this.promotionEndDate,
   });
 
+  double valorFinalDoProduto() {
+    final _percentage = double.tryParse(
+          discountPercentage.toString().replaceAll(',', '.').trim(),
+        ) ??
+        0.0;
+
+    final _price = double.tryParse(
+          price.toString().replaceAll(',', '.').trim(),
+        ) ??
+        0.0;
+
+    if (isPromotional) return _price * (1 - (_percentage / 100));
+    return price;
+  }
+
   factory ProductModel.fromJson(String id, Map<String, dynamic> json) {
     return ProductModel(
       id: id,

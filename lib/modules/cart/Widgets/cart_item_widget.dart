@@ -44,12 +44,8 @@ class CartItemWidget extends StatelessWidget {
       );
     }
 
-    final _productWithDiscount = product.isPromotional
-        ? discountPercentageAsDouble(
-            product.discountPercentage.toString(),
-            product.price.toString(),
-          )
-        : null;
+    final _productWithDiscount =
+        product.isPromotional ? product.valorFinalDoProduto() : null;
 
     return Card(
       margin: EdgeInsets.fromLTRB(20, 0, 20, 12),

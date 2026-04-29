@@ -35,7 +35,10 @@ class CartProvider with ChangeNotifier {
   double get valorTotal {
     return _carrinhoDeProdutos.fold(
       0.0,
-      (total, item) => total + (item.product.price * item.quantity),
+      (total, item) {
+        final produto = item.product;
+        return total + produto.valorFinalDoProduto();
+      },
     );
   }
 

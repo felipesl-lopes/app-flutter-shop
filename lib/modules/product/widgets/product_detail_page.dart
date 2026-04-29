@@ -197,10 +197,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ),
                   Text(
                     formatPrice(
-                      discountPercentageAsDouble(
-                        product.discountPercentage.toString(),
-                        product.price.toString(),
-                      ),
+                      product.valorFinalDoProduto(),
                     ),
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
