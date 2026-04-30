@@ -100,58 +100,62 @@ class _CartPageState extends State<CartPage> {
             ),
         ],
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Row(
-            children: [
-              Expanded(
+      bottomNavigationBar: _items.isEmpty
+          ? null
+          : SafeArea(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Row(
                   children: [
-                    Text(
-                      "Valor total",
-                      style: TextStyle(fontSize: 20),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Text(
+                            "Valor total",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(width: 10),
+                          Flexible(
+                            child: Text(
+                              formatPrice(_cart.valorTotal),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 10),
-                    Flexible(
-                      child: Text(
-                        formatPrice(_cart.valorTotal),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                      ),
+                      onPressed: () {
+                        if (_items.isEmpty) return;
+                        modalCustom(
+                          context: context,
+                          onTap: handleBuy,
+                          title: "Confirmar compra?",
+                          text:
+                              "Deseja finalizar a compra dos produtos do carrinho?",
+                          icon: Icons.card_travel,
+                        );
+                      },
+                      child: Text(
+                        "COMPRAR",
+                        style: TextStyle(color: AppColors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {
-                  modalCustom(
-                    context: context,
-                    onTap: handleBuy,
-                    title: "Confirmar compra?",
-                    text: "Deseja finalizar a compra dos produtos do carrinho?",
-                    icon: Icons.card_travel,
-                  );
-                },
-                child: Text(
-                  "COMPRAR",
-                  style: TextStyle(color: AppColors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

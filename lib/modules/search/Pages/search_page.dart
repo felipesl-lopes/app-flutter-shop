@@ -1,9 +1,13 @@
+import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
 import 'package:appshop/modules/search/Models/search_model.dart';
 import 'package:appshop/modules/search/Pages/modal_filtro_produto.dart';
 import 'package:appshop/shared/Models/product_model.dart';
+import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/constants/app_colors.dart';
+import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -122,6 +126,19 @@ class _SearchPageState extends State<SearchPage> {
             icon: Icon(
               Icons.tune,
               color: Colors.white,
+            ),
+          ),
+          Consumer<CartProvider>(
+            child: IconButton(
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.CART),
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: AppColors.white,
+                )),
+            builder: (ctx, cart, child) => Badgee(
+              value: cart.totalDeItens.toString(),
+              child: child!,
             ),
           ),
         ],
