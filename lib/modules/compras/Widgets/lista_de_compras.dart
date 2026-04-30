@@ -1,5 +1,4 @@
 import 'package:appshop/modules/product/Provider/product_provider.dart';
-import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
@@ -23,12 +22,11 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
 
   @override
   Widget build(BuildContext context) {
-    void _selectPage(BuildContext context, CartItemModel item) {
+    void _selectPage(BuildContext context, ComprasModel item) {
       final productList =
           Provider.of<ProductProvider>(context, listen: false).produtos;
 
-      final product =
-          productList.where((p) => p.id == item.product.id).firstOrNull;
+      final product = productList.where((p) => p.id == item.id).firstOrNull;
       if (product == null) {
         showAppFlushbar(
           context,
@@ -65,16 +63,16 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                     final cartItem = entry.value;
                     return Column(
                       children: [
-                        InkWell(
+                        GestureDetector(
                           onTap: () => _selectPage(context, cartItem),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: Text(
+                                  cartItem.name,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
-                                  cartItem.product.name,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -82,7 +80,7 @@ class _ListaDeComprasState extends State<ListaDeCompras> {
                                 ),
                               ),
                               Text(
-                                "${cartItem.quantity}x ${formatPrice(cartItem.product.valorFinalDoProduto())}",
+                                "${cartItem.quantity}x ${formatPrice(cartItem.price)}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: AppColors.black.withOpacity(0.54),
