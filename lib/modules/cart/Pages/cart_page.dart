@@ -1,13 +1,9 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Widgets/cart_item_widget.dart';
-import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/shared/Widgets/app_drawer.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
-import 'package:appshop/shared/Widgets/modal_custom.dart';
 import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/helpers/app_alert.dart';
-import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,23 +21,24 @@ class _CartPageState extends State<CartPage> {
     final CartProvider _cart = Provider.of<CartProvider>(context);
     final _items = _cart.carrinhoDeProdutos.toList();
 
-    Future<void> handleBuy() async {
-      setState(() => _isLoading = true);
-      Navigator.of(context).pop();
-      try {
-        await Provider.of<OrderListProvider>(context, listen: false)
-            .addOrder(_cart);
-        showAppFlushbar(context,
-            message: "Compra realizada com sucesso!",
-            type: FlushType.success,
-            position: FlushPosition.top);
-      } catch (e) {
-        debugPrint(e.toString());
-        AppAlert.showError(context, message: e.toString());
-      } finally {
-        setState(() => _isLoading = false);
-      }
-    }
+    // Future<void> handleBuy() async {
+    //   setState(() => _isLoading = true);
+    //   // Navigator.of(context).pop();
+    //   try {
+    //     // await Provider.of<OrderListProvider>(context, listen: false)
+    //     //     .addOrder(_cart);
+    //     // showAppFlushbar(context,
+    //     //     message: "Compra realizada com sucesso!",
+    //     //     type: FlushType.success,
+    //     //     position: FlushPosition.top);
+    //     Navigator.of(context).pushNamed(AppRoutes.SELECIONAR_ENDERECO);
+    //   } catch (e) {
+    //     debugPrint(e.toString());
+    //     AppAlert.showError(context, message: e.toString());
+    //   } finally {
+    //     setState(() => _isLoading = false);
+    //   }
+    // }
 
     return Scaffold(
       appBar: DrawerAppBar(title: "Carrinho"),
@@ -136,17 +133,8 @@ class _CartPageState extends State<CartPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        if (_items.isEmpty) return;
-                        modalCustom(
-                          context: context,
-                          onTap: handleBuy,
-                          title: "Confirmar compra?",
-                          text:
-                              "Deseja finalizar a compra dos produtos do carrinho?",
-                          icon: Icons.card_travel,
-                        );
-                      },
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(AppRoutes.SELECIONAR_ENDERECO),
                       child: Text(
                         "COMPRAR",
                         style: TextStyle(color: AppColors.white),

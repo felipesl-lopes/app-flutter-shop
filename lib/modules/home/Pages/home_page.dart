@@ -1,5 +1,6 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
+import 'package:appshop/modules/endereco/Provider/endereco_provider.dart';
 import 'package:appshop/modules/home/widgets/banner_carousel.dart';
 import 'package:appshop/modules/home/widgets/card_incentivo_carrinho.dart';
 import 'package:appshop/modules/home/widgets/category_roundels.dart';
@@ -32,10 +33,12 @@ class _HomePageState extends State<HomePage> {
     final banners = Provider.of<BannersProvider>(context, listen: false);
     final produtos = Provider.of<ProductProvider>(context, listen: false);
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final enderecos = Provider.of<EnderecoProvider>(context, listen: false);
 
     categorias.carregarCategorias();
     banners.loadBanners();
     cart.carregarCarrinho();
+    enderecos.carregarEnderecos();
 
     produtos.carregarProdutos().then((_) {
       setState(() => _isLoading = false);

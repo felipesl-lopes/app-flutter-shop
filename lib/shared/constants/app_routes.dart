@@ -2,6 +2,7 @@ import 'package:appshop/modules/auth/Pages/auth_or_home_page.dart';
 import 'package:appshop/modules/auth/Pages/auth_page.dart';
 import 'package:appshop/modules/cart/Pages/cart_page.dart';
 import 'package:appshop/modules/compras/Pages/orders_page.dart';
+import 'package:appshop/modules/endereco/Pages/selecionar_endereco_page.dart';
 import 'package:appshop/modules/home/Pages/home_page.dart';
 import 'package:appshop/modules/manage_products/Pages/manage_product_form_page.dart';
 import 'package:appshop/modules/manage_products/Pages/manage_products_page.dart';
@@ -24,6 +25,7 @@ class AppRoutes {
   static const SEARCH_PRODUCT = "/search-product";
   static const PROFILE_USER_DATA = '/profile/user_data';
   static const PROFILE_SECURITY_ACCOUNT = '/profile/security_account';
+  static const SELECIONAR_ENDERECO = '/cart/select_address';
 
   static Map<String, WidgetBuilder> routes = {
     AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
@@ -37,5 +39,6 @@ class AppRoutes {
     AppRoutes.PROFILE: (ctx) => ProfilePage(),
     AppRoutes.SEARCH_PRODUCT: (ctx) => SearchPage(),
     AppRoutes.PROFILE_USER_DATA: (ctx) => DadosUsuarioPage(),
+    AppRoutes.SELECIONAR_ENDERECO: (ctx) => SelecionarEnderecoPage(),
   };
 }

@@ -6,6 +6,8 @@ import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
 import 'package:appshop/modules/categorias/Repository/categorias_repository.dart';
 import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
+import 'package:appshop/modules/endereco/Provider/endereco_provider.dart';
+import 'package:appshop/modules/endereco/Repository/endereco_repository.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/repository/banners_provider.dart';
@@ -45,6 +47,9 @@ void configureDependencies() {
   getIt.registerLazySingleton<OrderRepository>(
     () => OrderRepository(getIt<IHttpClient>()),
   );
+  getIt.registerLazySingleton<EnderecoRepository>(
+    () => EnderecoRepository(getIt<IHttpClient>()),
+  );
 
   getIt.registerLazySingleton<CartProvider>(() => CartProvider(
         getIt<AuthProvider>(),
@@ -71,5 +76,10 @@ void configureDependencies() {
   getIt.registerLazySingleton<BannersProvider>(() => BannersProvider(
         getIt<AuthProvider>(),
         getIt<IHttpClient>(),
+      ));
+
+  getIt.registerLazySingleton<EnderecoProvider>(() => EnderecoProvider(
+        getIt<AuthProvider>(),
+        getIt<EnderecoRepository>(),
       ));
 }
