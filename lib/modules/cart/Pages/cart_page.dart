@@ -21,25 +21,6 @@ class _CartPageState extends State<CartPage> {
     final CartProvider _cart = Provider.of<CartProvider>(context);
     final _items = _cart.carrinhoDeProdutos.toList();
 
-    // Future<void> handleBuy() async {
-    //   setState(() => _isLoading = true);
-    //   // Navigator.of(context).pop();
-    //   try {
-    //     // await Provider.of<OrderListProvider>(context, listen: false)
-    //     //     .addOrder(_cart);
-    //     // showAppFlushbar(context,
-    //     //     message: "Compra realizada com sucesso!",
-    //     //     type: FlushType.success,
-    //     //     position: FlushPosition.top);
-    //     Navigator.of(context).pushNamed(AppRoutes.SELECIONAR_ENDERECO);
-    //   } catch (e) {
-    //     debugPrint(e.toString());
-    //     AppAlert.showError(context, message: e.toString());
-    //   } finally {
-    //     setState(() => _isLoading = false);
-    //   }
-    // }
-
     return Scaffold(
       appBar: DrawerAppBar(title: "Carrinho"),
       drawer: AppDrawer(),
@@ -85,8 +66,47 @@ class _CartPageState extends State<CartPage> {
                   ),
                 )
               : ListView.builder(
-                  itemCount: _items.length,
-                  itemBuilder: (ctx, index) => CartItemWidget(_items[index]),
+                  itemCount: _items.length + 1,
+                  itemBuilder: (ctx, index) {
+                    if (index == 0) {
+                      return Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(16),
+                        margin: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _items.length == 1
+                                  ? "Revise seu pedido"
+                                  : "Revise seus pedidos",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              "Confira os itens antes de continuar.",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.black.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final item = _items[index - 1];
+
+                    return CartItemWidget(item);
+                  },
                 ),
           if (_isLoading)
             Container(

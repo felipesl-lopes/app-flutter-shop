@@ -36,8 +36,8 @@ class CartProvider with ChangeNotifier {
     return _carrinhoDeProdutos.fold(
       0.0,
       (total, item) {
-        final produto = item.product;
-        return total + produto.valorFinalDoProduto();
+        final preco = item.product.valorFinalDoProduto();
+        return total + (preco * item.quantity);
       },
     );
   }
