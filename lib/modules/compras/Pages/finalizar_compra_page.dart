@@ -71,6 +71,13 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
               child: Text('Alterar endereço'),
             ),
             SizedBox(height: 20),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Produtos:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: cart.length,
@@ -88,7 +95,8 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
                       ),
                       trailing: Text(
                         formatPrice(totalItem),
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                     ),
                   );
@@ -112,7 +120,7 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
             SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: SendButton('Confirmar pedido', handleBuy),
+              child: SendButton('Confirmar compra', handleBuy),
             ),
           ],
         ),

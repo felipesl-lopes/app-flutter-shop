@@ -74,7 +74,6 @@ void configureDependencies() {
       ));
 
   getIt.registerLazySingleton<BannersProvider>(() => BannersProvider(
-        getIt<AuthProvider>(),
         getIt<IHttpClient>(),
       ));
 

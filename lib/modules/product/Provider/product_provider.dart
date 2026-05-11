@@ -7,17 +7,17 @@ import 'package:appshop/shared/Models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductProvider with ChangeNotifier {
-  final AuthProvider auth;
+  final AuthProvider _auth;
   final ProductRepository _productRepository;
 
   List<ProductModel> _produtos = [];
 
   ProductProvider(
-    this.auth,
+    this._auth,
     this._productRepository,
   );
 
-  String get _userId => auth.userId ?? '';
+  String get _userId => _auth.userId ?? '';
 
   List<ProductModel> get produtos => [..._produtos];
   List<ProductModel> get produtosFavoritos => _produtos
@@ -153,7 +153,7 @@ class ProductProvider with ChangeNotifier {
   Future<void> adicionarProduto(ProductModel produto) async {
     final generateId = await _productRepository.adicionarProduto(
       produto,
-      userId: auth.userId!,
+      userId: _auth.userId!,
     );
 
     final novoProduto = produto.copyWith(id: generateId);

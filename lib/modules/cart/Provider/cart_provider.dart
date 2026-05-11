@@ -7,18 +7,18 @@ import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {
-  final AuthProvider auth;
+  final AuthProvider _auth;
   final CartRepository _cartRepository;
   final ProductProvider _productProvider;
 
   CartProvider(
-    this.auth,
+    this._auth,
     this._cartRepository,
     this._productProvider,
   );
 
   Timer? _debounce;
-  String get _userId => auth.userId ?? '';
+  String get _userId => _auth.userId ?? '';
 
   List<CartItemModel> _carrinhoDeProdutos = [];
   List<CartItemModel> get carrinhoDeProdutos => [..._carrinhoDeProdutos];

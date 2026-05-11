@@ -6,19 +6,19 @@ import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
 
 class OrderListProvider with ChangeNotifier {
-  final AuthProvider auth;
+  final AuthProvider _auth;
   final CartRepository _cartRepository;
   final OrderRepository _repository;
 
   OrderListProvider(
-    this.auth,
+    this._auth,
     this._cartRepository,
     this._repository,
   );
 
   List<Order> _items = [];
 
-  String get _userId => auth.userId ?? '';
+  String get _userId => _auth.userId ?? '';
 
   List<Order> get items {
     return [..._items];

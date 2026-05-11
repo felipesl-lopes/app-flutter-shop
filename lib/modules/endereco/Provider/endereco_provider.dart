@@ -6,15 +6,15 @@ import 'package:appshop/shared/Models/endereco_model.dart';
 import 'package:flutter/material.dart';
 
 class EnderecoProvider with ChangeNotifier {
-  final AuthProvider auth;
+  final AuthProvider _auth;
   final EnderecoRepository _enderecoRepository;
 
   EnderecoProvider(
-    this.auth,
+    this._auth,
     this._enderecoRepository,
   );
 
-  String get _userId => auth.userId ?? '';
+  String get _userId => _auth.userId ?? '';
 
   List<EnderecoModel> _enderecos = [];
   List<EnderecoModel> get enderecos => [..._enderecos];
@@ -44,7 +44,7 @@ class EnderecoProvider with ChangeNotifier {
   ) async {
     try {
       await _enderecoRepository.adicionarEndereco(
-        userId: auth.userId!,
+        userId: _auth.userId!,
         endereco: endereco,
       );
 

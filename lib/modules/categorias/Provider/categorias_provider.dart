@@ -4,11 +4,11 @@ import 'package:appshop/modules/categorias/Repository/categorias_repository.dart
 import 'package:flutter/material.dart';
 
 class CategoriasProvider with ChangeNotifier {
-  final AuthProvider auth;
+  final AuthProvider _auth;
   final CategoriasRepository _categoriasRepository;
 
   CategoriasProvider(
-    this.auth,
+    this._auth,
     this._categoriasRepository,
   );
 
@@ -26,7 +26,7 @@ class CategoriasProvider with ChangeNotifier {
   Future<void> carregarCategorias() async {
     try {
       final categorias = await _categoriasRepository.carregarCategorias(
-        userId: auth.userId ?? '',
+        userId: _auth.userId ?? '',
       );
 
       setCategorias(categorias);

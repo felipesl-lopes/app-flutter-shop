@@ -1,13 +1,11 @@
-import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Models/banner_model.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
 import 'package:flutter/material.dart';
 
 class BannersProvider with ChangeNotifier {
-  final AuthProvider auth;
   final IHttpClient client;
 
-  BannersProvider(this.auth, this.client);
+  BannersProvider(this.client);
 
   List<BannerModel> _items = [];
   List<BannerModel> get items => [..._items];
