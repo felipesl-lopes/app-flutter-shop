@@ -70,7 +70,7 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
               },
               child: Text('Alterar endereço'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 8),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(

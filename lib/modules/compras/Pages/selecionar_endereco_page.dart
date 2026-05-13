@@ -2,6 +2,7 @@ import 'package:appshop/modules/endereco/Provider/endereco_provider.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
+import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -71,6 +72,34 @@ class _SelecionarEnderecoPageState extends State<SelecionarEnderecoPage> {
                       Text(
                         "CEP: ${end.cep}",
                         style: TextStyle(color: Colors.grey),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.of(context)
+                                .pushNamed(AppRoutes.NOVO_ENDERECO,
+                                    arguments: end);
+
+                            if (result == true) {
+                              showAppFlushbar(
+                                context,
+                                message: 'Endereço salvo com sucesso',
+                                type: FlushType.success,
+                                position: FlushPosition.top,
+                              );
+                            }
+                          },
+                          child: Text(
+                            'Editar endereço',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

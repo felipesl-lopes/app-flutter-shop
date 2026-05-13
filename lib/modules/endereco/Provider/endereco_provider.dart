@@ -54,6 +54,21 @@ class EnderecoProvider with ChangeNotifier {
     }
   }
 
+  Future<void> editarEndereco(EnderecoModel endereco) async {
+    try {
+      await _enderecoRepository.editarEndereco(
+          userId: _auth.userId!, endereco: endereco);
+
+      final listaAtualizada = _enderecos.map((e) {
+        return e.id == endereco.id ? endereco : e;
+      }).toList();
+
+      setEnderecos(listaAtualizada);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> removerEndereco(String enderecoId) async {
     try {
       await _enderecoRepository.removerEndereco(userId: _userId);

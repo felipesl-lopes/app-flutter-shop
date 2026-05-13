@@ -75,6 +75,37 @@ class EnderecoRepository {
     }
   }
 
+  Future<void> editarEndereco({
+    required String userId,
+    required EnderecoModel endereco,
+  }) async {
+    debugPrint('[CartRepository]: editarEndereco');
+
+    final body = {
+      'cep': endereco.cep,
+      'rua': endereco.rua,
+      'numero': endereco.numero,
+      'complemento': endereco.complemento,
+      'bairro': endereco.bairro,
+      'cidade': endereco.cidade,
+      'uf': endereco.uf,
+    };
+
+    try {
+      final response = await client.put(
+        'address/$userId/${endereco.id}',
+        body: body,
+      );
+
+      if (response.statusCode >= 400) {
+        throw HttpException('Erro ao editar endereço');
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao editar endereço.');
+    }
+  }
+
   Future<void> removerEndereco({required String userId}) async {
     debugPrint('[CartRepository]: removerEndereco');
 
