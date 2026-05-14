@@ -33,7 +33,7 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
     Future<void> handleBuy() async {
       try {
         await Provider.of<OrderListProvider>(context, listen: false)
-            .addOrder(cartProvider);
+            .addOrder(cartProvider, enderecoId);
         Navigator.of(context)
             .pushNamedAndRemoveUntil(AppRoutes.HOME, (route) => false);
         showAppFlushbar(context,

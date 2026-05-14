@@ -2,18 +2,21 @@ import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
+import 'package:appshop/modules/endereco/Repository/endereco_repository.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
 
 class OrderListProvider with ChangeNotifier {
   final AuthProvider _auth;
   final CartRepository _cartRepository;
-  final OrderRepository _repository;
+  final OrderRepository _orderRepository;
+  final EnderecoRepository _enderecoRepository;
 
   OrderListProvider(
     this._auth,
     this._cartRepository,
-    this._repository,
+    this._orderRepository,
+    this._enderecoRepository,
   );
 
   List<Order> _items = [];
@@ -30,7 +33,7 @@ class OrderListProvider with ChangeNotifier {
 
   Future<void> loadOrders() async {
     try {
-      final data = await _repository.loadOrdersRepository(userId: _userId);
+      final data = await _orderRepository.loadOrdersRepository(userId: _userId);
 
       List<Order> items = [];
 
@@ -57,8 +60,11 @@ class OrderListProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addOrder(CartProvider cart) async {
+  Future<void> addOrder(CartProvider cart, String enderecoId) async {
     final date = DateTime.now();
+
+    final responseEndereco = await _enderecoRepository.buscarEndereco(
+        userId: _auth.userId!, enderecoId: enderecoId);
 
     final List<ComprasModel> produtosPedido = cart.carrinhoDeProdutos
         .map((cartItem) => ComprasModel(
@@ -80,10 +86,11 @@ class OrderListProvider with ChangeNotifier {
             })
         .toList();
 
-    final orderId = await _repository.addOrderRepository(
+    final orderId = await _orderRepository.addOrderRepository(
       userId: _userId,
       total: cart.valorTotal,
       date: date,
+      endereco: responseEndereco,
       products: productsMap,
     );
 

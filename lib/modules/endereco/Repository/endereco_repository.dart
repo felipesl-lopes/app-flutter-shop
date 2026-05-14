@@ -44,6 +44,22 @@ class EnderecoRepository {
     }
   }
 
+  Future<EnderecoModel> buscarEndereco({
+    required String userId,
+    required String enderecoId,
+  }) async {
+    debugPrint('[CartRepository]: buscarEndereco');
+
+    try {
+      final response = await client.get('address/$userId/$enderecoId');
+
+      return EnderecoModel.fromJson(enderecoId, response.data);
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception('Erro ao buscar endereço');
+    }
+  }
+
   Future<void> adicionarEndereco({
     required String userId,
     required EnderecoModel endereco,

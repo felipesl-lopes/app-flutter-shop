@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appshop/shared/Models/endereco_model.dart';
 import 'package:appshop/shared/services/i_http_client.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,7 @@ class OrderRepository {
     required double total,
     required DateTime date,
     required List<Map<String, dynamic>> products,
+    required EnderecoModel endereco,
   }) async {
     debugPrint('[OrderRepository]: addOrderRepository');
 
@@ -39,6 +41,7 @@ class OrderRepository {
       "total": total,
       "date": date.toIso8601String(),
       "products": products,
+      "address": endereco.toJson(),
     };
 
     try {
