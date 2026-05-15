@@ -82,7 +82,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     final List<ProductModel> _produtosDaCategoria =
         Provider.of<ProductProvider>(context)
-            .produtos
+            .produtosParaCompra
             .where((produto) =>
                 produto.id != product.id &&
                 produto.categories
