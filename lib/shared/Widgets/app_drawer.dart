@@ -55,7 +55,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.payment),
             title: Text("Minhas compras"),
             onTap: () => Navigator.of(context).pushReplacementNamed(
-              AppRoutes.ORDERS,
+              AppRoutes.COMPRAS,
             ),
           ),
           Divider(),

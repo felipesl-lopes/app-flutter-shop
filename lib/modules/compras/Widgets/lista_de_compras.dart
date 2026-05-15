@@ -1,102 +1,177 @@
-import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-class ListaDeCompras extends StatefulWidget {
+class ListaDeCompras extends StatelessWidget {
   final Order order;
 
-  ListaDeCompras({required this.order});
-
-  @override
-  State<ListaDeCompras> createState() => _ListaDeComprasState();
-}
-
-class _ListaDeComprasState extends State<ListaDeCompras> {
-  bool _expanded = false;
+  const ListaDeCompras({
+    super.key,
+    required this.order,
+  });
 
   @override
   Widget build(BuildContext context) {
-    void _selectPage(BuildContext context, ComprasModel item) {
-      final productList =
-          Provider.of<ProductProvider>(context, listen: false).produtos;
+    final firstProduct = order.products.first;
 
-      final product = productList.where((p) => p.id == item.id).firstOrNull;
-      if (product == null) {
-        showAppFlushbar(
-          context,
-          message: "Produto indisponível!",
-          type: FlushType.error,
-        );
-        return;
-      }
-
-      Navigator.of(context).pushNamed(
-        AppRoutes.DETAILS_PRODUCT,
-        arguments: product,
-      );
-    }
+    final totalItems = order.products.fold(
+      0,
+      (sum, item) => sum + item.quantity,
+    );
 
     return InkWell(
-      onTap: () => setState(() => _expanded = !_expanded),
+      borderRadius: BorderRadius.circular(18),
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          AppRoutes.DETALHES_COMPRAS,
+          arguments: order,
+        );
+      },
       child: Card(
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(
-                DateFormat("dd/MM/yyyy").format(widget.order.date),
-              ),
-              subtitle: Text(formatPrice(widget.order.total)),
-              trailing: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-            ),
-            if (_expanded)
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  children: widget.order.products.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final cartItem = entry.value;
-                    return Column(
+        elevation: 2,
+        margin: EdgeInsets.only(bottom: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(width: 1, color: Colors.grey.shade400),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(18),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      Icons.shopping_bag_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GestureDetector(
-                          onTap: () => _selectPage(context, cartItem),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  cartItem.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                "${cartItem.quantity}x ${formatPrice(cartItem.price)}",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: AppColors.black.withOpacity(0.54),
-                                ),
-                              ),
-                            ],
+                        Text(
+                          "Pedido realizado",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        if (index < widget.order.products.length - 1) Divider(),
+                        SizedBox(height: 4),
+                        Text(
+                          DateFormat(
+                            "dd/MM/yyyy • HH:mm",
+                          ).format(order.date),
+                          style: TextStyle(
+                            color: AppColors.black.withOpacity(0.55),
+                          ),
+                        ),
                       ],
-                    );
-                  }).toList(),
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.black.withOpacity(0.4),
+                  ),
+                ],
+              ),
+              SizedBox(height: 18),
+              Row(
+                children: [
+                  Expanded(
+                    child: _InfoCard(
+                      title: "Total",
+                      value: formatPrice(order.total),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: _InfoCard(
+                      title: "Itens",
+                      value: "$totalItems",
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 18),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  firstProduct.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-          ],
+              if (order.products.length > 1)
+                Padding(
+                  padding: EdgeInsets.only(top: 6),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "+ ${order.products.length - 1} produto(s)",
+                      style: TextStyle(
+                        color: AppColors.black.withOpacity(0.55),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  final String title;
+  final String value;
+
+  const _InfoCard({
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.black.withOpacity(0.55),
+            ),
+          ),
+          SizedBox(height: 6),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,0 +1,73 @@
+import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
+import 'package:appshop/modules/compras/Widgets/lista_de_compras.dart';
+import 'package:appshop/shared/Widgets/app_drawer.dart';
+import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class ComprasPage extends StatefulWidget {
+  @override
+  State<ComprasPage> createState() => _ComprasPageState();
+}
+
+class _ComprasPageState extends State<ComprasPage> {
+  Future<void> _refreshOrders(BuildContext context) {
+    return Provider.of<OrderListProvider>(
+      context,
+      listen: false,
+    ).loadOrders();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: DrawerAppBar(
+        title: "Minhas compras",
+      ),
+      drawer: AppDrawer(),
+      body: FutureBuilder(
+        future: _refreshOrders(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Não foi possível carregar os pedidos.",
+              ),
+            );
+          }
+
+          return Consumer<OrderListProvider>(
+            builder: (ctx, orders, child) {
+              if (orders.itemsCount == 0) {
+                return Center(
+                  child: Text(
+                    "Nenhum pedido encontrado.",
+                  ),
+                );
+              }
+
+              return RefreshIndicator(
+                onRefresh: () => _refreshOrders(context),
+                child: ListView.builder(
+                  padding: EdgeInsets.all(16),
+                  itemCount: orders.itemsCount,
+                  itemBuilder: (ctx, index) {
+                    return ListaDeCompras(
+                      order: orders.items[index],
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

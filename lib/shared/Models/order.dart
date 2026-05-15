@@ -1,13 +1,17 @@
+import 'package:appshop/shared/Models/endereco_model.dart';
+
 class Order {
   final String id;
   final double total;
   final List<ComprasModel> products;
   final DateTime date;
+  final EnderecoModel? endereco;
   Order({
     required this.id,
     required this.total,
     required this.products,
     required this.date,
+    this.endereco,
   });
 }
 

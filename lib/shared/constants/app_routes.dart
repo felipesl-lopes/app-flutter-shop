@@ -1,8 +1,9 @@
 import 'package:appshop/modules/auth/Pages/auth_or_home_page.dart';
 import 'package:appshop/modules/auth/Pages/auth_page.dart';
 import 'package:appshop/modules/cart/Pages/cart_page.dart';
+import 'package:appshop/modules/compras/Pages/compras_page.dart';
+import 'package:appshop/modules/compras/Pages/detalhes_da_compra_page.dart';
 import 'package:appshop/modules/compras/Pages/finalizar_compra_page.dart';
-import 'package:appshop/modules/compras/Pages/orders_page.dart';
 import 'package:appshop/modules/compras/Pages/selecionar_endereco_page.dart';
 import 'package:appshop/modules/endereco/Pages/novo_endereco_page.dart';
 import 'package:appshop/modules/home/Pages/home_page.dart';
@@ -20,7 +21,8 @@ class AppRoutes {
   static const HOME = "/home";
   static const DETAILS_PRODUCT = "/details-product";
   static const CART = "/cart";
-  static const ORDERS = "/orders";
+  static const COMPRAS = "/compras";
+  static const DETALHES_COMPRAS = '/compras/detalhes-compras';
   static const MANAGE_PRODUCTS = "/manage-products";
   static const MANAGE_PRODUCT_FORM = "/manage-product-form";
   static const PROFILE = "/profile";
@@ -37,7 +39,8 @@ class AppRoutes {
     AppRoutes.HOME: (ctx) => HomePage(),
     AppRoutes.DETAILS_PRODUCT: (ctx) => ProductDetailPage(),
     AppRoutes.CART: (ctx) => CartPage(),
-    AppRoutes.ORDERS: (ctx) => OrdersPage(),
+    AppRoutes.COMPRAS: (ctx) => ComprasPage(),
+    AppRoutes.DETALHES_COMPRAS: (ctx) => DetalhesDaCompraPage(),
     AppRoutes.MANAGE_PRODUCTS: (ctx) => ManageProductsPage(),
     AppRoutes.MANAGE_PRODUCT_FORM: (ctx) => ProductFormPage(),
     AppRoutes.PROFILE: (ctx) => ProfilePage(),

@@ -3,6 +3,7 @@ import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
 import 'package:appshop/modules/endereco/Repository/endereco_repository.dart';
+import 'package:appshop/shared/Models/endereco_model.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
 
@@ -38,18 +39,20 @@ class OrderListProvider with ChangeNotifier {
       List<Order> items = [];
 
       data.forEach((orderId, orderData) {
-        items.add(
-          Order(
-            id: orderId,
-            date: DateTime.parse(orderData["date"]),
-            total: (orderData["total"] as num).toDouble(),
-            products: (orderData["products"] as List)
-                .map((item) => ComprasModel.fromMap(
-                      Map<String, dynamic>.from(item),
-                    ))
-                .toList(),
-          ),
-        );
+        items.add(Order(
+          id: orderId,
+          date: DateTime.parse(orderData["date"]),
+          total: (orderData["total"] as num).toDouble(),
+          products: (orderData["products"] as List)
+              .map((item) => ComprasModel.fromMap(
+                    Map<String, dynamic>.from(item),
+                  ))
+              .toList(),
+          endereco: orderData['address'] != null
+              ? EnderecoModel.fromMap(orderData['address']['id'] ?? '',
+                  Map<String, dynamic>.from(orderData['address']))
+              : null,
+        ));
       });
 
       _items = items.reversed.toList();
