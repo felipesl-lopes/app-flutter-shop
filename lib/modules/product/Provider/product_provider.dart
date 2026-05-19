@@ -5,17 +5,25 @@ import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:result_command/result_command.dart';
+import 'package:result_dart/result_dart.dart';
 
 class ProductProvider with ChangeNotifier {
   final AuthProvider _auth;
   final ProductRepository _productRepository;
+
+  late final Command0<List<ProductModel>> loadProductsCommand;
 
   List<ProductModel> _produtos = [];
 
   ProductProvider(
     this._auth,
     this._productRepository,
-  );
+  ) {
+    loadProductsCommand = Command0<List<ProductModel>>(
+      _loadProducts,
+    );
+  }
 
   String get _userId => _auth.userId ?? '';
 
@@ -46,7 +54,7 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> carregarProdutos() async {
+  Future<Result<List<ProductModel>>> _loadProducts() async {
     try {
       final produtos = await _productRepository.carregarProdutos();
 
@@ -92,8 +100,10 @@ class ProductProvider with ChangeNotifier {
       }).toList();
 
       setProdutos(produtosAtualizados);
+      return Success(produtosAtualizados);
     } catch (e) {
       debugPrint(e.toString());
+      return Failure(Exception(e.toString()));
     }
   }
 

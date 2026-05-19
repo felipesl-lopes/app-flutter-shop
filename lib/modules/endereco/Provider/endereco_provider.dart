@@ -4,15 +4,23 @@ import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/endereco/Repository/endereco_repository.dart';
 import 'package:appshop/shared/Models/endereco_model.dart';
 import 'package:flutter/material.dart';
+import 'package:result_command/result_command.dart';
+import 'package:result_dart/result_dart.dart';
 
 class EnderecoProvider with ChangeNotifier {
   final AuthProvider _auth;
   final EnderecoRepository _enderecoRepository;
 
+  late final Command0<List<EnderecoModel>> loadAddressCommand;
+
   EnderecoProvider(
     this._auth,
     this._enderecoRepository,
-  );
+  ) {
+    loadAddressCommand = Command0<List<EnderecoModel>>(
+      _loadAddress,
+    );
+  }
 
   String get _userId => _auth.userId ?? '';
 
@@ -24,7 +32,7 @@ class EnderecoProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<EnderecoModel>> carregarEnderecos() async {
+  Future<Result<List<EnderecoModel>>> _loadAddress() async {
     try {
       final response = await _enderecoRepository.carregarEnderecos(
         userId: _userId,
@@ -32,10 +40,12 @@ class EnderecoProvider with ChangeNotifier {
 
       setEnderecos(response);
 
-      return response;
+      return Success(response);
     } catch (e) {
       debugPrint(e.toString());
-      return [];
+      return Failure(
+        Exception(e.toString()),
+      );
     }
   }
 

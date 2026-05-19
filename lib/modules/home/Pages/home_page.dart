@@ -22,27 +22,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isLoading = true;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    final categorias = Provider.of<CategoriasProvider>(context, listen: false);
-    final banners = Provider.of<BannersProvider>(context, listen: false);
-    final produtos = Provider.of<ProductProvider>(context, listen: false);
-    final cart = Provider.of<CartProvider>(context, listen: false);
-    final enderecos = Provider.of<EnderecoProvider>(context, listen: false);
-
-    categorias.carregarCategorias();
-    banners.loadBanners();
-    cart.carregarCarrinho();
-    enderecos.carregarEnderecos();
-
-    produtos.carregarProdutos().then((_) {
-      setState(() => _isLoading = false);
+    Future.microtask(() async {
+      await _loadInitialData();
     });
+  }
+
+  Future<void> _loadInitialData() async {
+    await Future.wait([
+      context.read<CategoriasProvider>().loadCategoriesCommand.execute(),
+      context.read<BannersProvider>().loadBannersCommand.execute(),
+      context.read<CartProvider>().loadCartCommand.execute(),
+      context.read<EnderecoProvider>().loadAddressCommand.execute(),
+      context.read<ProductProvider>().loadProductsCommand.execute(),
+    ]);
   }
 
   @override
@@ -53,9 +51,11 @@ class _HomePageState extends State<HomePage> {
 
   void _searchProduct() {
     final query = _searchController.text.trim();
+
     if (query.isEmpty) return;
 
     _searchController.clear();
+
     Navigator.of(context).pushNamed(
       AppRoutes.SEARCH_PRODUCT,
       arguments: SearchPageArgs(query: query),
@@ -71,11 +71,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _listaDeProdutos = Provider.of<ProductProvider>(context);
-    final _categorias =
-        Provider.of<CategoriasProvider>(context).principaisCategorias.toList();
+    final produtosProvider = context.watch<ProductProvider>();
+    final bannersProvider = context.watch<BannersProvider>();
+    final categoriasProvider = context.watch<CategoriasProvider>();
 
-    final _produtosEmOferta = _listaDeProdutos.produtosEmOferta;
+    final isLoading = produtosProvider.loadProductsCommand.isRunning ||
+        bannersProvider.loadBannersCommand.isRunning ||
+        categoriasProvider.loadCategoriesCommand.isRunning;
+
+    final isIdle = produtosProvider.loadProductsCommand.isIdle ||
+        bannersProvider.loadBannersCommand.isIdle ||
+        categoriasProvider.loadCategoriesCommand.isIdle;
+
+    final categorias = categoriasProvider.principaisCategorias.toList();
+    final produtosEmOferta = produtosProvider.produtosEmOferta;
 
     return Scaffold(
       appBar: DrawerAppBar(
@@ -88,7 +97,9 @@ class _HomePageState extends State<HomePage> {
             fillColor: AppColors.white,
             filled: true,
             hintText: "Buscar produto",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
             contentPadding: EdgeInsets.symmetric(horizontal: 8),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
@@ -107,23 +118,27 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Consumer<CartProvider>(
             child: IconButton(
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.CART),
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: AppColors.white,
-                )),
-            builder: (ctx, cart, child) => Badgee(
-              value: cart.totalDeItens.toString(),
-              child: child!,
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.CART);
+              },
+              icon: Icon(
+                Icons.shopping_cart,
+                color: AppColors.white,
+              ),
             ),
+            builder: (ctx, cart, child) {
+              return Badgee(
+                value: cart.totalDeItens.toString(),
+                child: child!,
+              );
+            },
           ),
         ],
       ),
       drawer: AppDrawer(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: _isLoading
+        child: isLoading || isIdle
             ? Center(
                 child: CircularProgressIndicator(),
               )
@@ -132,38 +147,36 @@ class _HomePageState extends State<HomePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Consumer<BannersProvider>(
-                        builder: (ctx, bannersProvider, child) {
-                          return BannerCarousel(
-                              bannerList: bannersProvider.items);
-                        },
+                      BannerCarousel(
+                        bannerList: bannersProvider.items,
                       ),
                       SizedBox(height: 12),
                       CategoryRoundels(
-                        categorias: _categorias,
+                        categorias: categorias,
                         onCategorySelected: _searchProductCategory,
                       ),
-                      if (_listaDeProdutos.meusFavoritos.isNotEmpty)
+                      if (produtosProvider.meusFavoritos.isNotEmpty)
                         ProductGrid(
-                          list_products: _listaDeProdutos.meusFavoritos,
+                          list_products: produtosProvider.meusFavoritos,
                           quantityGrid: 4,
                           title: "Seus favoritos",
                           gridHorizontal: true,
                         ),
                       CardIncentivoCarrinho(),
-                      if (_listaDeProdutos.produtosParaCompra.isEmpty) ...[
-                        Text("Nenhum produto encontrado")
-                      ] else ...[
+                      if (produtosProvider.produtosParaCompra.isEmpty)
+                        Text(
+                          "Nenhum produto encontrado",
+                        )
+                      else
                         ProductGrid(
-                          list_products: _listaDeProdutos.produtosParaCompra,
+                          list_products: produtosProvider.produtosParaCompra,
                           quantityGrid: 6,
                           title: "Produtos para você",
                         ),
-                      ],
                       SizedBox(height: 16),
-                      if (_produtosEmOferta.isNotEmpty)
+                      if (produtosEmOferta.isNotEmpty)
                         ProductGrid(
-                          list_products: _produtosEmOferta,
+                          list_products: produtosEmOferta,
                           quantityGrid: 6,
                           title: "Produtos em oferta",
                         ),

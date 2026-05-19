@@ -17,7 +17,7 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   final PageController _controller = PageController();
   int _currentIndex = 0;
-  late Timer _timer;
+  Timer? _timer;
   int _currentPage = 0;
 
   @override
@@ -44,7 +44,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }

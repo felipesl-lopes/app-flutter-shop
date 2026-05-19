@@ -5,17 +5,25 @@ import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:result_command/result_command.dart';
+import 'package:result_dart/result_dart.dart';
 
 class CartProvider with ChangeNotifier {
   final AuthProvider _auth;
   final CartRepository _cartRepository;
   final ProductProvider _productProvider;
 
+  late final Command0<List<CartItemModel>> loadCartCommand;
+
   CartProvider(
     this._auth,
     this._cartRepository,
     this._productProvider,
-  );
+  ) {
+    loadCartCommand = Command0<List<CartItemModel>>(
+      _loadCart,
+    );
+  }
 
   Timer? _debounce;
   String get _userId => _auth.userId ?? '';
@@ -42,10 +50,10 @@ class CartProvider with ChangeNotifier {
     );
   }
 
-  Future<void> carregarCarrinho() async {
+  Future<Result<List<CartItemModel>>> _loadCart() async {
     try {
       if (_productProvider.produtos.isEmpty) {
-        await _productProvider.carregarProdutos();
+        await _productProvider.loadProductsCommand.execute();
       }
 
       final productsMap = {for (var p in _productProvider.produtos) p.id: p};
@@ -56,8 +64,12 @@ class CartProvider with ChangeNotifier {
       );
 
       setCarrinhoDeProdutos(data);
+
+      return Success(data);
     } catch (e) {
-      debugPrint(e.toString());
+      return Failure(
+        Exception(e.toString()),
+      );
     }
   }
 

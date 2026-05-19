@@ -52,7 +52,8 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     Provider.of<ProductProvider>(context, listen: false)
-        .carregarProdutos()
+        .loadProductsCommand
+        .execute()
         .then((_) {
       final provider = Provider.of<ProductProvider>(context, listen: false);
 
