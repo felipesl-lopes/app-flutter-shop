@@ -23,8 +23,8 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
       child: Card(
         elevation: 1,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(width: 1, color: Colors.grey.shade400)),
         child: InkWell(
           onTap: () {
             _carrinhoVazio

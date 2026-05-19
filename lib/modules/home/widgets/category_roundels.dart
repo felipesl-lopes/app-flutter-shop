@@ -42,10 +42,10 @@ class CategoryRoundels extends StatelessWidget {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        backgroundColor: AppColors.white,
+                        backgroundColor: AppColors.primary.withOpacity(1),
                         radius: 30,
                         child:
-                            Icon(CategoriaIconHelper.getIcon(categoria.nome)),
+                            Icon(CategoriaIconHelper.getIcon(categoria.nome), color: Colors.white,),
                       ),
                       SizedBox(height: 8),
                       Text(

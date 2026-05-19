@@ -6,6 +6,8 @@ import 'package:appshop/modules/endereco/Repository/endereco_repository.dart';
 import 'package:appshop/shared/Models/endereco_model.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
+import 'package:result_command/result_command.dart';
+import 'package:result_dart/result_dart.dart';
 
 class OrderListProvider with ChangeNotifier {
   final AuthProvider _auth;
@@ -13,12 +15,18 @@ class OrderListProvider with ChangeNotifier {
   final OrderRepository _orderRepository;
   final EnderecoRepository _enderecoRepository;
 
+  late final Command0<List<Order>> loadOrdersCommand;
+
   OrderListProvider(
     this._auth,
     this._cartRepository,
     this._orderRepository,
     this._enderecoRepository,
-  );
+  ) {
+    loadOrdersCommand = Command0<List<Order>>(
+      _loadOrders,
+    );
+  }
 
   List<Order> _items = [];
 
@@ -32,7 +40,12 @@ class OrderListProvider with ChangeNotifier {
     return _items.length;
   }
 
-  Future<void> loadOrders() async {
+  void setOrders(List<Order> value) {
+    _items = value;
+    notifyListeners();
+  }
+
+  Future<Result<List<Order>>> _loadOrders() async {
     try {
       final data = await _orderRepository.loadOrdersRepository(userId: _userId);
 
@@ -55,11 +68,13 @@ class OrderListProvider with ChangeNotifier {
         ));
       });
 
-      _items = items.reversed.toList();
-      notifyListeners();
+      setOrders(items.reversed.toList());
+
+      return Success(_items);
     } catch (e) {
-      debugPrint(e.toString());
-      rethrow;
+      return Failure(
+        Exception(e.toString()),
+      );
     }
   }
 

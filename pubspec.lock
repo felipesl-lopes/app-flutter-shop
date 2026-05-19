@@ -57,14 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-  command_it:
-    dependency: "direct main"
-    description:
-      name: command_it
-      sha256: "5f5ba373592f8800a624cea45d78f6f5e73279841cb5bd5d2497a7881f0ed255"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.5.1"
   connectivity_plus:
     dependency: "direct main"
     description:
@@ -85,10 +77,10 @@ packages:
     dependency: "direct main"
     description:
       name: cupertino_icons
-      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
+      sha256: d57953e10f9f8327ce64a508a355f0b1ec902193f66288e8cb5070e7c47eeb2d
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.6"
   dbus:
     dependency: transitive
     description:
@@ -272,14 +264,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  listen_it:
-    dependency: transitive
-    description:
-      name: listen_it
-      sha256: "4cfc307e943a25c7b500d173523dcebe966b0a323eaa07bd3769f563af19f065"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.3.5"
   matcher:
     dependency: transitive
     description:
@@ -408,14 +392,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5+1"
-  quiver:
-    dependency: transitive
+  result_command:
+    dependency: "direct main"
     description:
-      name: quiver
-      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
+      name: result_command
+      sha256: "629917f2f492bd9ceb3178868d393e7d5ff9fb6c8fc20f3de5e16ec013bc331d"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.2"
+    version: "2.2.0"
+  result_dart:
+    dependency: transitive
+    description:
+      name: result_dart
+      sha256: "80096f0928e276c024e53cf1bb2aaffd5a94623dac8fdfa5cb3529e82b51eb3c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   shared_preferences:
     dependency: "direct main"
     description:
