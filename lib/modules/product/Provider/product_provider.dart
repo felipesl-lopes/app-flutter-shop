@@ -20,9 +20,7 @@ class ProductProvider with ChangeNotifier {
     this._auth,
     this._productRepository,
   ) {
-    loadProductsCommand = Command0<List<ProductModel>>(
-      _loadProducts,
-    );
+    loadProductsCommand = Command0(_loadProducts);
   }
 
   String get _userId => _auth.userId ?? '';

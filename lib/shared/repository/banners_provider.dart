@@ -10,9 +10,7 @@ class BannersProvider with ChangeNotifier {
   late final Command0<List<BannerModel>> loadBannersCommand;
 
   BannersProvider(this.client) {
-    loadBannersCommand = Command0<List<BannerModel>>(
-      _loadBanners,
-    );
+    loadBannersCommand = Command0(_loadBanners);
   }
 
   List<BannerModel> _items = [];

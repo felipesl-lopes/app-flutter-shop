@@ -15,9 +15,7 @@ class CategoriasProvider with ChangeNotifier {
     this._auth,
     this._categoriasRepository,
   ) {
-    loadCategoriesCommand = Command0<List<CategoriasModel>>(
-      _loadCategories,
-    );
+    loadCategoriesCommand = Command0(_loadCategories);
   }
 
   List<CategoriasModel> _categorias = [];

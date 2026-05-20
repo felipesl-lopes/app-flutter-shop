@@ -75,13 +75,16 @@ class _HomePageState extends State<HomePage> {
     final bannersProvider = context.watch<BannersProvider>();
     final categoriasProvider = context.watch<CategoriasProvider>();
 
-    final isLoading = produtosProvider.loadProductsCommand.isRunning ||
-        bannersProvider.loadBannersCommand.isRunning ||
-        categoriasProvider.loadCategoriesCommand.isRunning;
+    final productsValue = produtosProvider.loadProductsCommand.value;
+    final bannersValue = bannersProvider.loadBannersCommand.value;
+    final categoriasValue = categoriasProvider.loadCategoriesCommand.value;
 
-    final isIdle = produtosProvider.loadProductsCommand.isIdle ||
-        bannersProvider.loadBannersCommand.isIdle ||
-        categoriasProvider.loadCategoriesCommand.isIdle;
+    final isLoading = productsValue.isIdle ||
+        productsValue.isRunning ||
+        bannersValue.isIdle ||
+        bannersValue.isRunning ||
+        categoriasValue.isIdle ||
+        categoriasValue.isRunning;
 
     final categorias = categoriasProvider.principaisCategorias.toList();
     final produtosEmOferta = produtosProvider.produtosEmOferta;
@@ -138,7 +141,7 @@ class _HomePageState extends State<HomePage> {
       drawer: AppDrawer(),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: isLoading || isIdle
+        child: isLoading
             ? Center(
                 child: CircularProgressIndicator(),
               )

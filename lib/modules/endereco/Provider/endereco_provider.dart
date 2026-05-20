@@ -17,9 +17,7 @@ class EnderecoProvider with ChangeNotifier {
     this._auth,
     this._enderecoRepository,
   ) {
-    loadAddressCommand = Command0<List<EnderecoModel>>(
-      _loadAddress,
-    );
+    loadAddressCommand = Command0(_loadAddress);
   }
 
   String get _userId => _auth.userId ?? '';

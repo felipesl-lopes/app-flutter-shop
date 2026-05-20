@@ -23,9 +23,7 @@ class OrderListProvider with ChangeNotifier {
     this._orderRepository,
     this._enderecoRepository,
   ) {
-    loadOrdersCommand = Command0<List<Order>>(
-      _loadOrders,
-    );
+    loadOrdersCommand = Command0(_loadOrders);
   }
 
   List<Order> _items = [];

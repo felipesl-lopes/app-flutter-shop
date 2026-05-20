@@ -20,9 +20,7 @@ class CartProvider with ChangeNotifier {
     this._cartRepository,
     this._productProvider,
   ) {
-    loadCartCommand = Command0<List<CartItemModel>>(
-      _loadCart,
-    );
+    loadCartCommand = Command0(_loadCart);
   }
 
   Timer? _debounce;
