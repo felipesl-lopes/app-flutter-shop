@@ -1,7 +1,6 @@
 import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
 import 'package:appshop/modules/compras/Widgets/lista_de_compras.dart';
-import 'package:appshop/shared/Widgets/app_drawer.dart';
-import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,10 +21,9 @@ class _ComprasPageState extends State<ComprasPage> {
     final provider = context.watch<OrderListProvider>();
 
     return Scaffold(
-      appBar: DrawerAppBar(
+      appBar: BackAppBar(
         title: "Minhas compras",
       ),
-      drawer: AppDrawer(),
       body: ListenableBuilder(
         listenable: provider.loadOrdersCommand,
         builder: (context, child) {

@@ -36,36 +36,44 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.person),
-            title: Text("Meu perfil"),
-            onTap: () => Navigator.of(context).pushReplacementNamed(
-              AppRoutes.PROFILE,
-            ),
-          ),
+              leading: Icon(Icons.person),
+              title: Text("Meu perfil"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(
+                  AppRoutes.PROFILE,
+                );
+              }),
           Divider(),
           ListTile(
-            leading: Icon(Icons.shopping_cart),
-            title: Text("Meu carrinho"),
-            onTap: () => Navigator.of(context).pushReplacementNamed(
-              AppRoutes.CART,
-            ),
-          ),
+              leading: Icon(Icons.shopping_cart),
+              title: Text("Meu carrinho"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(
+                  AppRoutes.CART,
+                );
+              }),
           Divider(),
           ListTile(
-            leading: Icon(Icons.payment),
-            title: Text("Minhas compras"),
-            onTap: () => Navigator.of(context).pushReplacementNamed(
-              AppRoutes.COMPRAS,
-            ),
-          ),
+              leading: Icon(Icons.payment),
+              title: Text("Minhas compras"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(
+                  AppRoutes.COMPRAS,
+                );
+              }),
           Divider(),
           ListTile(
-            leading: Icon(Icons.inventory),
-            title: Text("Gerenciar produtos"),
-            onTap: () => Navigator.of(context).pushReplacementNamed(
-              AppRoutes.MANAGE_PRODUCTS,
-            ),
-          ),
+              leading: Icon(Icons.inventory),
+              title: Text("Gerenciar produtos"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(
+                  AppRoutes.MANAGE_PRODUCTS,
+                );
+              }),
           Divider(),
           ListTile(
             leading: Icon(Icons.logout, color: AppColors.primary),

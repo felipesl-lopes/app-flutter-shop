@@ -1,6 +1,5 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
-import 'package:appshop/shared/Widgets/app_drawer.dart';
-import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/get_iniciais.dart';
@@ -49,8 +48,7 @@ class ProfilePage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: DrawerAppBar(title: "Perfil"),
-      drawer: AppDrawer(),
+      appBar: BackAppBar(title: "Perfil"),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(

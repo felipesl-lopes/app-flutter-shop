@@ -22,32 +22,106 @@ class AppRoutes {
   static const DETAILS_PRODUCT = "/details-product";
   static const CART = "/cart";
   static const COMPRAS = "/compras";
-  static const DETALHES_COMPRAS = '/compras/detalhes-compras';
+  static const DETALHES_COMPRAS = '/detalhes-compras';
   static const MANAGE_PRODUCTS = "/manage-products";
   static const MANAGE_PRODUCT_FORM = "/manage-product-form";
   static const PROFILE = "/profile";
   static const SEARCH_PRODUCT = "/search-product";
-  static const PROFILE_USER_DATA = '/profile/user_data';
-  static const PROFILE_SECURITY_ACCOUNT = '/profile/security_account';
-  static const SELECIONAR_ENDERECO = '/cart/select_address';
-  static const FINALIZE_PURCHASE = '/cart/select_address/finalize_purchase';
-  static const NOVO_ENDERECO = '/cart/select_address/new';
+  static const PROFILE_USER_DATA = '/user_data';
+  static const PROFILE_SECURITY_ACCOUNT = '/security_account';
+  static const SELECIONAR_ENDERECO = '/select_address';
+  static const FINALIZE_PURCHASE = '/finalize_purchase';
+  static const NOVO_ENDERECO = '/new';
 
-  static Map<String, WidgetBuilder> routes = {
-    AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
-    AppRoutes.AUTH_LOGIN: (ctx) => AuthLogin(),
-    AppRoutes.HOME: (ctx) => HomePage(),
-    AppRoutes.DETAILS_PRODUCT: (ctx) => ProductDetailPage(),
-    AppRoutes.CART: (ctx) => CartPage(),
-    AppRoutes.COMPRAS: (ctx) => ComprasPage(),
-    AppRoutes.DETALHES_COMPRAS: (ctx) => DetalhesDaCompraPage(),
-    AppRoutes.MANAGE_PRODUCTS: (ctx) => ManageProductsPage(),
-    AppRoutes.MANAGE_PRODUCT_FORM: (ctx) => ProductFormPage(),
-    AppRoutes.PROFILE: (ctx) => ProfilePage(),
-    AppRoutes.SEARCH_PRODUCT: (ctx) => SearchPage(),
-    AppRoutes.PROFILE_USER_DATA: (ctx) => DadosUsuarioPage(),
-    AppRoutes.SELECIONAR_ENDERECO: (ctx) => SelecionarEnderecoPage(),
-    AppRoutes.FINALIZE_PURCHASE: (ctx) => FinalizarCompraPage(),
-    AppRoutes.NOVO_ENDERECO: (ctx) => NovoEnderecoPage(),
-  };
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    Widget page;
+
+    switch (settings.name) {
+      case AUTH_OR_HOME:
+        page = AuthOrHomePage();
+        break;
+
+      case AUTH_LOGIN:
+        page = AuthLogin();
+        break;
+
+      case HOME:
+        page = HomePage();
+        break;
+
+      case DETAILS_PRODUCT:
+        page = ProductDetailPage();
+        break;
+
+      case CART:
+        page = CartPage();
+        break;
+
+      case COMPRAS:
+        page = ComprasPage();
+        break;
+
+      case DETALHES_COMPRAS:
+        page = DetalhesDaCompraPage();
+        break;
+
+      case MANAGE_PRODUCTS:
+        page = ManageProductsPage();
+        break;
+
+      case MANAGE_PRODUCT_FORM:
+        page = ProductFormPage();
+        break;
+
+      case PROFILE:
+        page = ProfilePage();
+        break;
+
+      case SEARCH_PRODUCT:
+        page = SearchPage();
+        break;
+
+      case PROFILE_USER_DATA:
+        page = DadosUsuarioPage();
+        break;
+
+      case SELECIONAR_ENDERECO:
+        page = SelecionarEnderecoPage();
+        break;
+
+      case FINALIZE_PURCHASE:
+        page = FinalizarCompraPage();
+        break;
+
+      case NOVO_ENDERECO:
+        page = NovoEnderecoPage();
+        break;
+
+      default:
+        page = HomePage();
+    }
+
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (_, animation, secondaryAnimation) => page,
+      transitionsBuilder: (_, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+
+        final tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(
+          CurveTween(curve: Curves.ease),
+        );
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+      transitionDuration: Duration(milliseconds: 480),
+      reverseTransitionDuration: Duration(milliseconds: 480),
+    );
+  }
 }

@@ -1,7 +1,6 @@
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Widgets/cart_item_widget.dart';
-import 'package:appshop/shared/Widgets/app_drawer.dart';
-import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
+import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/formatters.dart';
@@ -22,8 +21,7 @@ class _CartPageState extends State<CartPage> {
     final _items = _cart.carrinhoDeProdutos.toList();
 
     return Scaffold(
-      appBar: DrawerAppBar(title: "Carrinho"),
-      drawer: AppDrawer(),
+      appBar: BackAppBar(title: "Carrinho"),
       body: Stack(
         children: [
           _items.isEmpty

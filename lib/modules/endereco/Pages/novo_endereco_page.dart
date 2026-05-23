@@ -225,6 +225,9 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
                 ],
               ),
               SizedBox(height: 24),
+              SendButton('Cancelar', () => Navigator.of(context).pop(),
+                  secondaryButton: true),
+              SizedBox(height: 8),
               if (_endereco != null) ...[
                 SendButton('Editar endereço', () async => editarEndereco()),
               ] else ...[
