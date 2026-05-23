@@ -10,6 +10,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
   final _maxAccount = TextEditingController();
   late bool _onlyFavorites = false;
   late bool _onlyPromotionals = false;
+  final FocusNode promocionalFocus = FocusNode();
 
   return showDialog(
     context: context,
@@ -179,8 +180,15 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                           ),
                           SwitchListTile(
                             value: _onlyPromotionals,
-                            onChanged: (value) =>
-                                setState(() => _onlyPromotionals = value),
+                            onChanged: (value) {
+                              setState(() => _onlyPromotionals = value);
+                              if (value) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  promocionalFocus.requestFocus();
+                                });
+                              }
+                            },
                             title: Text('Apenas promocionais'),
                             subtitle:
                                 Text('Mostrar somente produtos promocionais'),
@@ -193,6 +201,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                                 InputColumn(
                                   title: 'Desconto mínimo',
                                   input: TextFormField(
+                                    focusNode: promocionalFocus,
                                     controller: _maxAccount,
                                     keyboardType: TextInputType.number,
                                     decoration: getInputDecoration(

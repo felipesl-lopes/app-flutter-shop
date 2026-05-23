@@ -24,6 +24,12 @@ class _SearchPageState extends State<SearchPage> {
   bool _isLoading = true;
   bool _hasSearched = false;
 
+  final ScrollController _scrollController = ScrollController();
+
+  List<ProductModel> _allProducts = [];
+  List<ProductModel> _visibleProducts = [];
+  int _currentLimit = 10;
+
   bool _isInit = true;
   String? _initialQuery;
   String? _initialCategoryId;
@@ -51,6 +57,8 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_paginationListener);
+
     Provider.of<ProductProvider>(context, listen: false)
         .loadProductsCommand
         .execute()
@@ -65,6 +73,12 @@ class _SearchPageState extends State<SearchPage> {
         _hasSearched = true;
       }
 
+      final products =
+          _hasSearched ? _filteredProducts : provider.produtosParaCompra;
+
+      _allProducts = products;
+      _visibleProducts = _allProducts.take(_currentLimit).toList();
+
       setState(() => _isLoading = false);
     });
   }
@@ -72,15 +86,31 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _paginationListener() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      _loadMore();
+    }
+  }
+
+  void _loadMore() {
+    if (_visibleProducts.length >= _allProducts.length) return;
+
+    setState(() {
+      _currentLimit += 10;
+      _visibleProducts = _allProducts.take(_currentLimit).toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductProvider>(context);
 
-    final productsToShow =
-        _hasSearched ? _filteredProducts : provider.produtosParaCompra;
+    final productsToShow = _visibleProducts;
 
     void _searchProduct() {
       final query = _searchController.text.trim();
@@ -89,6 +119,9 @@ class _SearchPageState extends State<SearchPage> {
       setState(() {
         _hasSearched = true;
         _filteredProducts = provider.searchByName(query);
+        _allProducts = _filteredProducts;
+        _currentLimit = 10;
+        _visibleProducts = _allProducts.take(_currentLimit).toList();
       });
 
       FocusScope.of(context).unfocus();
@@ -186,6 +219,7 @@ class _SearchPageState extends State<SearchPage> {
                       )
                     : Expanded(
                         child: SingleChildScrollView(
+                          controller: _scrollController,
                           child: ProductGrid(
                             list_products: productsToShow,
                             title: "Produtos para você",
