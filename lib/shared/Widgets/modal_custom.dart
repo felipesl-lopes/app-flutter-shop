@@ -1,4 +1,3 @@
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 Future<dynamic> modalCustom({
@@ -8,6 +7,8 @@ Future<dynamic> modalCustom({
   required VoidCallback onTap,
   IconData? icon,
 }) {
+  final colorScheme = Theme.of(context).colorScheme;
+
   return showDialog(
     context: context,
     builder: (ctx) => Dialog(
@@ -27,7 +28,8 @@ Future<dynamic> modalCustom({
             Container(
               padding: EdgeInsets.all(20),
               alignment: Alignment.center,
-              child: Icon(icon, size: 40, color: AppColors.grey),
+              child: Icon(icon,
+                  size: 40, color: colorScheme.onSurface.withOpacity(0.5)),
             ),
             Text(
               text,
@@ -40,12 +42,12 @@ Future<dynamic> modalCustom({
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
                   child: Text("CANCELAR",
-                      style: TextStyle(color: AppColors.black)),
+                      style: TextStyle(color: colorScheme.onSurface)),
                 ),
                 SizedBox(width: 8),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -53,7 +55,7 @@ Future<dynamic> modalCustom({
                   onPressed: onTap,
                   child: Text(
                     "CONFIRMAR",
-                    style: TextStyle(color: AppColors.white),
+                    style: TextStyle(color: colorScheme.onPrimary),
                   ),
                 ),
               ],

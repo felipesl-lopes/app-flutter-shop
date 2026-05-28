@@ -7,7 +7,6 @@ import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/core/errors/generic_exception.dart';
 import 'package:appshop/shared/helpers/app_alert.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
@@ -285,6 +284,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final msg = ScaffoldMessenger.of(context);
 
     final days = int.tryParse(_promotionDateController.text) ?? 0;
@@ -309,36 +311,56 @@ class _ProductFormPageState extends State<ProductFormPage> {
             actions: [
               if (_editedProduct != null)
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: Icon(
+                    Icons.delete,
+                    color: colorScheme.onPrimary,
+                  ),
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
                         title: Text("Confirmar exclusão"),
                         content: Text(
-                            "Deseja excluir o produto ${_editedProduct?.name}?"),
+                          "Deseja excluir o produto ${_editedProduct?.name}?",
+                        ),
                         actions: [
                           TextButton(
-                            child: Text("Cancelar"),
+                            child: Text(
+                              "Cancelar",
+                              style: TextStyle(
+                                color: colorScheme.primary,
+                              ),
+                            ),
                             onPressed: () => {
                               Navigator.of(ctx).pop(),
                             },
                           ),
                           TextButton(
-                            child: Text("Confirmar"),
+                            child: Text(
+                              "Confirmar",
+                              style: TextStyle(
+                                color: colorScheme.error,
+                              ),
+                            ),
                             onPressed: () async {
                               try {
                                 Navigator.of(ctx).pop();
+
                                 await Provider.of<ProductProvider>(
                                   context,
                                   listen: false,
                                 ).deletarProduto(_editedProduct!);
                               } on GenericExeption catch (error) {
                                 msg.showSnackBar(
-                                    SnackBar(content: Text(error.toString())));
+                                  SnackBar(
+                                    content: Text(error.toString()),
+                                  ),
+                                );
                               } catch (error) {
-                                AppAlert.showError(context,
-                                    message: error.toString());
+                                AppAlert.showError(
+                                  context,
+                                  message: error.toString(),
+                                );
                               }
                             },
                           ),
@@ -351,10 +373,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
           ),
           body: _isLoading
               ? Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: colorScheme.primary,
+                  ),
                 )
               : Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                   child: Form(
                     key: _formKey,
                     child: ListView(
@@ -363,17 +388,26 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         TextFormField(
                           controller: _nameController,
                           onChanged: (_) => _checkForChanges(),
-                          decoration: getInputDecoration("Nome do produto",
-                              activityLabel: true),
+                          decoration: getInputDecoration(
+                            context,
+                            "Nome do produto",
+                            activityLabel: true,
+                          ),
                           validator: (value) => isValidName(value ?? ""),
                         ),
                         SizedBox(height: 20),
                         Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 12,
+                          ),
                           decoration: BoxDecoration(
-                              border: Border.all(width: 1),
-                              borderRadius: BorderRadius.circular(8)),
+                            border: Border.all(
+                              width: 1,
+                              color: colorScheme.outline,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           child: ListTile(
                             contentPadding: EdgeInsets.zero,
                             dense: true,
@@ -382,14 +416,23 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             title: Text(
                               'Selecionar categoria',
                               style: TextStyle(
-                                  fontSize: 16, color: AppColors.grey),
+                                fontSize: 16,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                             ),
-                            trailing: Icon(Icons.arrow_drop_down),
+                            trailing: Icon(
+                              Icons.arrow_drop_down,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
                             onTap: () {
                               setState(() {
                                 _checkForChanges();
                               });
-                              selecionarCategorias(context, categorias);
+
+                              selecionarCategorias(
+                                context,
+                                categorias,
+                              );
                             },
                           ),
                         ),
@@ -399,21 +442,30 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: _selectedCategories.map((id) {
-                              final categoria =
-                                  categorias.firstWhere((c) => c.id == id);
+                              final categoria = categorias.firstWhere(
+                                (c) => c.id == id,
+                              );
+
                               return Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
-                                margin: EdgeInsets.only(right: 8),
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                margin: const EdgeInsets.only(right: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade300,
+                                  color: colorScheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Row(
                                   children: [
-                                    Text(categoria.nome),
+                                    Text(
+                                      categoria.nome,
+                                      style: TextStyle(
+                                        color: colorScheme.onSurface,
+                                      ),
+                                    ),
                                     IconButton(
-                                      constraints: BoxConstraints(),
+                                      constraints: const BoxConstraints(),
                                       padding: EdgeInsets.zero,
                                       style: ButtonStyle(
                                         tapTargetSize:
@@ -421,12 +473,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                       ),
                                       onPressed: () {
                                         setState(() {});
+
                                         _selectedCategories
                                             .remove(categoria.id);
+
                                         _checkForChanges();
                                       },
-                                      icon: Icon(Icons.close, size: 18),
-                                    )
+                                      icon: Icon(
+                                        Icons.close,
+                                        size: 18,
+                                        color: colorScheme.onSurface,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
@@ -440,41 +498,53 @@ class _ProductFormPageState extends State<ProductFormPage> {
                               child: TextFormField(
                                 inputFormatters: [
                                   TextInputFormatter.withFunction(
-                                      (oldValue, newValue) {
-                                    String digits = newValue.text
-                                        .replaceAll(RegExp(r'\D'), '');
+                                    (oldValue, newValue) {
+                                      String digits = newValue.text
+                                          .replaceAll(RegExp(r'\D'), '');
 
-                                    if (digits.isEmpty) {
-                                      return newValue.copyWith(text: '');
-                                    }
+                                      if (digits.isEmpty) {
+                                        return newValue.copyWith(text: '');
+                                      }
 
-                                    double value = double.parse(digits) / 100;
+                                      double value = double.parse(digits) / 100;
 
-                                    final formatter = NumberFormat.currency(
-                                      locale: 'pt_BR',
-                                      symbol: '',
-                                    );
+                                      final formatter = NumberFormat.currency(
+                                        locale: 'pt_BR',
+                                        symbol: '',
+                                      );
 
-                                    final newText = formatter.format(value);
+                                      final newText = formatter.format(value);
 
-                                    return TextEditingValue(
-                                      text: newText,
-                                      selection: TextSelection.collapsed(
-                                          offset: newText.length),
-                                    );
-                                  }),
+                                      return TextEditingValue(
+                                        text: newText,
+                                        selection: TextSelection.collapsed(
+                                          offset: newText.length,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ],
                                 controller: _priceController,
                                 onChanged: (_) => _checkForChanges(),
-                                decoration: getInputDecoration("Preço unitário",
-                                    activityLabel: true),
+                                decoration: getInputDecoration(
+                                  context,
+                                  "Preço unitário",
+                                  activityLabel: true,
+                                ),
                                 keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
+                                  decimal: true,
+                                ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty)
+                                  if (value == null || value.isEmpty) {
                                     return 'Informe um valor';
+                                  }
+
                                   final price = parsePrice(value);
-                                  if (price <= 0) return 'Valor inválido';
+
+                                  if (price <= 0) {
+                                    return 'Valor inválido';
+                                  }
+
                                   return null;
                                 },
                               ),
@@ -484,11 +554,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                               child: TextFormField(
                                 controller: _quantityController,
                                 onChanged: (_) => _checkForChanges(),
-                                decoration: getInputDecoration("Unidades",
-                                    activityLabel: true),
+                                decoration: getInputDecoration(
+                                  context,
+                                  "Unidades",
+                                  activityLabel: true,
+                                ),
                                 keyboardType: TextInputType.number,
-                                validator: (value) =>
-                                    isValidQuantity(value ?? ""),
+                                validator: (value) => isValidQuantity(
+                                  value ?? "",
+                                ),
                               ),
                             ),
                           ],
@@ -498,11 +572,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           controller: _descriptionController,
                           onChanged: (_) => _checkForChanges(),
                           decoration: getInputDecoration(
-                              "Adicione todas as descrições do produto.",
-                              activityHint: true),
+                            context,
+                            "Adicione todas as descrições do produto.",
+                            activityHint: true,
+                          ),
                           keyboardType: TextInputType.multiline,
                           maxLines: 5,
-                          validator: (value) => isValidDescription(value ?? ""),
+                          validator: (value) => isValidDescription(
+                            value ?? "",
+                          ),
                         ),
                         SizedBox(height: 20),
                         Column(
@@ -514,33 +592,50 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                   child: TextFormField(
                                     controller: _imageUrlController,
                                     decoration: getInputDecoration(
-                                        "URL da imagem",
-                                        activityLabel: true),
+                                      context,
+                                      "URL da imagem",
+                                      activityLabel: true,
+                                    ),
                                     keyboardType: TextInputType.url,
                                   ),
                                 ),
                                 TextButton(
-                                    onPressed: _addImage,
-                                    child: Text("Adicionar imagem"))
+                                  onPressed: _addImage,
+                                  child: Text(
+                                    "Adicionar imagem",
+                                    style: TextStyle(
+                                      color: colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             SizedBox(height: 10),
-                            Text("Imagens ${_imageUrls.length}/10"),
+                            Text(
+                              "Imagens ${_imageUrls.length}/10",
+                              style: TextStyle(
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: _imageUrls.map((image) {
                                   return Padding(
-                                    padding: const EdgeInsets.only(right: 8),
+                                    padding: const EdgeInsets.only(
+                                      right: 8,
+                                    ),
                                     child: Stack(
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  color: AppColors.grey,
-                                                  width: 1)),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border: Border.all(
+                                              color: colorScheme.outline,
+                                              width: 1,
+                                            ),
+                                          ),
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(6),
@@ -559,17 +654,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                             width: 28,
                                             height: 28,
                                             decoration: BoxDecoration(
-                                              color: AppColors.grey
-                                                  .withOpacity(0.7),
+                                              color: colorScheme
+                                                  .surfaceContainerHighest
+                                                  .withOpacity(0.8),
                                               borderRadius:
                                                   BorderRadius.circular(40),
                                             ),
                                             child: InkWell(
-                                              onTap: () =>
-                                                  _removeImage(image.id),
-                                              child: const Icon(
+                                              onTap: () => _removeImage(
+                                                image.id,
+                                              ),
+                                              child: Icon(
                                                 Icons.close,
-                                                color: Colors.black54,
+                                                color: colorScheme.onSurface,
                                               ),
                                             ),
                                           ),
@@ -590,18 +687,20 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     color: _produtoPromocional
-                                        ? AppColors.black.withOpacity(0.7)
-                                        : AppColors.black.withOpacity(0.4),
+                                        ? colorScheme.onSurface
+                                        : colorScheme.onSurface
+                                            .withOpacity(0.5),
                                   ),
                                 ),
                                 Switch(
                                   value: _produtoPromocional,
+                                  activeColor: colorScheme.primary,
                                   onChanged: (value) {
                                     setState(() {
                                       _produtoPromocional = value;
                                     });
                                   },
-                                )
+                                ),
                               ],
                             ),
                             if (_produtoPromocional)
@@ -614,7 +713,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                     children: [
                                       Row(
                                         children: [
-                                          Container(
+                                          SizedBox(
                                             width: 60,
                                             child: TextFormField(
                                               controller: _percentageController,
@@ -629,25 +728,30 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                 if (number != null &&
                                                     number > 100) {
                                                   if (!_maxDateWarningShown) {
-                                                    showAppFlushbar(context,
-                                                        message:
-                                                            "Desconto máximo excedido.",
-                                                        type: FlushType.warning,
-                                                        position:
-                                                            FlushPosition.top);
+                                                    showAppFlushbar(
+                                                      context,
+                                                      message:
+                                                          "Desconto máximo excedido.",
+                                                      type: FlushType.warning,
+                                                      position:
+                                                          FlushPosition.top,
+                                                    );
+
                                                     _maxDateWarningShown = true;
                                                   }
 
                                                   _percentageController.text =
                                                       "100";
+
                                                   _percentageController
                                                           .selection =
                                                       TextSelection
                                                           .fromPosition(
                                                     TextPosition(
-                                                        offset:
-                                                            _percentageController
-                                                                .text.length),
+                                                      offset:
+                                                          _percentageController
+                                                              .text.length,
+                                                    ),
                                                   );
                                                 } else {
                                                   _maxDateWarningShown = false;
@@ -656,32 +760,49 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                 setState(() {});
                                                 _checkForChanges();
                                               },
-                                              decoration:
-                                                  getInputDecoration(""),
+                                              decoration: getInputDecoration(
+                                                  context, ""),
                                               keyboardType: TextInputType
                                                   .numberWithOptions(
-                                                      decimal: true),
+                                                decimal: true,
+                                              ),
                                               validator: (value) {
                                                 if (value == null ||
-                                                    value.isEmpty)
+                                                    value.isEmpty) {
                                                   return 'Informe um valor';
+                                                }
+
                                                 final price = parsePrice(value);
-                                                if (price <= 0)
+
+                                                if (price <= 0) {
                                                   return 'Valor inválido';
+                                                }
+
                                                 return null;
                                               },
                                             ),
                                           ),
-                                          Text(" % de desconto.")
+                                          Text(
+                                            " % de desconto.",
+                                            style: TextStyle(
+                                              color: colorScheme.onSurface,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       if (_percentageController
                                           .value.text.isNotEmpty)
-                                        Text("Valor final: ${formatPrice(
-                                          discountPercentageAsDouble(
+                                        Text(
+                                          "Valor final: ${formatPrice(
+                                            discountPercentageAsDouble(
                                               _percentageController.text,
-                                              _priceController.text),
-                                        )}")
+                                              _priceController.text,
+                                            ),
+                                          )}",
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                          ),
+                                        ),
                                     ],
                                   ),
                                   SizedBox(height: 12),
@@ -691,7 +812,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                     children: [
                                       Row(
                                         children: [
-                                          Container(
+                                          SizedBox(
                                             width: 60,
                                             child: TextFormField(
                                               controller:
@@ -700,8 +821,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                 FilteringTextInputFormatter
                                                     .digitsOnly,
                                               ],
-                                              decoration:
-                                                  getInputDecoration(""),
+                                              decoration: getInputDecoration(
+                                                  context, ""),
                                               onChanged: (value) {
                                                 final number =
                                                     int.tryParse(value);
@@ -709,26 +830,31 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                                 if (number != null &&
                                                     number > 30) {
                                                   if (!_maxPercentageWarningShown) {
-                                                    showAppFlushbar(context,
-                                                        message:
-                                                            "Data máxima excedida.",
-                                                        type: FlushType.warning,
-                                                        position:
-                                                            FlushPosition.top);
+                                                    showAppFlushbar(
+                                                      context,
+                                                      message:
+                                                          "Data máxima excedida.",
+                                                      type: FlushType.warning,
+                                                      position:
+                                                          FlushPosition.top,
+                                                    );
 
                                                     _maxPercentageWarningShown =
                                                         true;
                                                   }
+
                                                   _promotionDateController
                                                       .text = "30";
+
                                                   _promotionDateController
                                                           .selection =
                                                       TextSelection
                                                           .fromPosition(
                                                     TextPosition(
-                                                        offset:
-                                                            _promotionDateController
-                                                                .text.length),
+                                                      offset:
+                                                          _promotionDateController
+                                                              .text.length,
+                                                    ),
                                                   );
                                                 } else {
                                                   _maxPercentageWarningShown =
@@ -740,7 +866,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                               },
                                             ),
                                           ),
-                                          Text(" Dias promocionais.")
+                                          Text(
+                                            " Dias promocionais.",
+                                            style: TextStyle(
+                                              color: colorScheme.onSurface,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       if (_promotionDateController
@@ -749,9 +880,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                           "Data: ${promotionDate.day.toString().padLeft(2, '0')}/"
                                           "${promotionDate.month.toString().padLeft(2, '0')}/"
                                           "${promotionDate.year}",
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                          ),
                                         ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                           ],
@@ -763,11 +897,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: _hasChanges && !_isLoading ? _submitForm : null,
-            backgroundColor:
-                _hasChanges && !_isLoading ? AppColors.primary : AppColors.grey,
+            backgroundColor: _hasChanges && !_isLoading
+                ? colorScheme.primary
+                : colorScheme.surfaceContainerHighest,
             label: Text(
               "Salvar",
-              style: TextStyle(color: AppColors.white, fontSize: 16),
+              style: TextStyle(
+                color: _hasChanges && !_isLoading
+                    ? colorScheme.onPrimary
+                    : colorScheme.onSurfaceVariant,
+                fontSize: 16,
+              ),
             ),
           ),
         ),

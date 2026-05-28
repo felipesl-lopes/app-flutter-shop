@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BackAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -11,13 +10,15 @@ class BackAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AppBar(
       title: Text(
         title,
-        style: TextStyle(color: AppColors.white),
+        style: TextStyle(color: colorScheme.onPrimary),
       ),
-      backgroundColor: AppColors.primary,
-      iconTheme: IconThemeData(color: AppColors.white),
+      backgroundColor: colorScheme.primary,
+      iconTheme: IconThemeData(color: colorScheme.onPrimary),
       actions: actions,
     );
   }

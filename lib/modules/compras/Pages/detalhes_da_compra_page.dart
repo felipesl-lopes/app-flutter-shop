@@ -1,7 +1,6 @@
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
@@ -48,6 +47,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
       0,
       (sum, item) => sum + item.quantity,
     );
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: BackAppBar(
@@ -62,7 +62,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: colorScheme.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Column(
@@ -73,6 +73,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -80,6 +81,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                     DateFormat(
                       "dd/MM/yyyy • HH:mm",
                     ).format(order.date),
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
                   ),
                   SizedBox(height: 18),
                   Row(
@@ -108,6 +110,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 12),
@@ -116,7 +119,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: Colors.grey.shade100,
+                  color: colorScheme.surfaceContainerLowest,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,6 +128,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                       "${endereco.rua}, ${endereco.numero}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     if (endereco.complemento.isNotEmpty)
@@ -132,14 +136,17 @@ class DetalhesDaCompraPage extends StatelessWidget {
                         padding: EdgeInsets.only(top: 4),
                         child: Text(
                           endereco.complemento,
+                          style: TextStyle(color: colorScheme.onSurfaceVariant),
                         ),
                       ),
                     SizedBox(height: 4),
                     Text(
                       "${endereco.bairro} • ${endereco.cidade}/${endereco.uf}",
+                      style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                     SizedBox(height: 4),
-                    Text("CEP: ${endereco.cep}"),
+                    Text("CEP: ${endereco.cep}",
+                        style: TextStyle(color: colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
@@ -150,6 +157,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
               ),
             ),
             SizedBox(height: 12),
@@ -166,7 +174,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(
                       16,
                     ),
-                    color: Colors.grey.shade100,
+                    color: colorScheme.surfaceContainerLowest,
                   ),
                   child: Row(
                     children: [
@@ -177,11 +185,11 @@ class DetalhesDaCompraPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                             14,
                           ),
-                          color: Colors.white,
+                          color: colorScheme.surface,
                         ),
                         child: Icon(
                           Icons.inventory_2_outlined,
-                          color: AppColors.primary,
+                          color: colorScheme.primary,
                         ),
                       ),
                       SizedBox(width: 14),
@@ -196,11 +204,14 @@ class DetalhesDaCompraPage extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
+                                color: colorScheme.onSurface,
                               ),
                             ),
                             SizedBox(height: 6),
                             Text(
                               "${item.quantity}x unidade(s)",
+                              style: TextStyle(
+                                  color: colorScheme.onSurfaceVariant),
                             ),
                           ],
                         ),
@@ -214,6 +225,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                             ),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(height: 4),
@@ -222,7 +234,7 @@ class DetalhesDaCompraPage extends StatelessWidget {
                               item.price * item.quantity,
                             ),
                             style: TextStyle(
-                              color: AppColors.primary,
+                              color: colorScheme.primary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -251,13 +263,15 @@ class _DetailInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: TextStyle(
-            color: AppColors.black.withOpacity(0.55),
+            color: colorScheme.onSurfaceVariant,
           ),
         ),
         SizedBox(height: 6),
@@ -266,6 +280,7 @@ class _DetailInfo extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
+            color: colorScheme.onSurface,
           ),
         ),
       ],

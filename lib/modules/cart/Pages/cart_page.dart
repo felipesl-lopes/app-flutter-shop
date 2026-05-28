@@ -1,7 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Widgets/cart_item_widget.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final CartProvider _cart = Provider.of<CartProvider>(context);
     final _items = _cart.carrinhoDeProdutos.toList();
 
@@ -31,7 +34,7 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       Icon(
                         Icons.remove_shopping_cart,
-                        color: AppColors.black.withOpacity(0.45),
+                        color: colorScheme.onSurface.withOpacity(0.45),
                         size: 60,
                       ),
                       SizedBox(height: 16),
@@ -39,22 +42,30 @@ class _CartPageState extends State<CartPage> {
                         "Nenhum item encontrado no carrinho.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: AppColors.black.withOpacity(0.45),
-                            fontSize: 16),
+                          color: colorScheme.onSurface.withOpacity(0.45),
+                          fontSize: 16,
+                        ),
                       ),
                       SizedBox(height: 40),
                       ElevatedButton.icon(
                         onPressed: () => Navigator.of(context)
                             .pushNamed(AppRoutes.SEARCH_PRODUCT),
-                        icon: Icon(Icons.storefront, color: AppColors.white),
+                        icon: Icon(
+                          Icons.storefront,
+                          color: colorScheme.onPrimary,
+                        ),
                         label: Text(
                           "Explorar produtos",
-                          style: TextStyle(color: AppColors.white),
+                          style: TextStyle(
+                            color: colorScheme.onPrimary,
+                          ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: colorScheme.primary,
                           padding: EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 14),
+                            horizontal: 24,
+                            vertical: 14,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -72,7 +83,7 @@ class _CartPageState extends State<CartPage> {
                         padding: EdgeInsets.all(16),
                         margin: EdgeInsets.fromLTRB(16, 16, 16, 8),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
+                          color: colorScheme.primary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
@@ -85,7 +96,7 @@ class _CartPageState extends State<CartPage> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                color: colorScheme.primary,
                               ),
                             ),
                             SizedBox(height: 4),
@@ -93,7 +104,7 @@ class _CartPageState extends State<CartPage> {
                               "Confira os itens antes de continuar.",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: AppColors.black.withOpacity(0.7),
+                                color: colorScheme.onSurface.withOpacity(0.7),
                               ),
                             ),
                           ],
@@ -108,9 +119,11 @@ class _CartPageState extends State<CartPage> {
                 ),
           if (_isLoading)
             Container(
-              color: AppColors.black.withOpacity(0.45),
+              color: colorScheme.scrim.withOpacity(0.45),
               child: Center(
-                child: CircularProgressIndicator(color: AppColors.white),
+                child: CircularProgressIndicator(
+                  color: colorScheme.onPrimary,
+                ),
               ),
             ),
         ],
@@ -119,7 +132,10 @@ class _CartPageState extends State<CartPage> {
           ? null
           : SafeArea(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -127,7 +143,10 @@ class _CartPageState extends State<CartPage> {
                         children: [
                           Text(
                             "Valor total",
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: colorScheme.onSurface,
+                            ),
                           ),
                           SizedBox(width: 10),
                           Flexible(
@@ -136,7 +155,7 @@ class _CartPageState extends State<CartPage> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: AppColors.primary,
+                                color: colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -146,7 +165,7 @@ class _CartPageState extends State<CartPage> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -155,7 +174,9 @@ class _CartPageState extends State<CartPage> {
                           .pushNamed(AppRoutes.SELECIONAR_ENDERECO),
                       child: Text(
                         "COMPRAR",
-                        style: TextStyle(color: AppColors.white),
+                        style: TextStyle(
+                          color: colorScheme.onPrimary,
+                        ),
                       ),
                     ),
                   ],

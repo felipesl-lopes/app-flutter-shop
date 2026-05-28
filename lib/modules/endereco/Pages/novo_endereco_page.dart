@@ -162,13 +162,15 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
               ),
               TextFormField(
                 controller: _cepController,
-                decoration: getInputDecoration("CEP", activityLabel: true),
+                decoration:
+                    getInputDecoration(context, "CEP", activityLabel: true),
                 validator: (v) => validate(v ?? '', 'o CEP'),
               ),
               SizedBox(height: 12),
               TextFormField(
                 controller: _ruaController,
-                decoration: getInputDecoration("Rua", activityLabel: true),
+                decoration:
+                    getInputDecoration(context, "Rua", activityLabel: true),
                 validator: (v) => validate(v ?? '', 'a rua'),
               ),
               SizedBox(height: 12),
@@ -178,6 +180,7 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
                     child: TextFormField(
                       controller: _numeroController,
                       decoration: getInputDecoration(
+                        context,
                         "Número",
                         activityLabel: true,
                       ),
@@ -189,6 +192,7 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
                     child: TextFormField(
                       controller: _complementoController,
                       decoration: getInputDecoration(
+                        context,
                         "Complemento",
                         activityLabel: true,
                       ),
@@ -199,7 +203,8 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
               SizedBox(height: 12),
               TextFormField(
                 controller: _bairroController,
-                decoration: getInputDecoration("Bairro", activityLabel: true),
+                decoration:
+                    getInputDecoration(context, "Bairro", activityLabel: true),
                 validator: (v) => validate(v ?? '', 'o bairro'),
               ),
               SizedBox(height: 12),
@@ -209,8 +214,8 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
                     flex: 2,
                     child: TextFormField(
                       controller: _cidadeController,
-                      decoration:
-                          getInputDecoration("Cidade", activityLabel: true),
+                      decoration: getInputDecoration(context, "Cidade",
+                          activityLabel: true),
                       validator: (v) => validate(v ?? '', 'a cidade'),
                     ),
                   ),
@@ -218,7 +223,8 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
                   Expanded(
                     child: TextFormField(
                       controller: _ufController,
-                      decoration: getInputDecoration("UF", activityLabel: true),
+                      decoration: getInputDecoration(context, "UF",
+                          activityLabel: true),
                       validator: (v) => validate(v ?? '', 'o estado'),
                     ),
                   ),

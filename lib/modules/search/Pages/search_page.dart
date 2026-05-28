@@ -6,7 +6,6 @@ import 'package:appshop/modules/search/Pages/modal_filtro_produto.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -109,6 +108,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductProvider>(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     final productsToShow = _visibleProducts;
 
@@ -135,7 +135,7 @@ class _SearchPageState extends State<SearchPage> {
           onSubmitted: (_) => FocusScope.of(context).unfocus(),
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
-            fillColor: Colors.white,
+            fillColor: colorScheme.onPrimary,
             filled: true,
             hintText: "Buscar produto",
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
@@ -159,7 +159,7 @@ class _SearchPageState extends State<SearchPage> {
             onPressed: () => modalFiltroProduto(context: context),
             icon: Icon(
               Icons.tune,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
           Consumer<CartProvider>(
@@ -168,7 +168,7 @@ class _SearchPageState extends State<SearchPage> {
                     Navigator.of(context).pushNamed(AppRoutes.CART),
                 icon: Icon(
                   Icons.shopping_cart,
-                  color: AppColors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 )),
             builder: (ctx, cart, child) => Badgee(
               value: cart.totalDeItens.toString(),
@@ -203,14 +203,14 @@ class _SearchPageState extends State<SearchPage> {
                               Icon(
                                 Icons.search_off,
                                 size: 64,
-                                color: Colors.grey,
+                                color: colorScheme.onSurface.withOpacity(0.5),
                               ),
                               SizedBox(height: 12),
                               Text(
                                 "Nenhum produto encontrado.",
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey,
+                                  color: colorScheme.onSurface.withOpacity(0.5),
                                 ),
                               ),
                             ],

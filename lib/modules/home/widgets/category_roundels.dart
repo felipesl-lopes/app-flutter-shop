@@ -1,6 +1,5 @@
 import 'package:appshop/modules/categorias/Models/categorias_model.dart';
 import 'package:appshop/modules/categorias/Widgets/categoria_icon_helper.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CategoryRoundels extends StatelessWidget {
@@ -42,10 +41,12 @@ class CategoryRoundels extends StatelessWidget {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        backgroundColor: AppColors.primary.withOpacity(1),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         radius: 30,
-                        child:
-                            Icon(CategoriaIconHelper.getIcon(categoria.nome), color: Colors.white,),
+                        child: Icon(
+                          CategoriaIconHelper.getIcon(categoria.nome),
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       ),
                       SizedBox(height: 8),
                       Text(

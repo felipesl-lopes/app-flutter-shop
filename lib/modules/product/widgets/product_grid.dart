@@ -1,6 +1,5 @@
 import 'package:appshop/modules/product/widgets/product_grid_item.dart';
 import 'package:appshop/shared/Models/product_model.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +27,7 @@ class ProductGrid extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
@@ -90,11 +89,13 @@ class ProductGrid extends StatelessWidget {
                   children: [
                     Text(
                       "Ver mais",
-                      style: TextStyle(fontSize: 16, color: AppColors.primary),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                     Icon(
                       Icons.arrow_right,
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       size: 30,
                     ),
                   ],

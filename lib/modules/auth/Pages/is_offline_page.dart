@@ -1,4 +1,3 @@
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class IsOfflinePage extends StatelessWidget {
@@ -24,7 +23,8 @@ class IsOfflinePage extends StatelessWidget {
                 child: Icon(
                   Icons.wifi_off,
                   size: 39,
-                  color: AppColors.grey,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                 ),
               ),
               Text("Verifique sua conexão e tente novamente."),

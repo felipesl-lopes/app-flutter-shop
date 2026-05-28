@@ -1,6 +1,5 @@
 import 'package:appshop/shared/Models/product_image_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -25,6 +24,7 @@ class _CarouselImagesProductState extends State<CarouselImagesProduct> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,6 +44,7 @@ class _CarouselImagesProductState extends State<CarouselImagesProduct> {
                 },
                 itemBuilder: (context, index) {
                   final bannerIndex = index % widget.imageUrls.length;
+
                   return Image.network(
                     widget.imageUrls[bannerIndex].value,
                     fit: BoxFit.contain,
@@ -69,8 +70,8 @@ class _CarouselImagesProductState extends State<CarouselImagesProduct> {
                   height: 6,
                   decoration: BoxDecoration(
                     color: _currentIndex == index
-                        ? AppColors.black.withOpacity(0.8)
-                        : AppColors.black.withOpacity(0.4),
+                        ? colorScheme.onSurface.withOpacity(0.8)
+                        : colorScheme.onSurface.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

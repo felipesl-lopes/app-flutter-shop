@@ -11,7 +11,6 @@ import 'package:appshop/shared/Widgets/back_app_bar.dart';
 import 'package:appshop/shared/Widgets/badgee.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
 import 'package:appshop/shared/Widgets/send_button.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
@@ -45,18 +44,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final initialProduct =
         widget.product ?? _productFromRouteOrProvider(context);
+
     if (initialProduct == null) {
       return Scaffold(
-        appBar:
-            AppBar(title: Text('Produto'), backgroundColor: AppColors.primary),
-        body: Center(child: Text('Produto não encontrado.')),
+        appBar: AppBar(
+          title: Text('Produto'),
+          backgroundColor: colorScheme.primary,
+        ),
+        body: Center(
+          child: Text('Produto não encontrado.',
+              style: TextStyle(color: colorScheme.onSurface)),
+        ),
       );
     }
 
     final productList = Provider.of<ProductProvider>(context);
+
     ProductModel product;
+
     try {
       product =
           productList.produtos.firstWhere((p) => p.id == initialProduct.id);
@@ -77,6 +86,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final cart = Provider.of<CartProvider>(context);
 
     final _categories = Provider.of<CategoriasProvider>(context, listen: false);
+
     final List<String> _nomesCategorias =
         _categories.getNomesCategorias(product.categories);
 
@@ -112,10 +122,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             child: IconButton(
                 onPressed: () =>
                     Navigator.of(context).pushNamed(AppRoutes.CART),
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: AppColors.white,
-                )),
+                icon: Icon(Icons.shopping_cart, color: colorScheme.onPrimary)),
             builder: (ctx, cart, child) => Badgee(
               value: cart.totalDeItens.toString(),
               child: child!,
@@ -148,14 +155,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(60),
-                            color: Color.fromRGBO(220, 220, 220, 0.4),
+                            color: colorScheme.surface.withOpacity(0.4),
                           ),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(60),
                               onTap: () async => toggleFavorite(),
-                              splashColor: Colors.redAccent.withOpacity(0.2),
+                              splashColor: colorScheme.error.withOpacity(0.2),
                               child: Padding(
                                 padding: EdgeInsets.all(6),
                                 child: Icon(
@@ -163,8 +170,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         ? Icons.favorite
                                         : Icons.favorite_border,
                                     color: product.isFavorite
-                                        ? Colors.redAccent
-                                        : null),
+                                        ? colorScheme.error
+                                        : colorScheme.onSurface),
                               ),
                             ),
                           ),
@@ -182,6 +189,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     product.name,
                     style: TextStyle(
                       fontSize: 20,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   if (product.isPromotional)
@@ -190,16 +198,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         product.price,
                       ),
                       style: TextStyle(
-                          fontSize: 15,
-                          decoration: TextDecoration.lineThrough,
-                          decorationColor: AppColors.black.withOpacity(0.5),
-                          color: AppColors.black.withOpacity(0.5)),
+                        fontSize: 15,
+                        decoration: TextDecoration.lineThrough,
+                        decorationColor: colorScheme.onSurface.withOpacity(0.5),
+                        color: colorScheme.onSurface.withOpacity(0.5),
+                      ),
                     ),
                   Text(
                     formatPrice(
                       product.valorFinalDoProduto(),
                     ),
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface),
                   ),
                   PromotionCountdownText(
                     isPromotional: product.isPromotional,
@@ -214,22 +226,34 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       Row(
                         children: [
                           Text(
-                              _nomesCategorias.length > 1
-                                  ? "Categorias: "
-                                  : "Categoria: ",
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                          Text(_nomesCategorias.join((', '))),
+                            _nomesCategorias.length > 1
+                                ? "Categorias: "
+                                : "Categoria: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                          Text(
+                            _nomesCategorias.join(', '),
+                            style: TextStyle(
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 8),
                       Text("Descrição:",
-                          style: TextStyle(fontWeight: FontWeight.w600)),
-                      Text(product.description),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface)),
+                      Text(product.description,
+                          style: TextStyle(color: colorScheme.onSurface)),
                       SizedBox(height: 8),
                       Container(
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.grey.withOpacity(0.3),
+                          color: colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Row(
@@ -238,7 +262,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               unidadesArredondadas < product.quantity
                                   ? 'Unidades disponíveis: + de $unidadesArredondadas'
                                   : 'Unidades disponíveis: ${product.quantity}',
-                              style: TextStyle(fontSize: 15),
+                              style: TextStyle(
+                                  fontSize: 15, color: colorScheme.onSurface),
                             ),
                           ],
                         ),
@@ -252,7 +277,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple.shade100,
+                      backgroundColor: colorScheme.primaryContainer,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -265,10 +290,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.shopping_cart, color: AppColors.primary),
+                        Icon(Icons.shopping_cart, color: colorScheme.primary),
                         SizedBox(width: 12),
                         Text("Adicionar ao carrinho",
-                            style: TextStyle(color: AppColors.primary)),
+                            style: TextStyle(color: colorScheme.primary)),
                       ],
                     ),
                   ),

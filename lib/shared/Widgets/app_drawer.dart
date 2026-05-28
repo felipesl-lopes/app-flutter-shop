@@ -1,6 +1,5 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Widgets/modal_custom.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,19 +9,21 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     final user = auth.user;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Drawer(
       child: Column(
         children: [
           AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: AppColors.primary,
-            iconTheme: IconThemeData(color: AppColors.white),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            iconTheme: IconThemeData(color: colorScheme.onPrimary),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Bem vindo(a) ${user?.name}",
-                    style: TextStyle(color: AppColors.white, fontSize: 20)),
+                    style:
+                        TextStyle(color: colorScheme.onPrimary, fontSize: 20)),
               ],
             ),
           ),
@@ -76,8 +77,8 @@ class AppDrawer extends StatelessWidget {
               }),
           Divider(),
           ListTile(
-            leading: Icon(Icons.logout, color: AppColors.primary),
-            title: Text("Sair", style: TextStyle(color: AppColors.primary)),
+            leading: Icon(Icons.logout, color: colorScheme.primary),
+            title: Text("Sair", style: TextStyle(color: colorScheme.primary)),
             onTap: () {
               modalCustom(
                 context: context,

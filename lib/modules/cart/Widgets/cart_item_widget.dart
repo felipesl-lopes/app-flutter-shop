@@ -3,7 +3,6 @@ import 'package:appshop/modules/cart/Widgets/quantity_button.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/image_avatar.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/utils/flushbar_helper.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final CartProvider cart = Provider.of<CartProvider>(context);
     final ProductModel product = cartItem.product;
 
@@ -89,9 +89,10 @@ class CartItemWidget extends StatelessWidget {
                                     : TextStyle(
                                         fontSize: 15,
                                         decoration: TextDecoration.lineThrough,
-                                        decorationColor:
-                                            AppColors.black.withOpacity(0.5),
-                                        color: AppColors.black.withOpacity(0.5),
+                                        decorationColor: colorScheme.onSurface
+                                            .withOpacity(0.5),
+                                        color: colorScheme.onSurface
+                                            .withOpacity(0.5),
                                       ),
                               ),
                               SizedBox(width: 6),
@@ -130,7 +131,9 @@ class CartItemWidget extends StatelessWidget {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                     border: Border.all(
-                                        width: 1.5, color: AppColors.grey),
+                                      width: 1.5,
+                                      color: colorScheme.outline,
+                                    ),
                                     borderRadius: BorderRadius.circular(8)),
                               ),
                               QuantityButton(

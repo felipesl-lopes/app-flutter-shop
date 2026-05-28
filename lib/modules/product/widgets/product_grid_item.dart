@@ -4,7 +4,6 @@ import 'package:appshop/modules/product/widgets/discount_badge.dart';
 import 'package:appshop/modules/product/widgets/product_detail_page.dart';
 import 'package:appshop/shared/Models/product_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +15,8 @@ class ProductGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final cart = Provider.of<CartProvider>(context);
 
     void _navegar(BuildContext context) {
@@ -30,10 +31,10 @@ class ProductGridItem extends StatelessWidget {
       onTap: () => _navegar(context),
       child: Container(
         decoration: BoxDecoration(
-            color: AppColors.grey.withOpacity(0.1),
+            color: colorScheme.surfaceContainerLowest,
             border: Border.all(
               width: 2,
-              color: AppColors.grey.withOpacity(0.4),
+              color: colorScheme.outlineVariant,
             ),
             borderRadius: BorderRadius.circular(4)),
         child: Column(
@@ -69,7 +70,8 @@ class ProductGridItem extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: AppColors.grey.withOpacity(0.4),
+                        color: colorScheme.surfaceContainerHighest
+                            .withOpacity(0.7),
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: InkWell(
@@ -78,10 +80,10 @@ class ProductGridItem extends StatelessWidget {
                           context: context,
                           product: product,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.shopping_cart,
                           size: 20,
-                          color: AppColors.primary,
+                          color: colorScheme.primary,
                         ),
                       ),
                     ),
@@ -104,7 +106,8 @@ class ProductGridItem extends StatelessWidget {
                       product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 15),
+                      style:
+                          TextStyle(fontSize: 15, color: colorScheme.onSurface),
                     ),
                     if (product.isPromotional)
                       FittedBox(
@@ -113,8 +116,9 @@ class ProductGridItem extends StatelessWidget {
                           formatPrice(product.price),
                           style: TextStyle(
                               decoration: TextDecoration.lineThrough,
-                              decorationColor: AppColors.black.withOpacity(0.5),
-                              color: AppColors.black.withOpacity(0.5)),
+                              decorationColor:
+                                  colorScheme.onSurface.withOpacity(0.5),
+                              color: colorScheme.onSurface.withOpacity(0.5)),
                         ),
                       ),
                     FittedBox(
@@ -122,7 +126,9 @@ class ProductGridItem extends StatelessWidget {
                       child: Text(
                         formatPrice(product.valorFinalDoProduto()),
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface),
                       ),
                     ),
                   ],

@@ -1,7 +1,6 @@
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/auth/enum/auth_mode.dart';
 import 'package:appshop/shared/Widgets/input_decoration.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/services/preferencies_values.dart';
 import 'package:appshop/shared/utils/auth_validators.dart';
 import 'package:flutter/material.dart';
@@ -117,6 +116,7 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final deviceSize = MediaQuery.of(context).size;
 
     return Container(
@@ -130,6 +130,7 @@ class _AuthFormState extends State<AuthForm> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
               ),
             ),
             SizedBox(height: 36),
@@ -138,15 +139,16 @@ class _AuthFormState extends State<AuthForm> {
                 children: [
                   TextFormField(
                       controller: _nameController,
-                      decoration:
-                          getInputDecoration("Nome", activityLabel: true),
+                      decoration: getInputDecoration(context, "Nome",
+                          activityLabel: true),
                       validator: (value) => isValidName(value ?? '')),
                   SizedBox(height: 28),
                 ],
               ),
             TextFormField(
               controller: _emailController,
-              decoration: getInputDecoration("E-mail", activityLabel: true),
+              decoration:
+                  getInputDecoration(context, "E-mail", activityLabel: true),
               keyboardType: TextInputType.emailAddress,
               validator: (value) => isValidEmail(value ?? ""),
             ),
@@ -154,16 +156,16 @@ class _AuthFormState extends State<AuthForm> {
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
-                fillColor: AppColors.white,
+                fillColor: colorScheme.surface,
                 filled: true,
                 labelText: 'Senha',
-                labelStyle: TextStyle(color: AppColors.grey),
+                labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 2),
+                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 errorStyle: TextStyle(
@@ -175,6 +177,7 @@ class _AuthFormState extends State<AuthForm> {
                     _isSecury
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   onPressed: () {
                     setState(() => _isSecury = !_isSecury);
@@ -193,16 +196,18 @@ class _AuthFormState extends State<AuthForm> {
                   TextFormField(
                       controller: _passwordConfirmController,
                       decoration: InputDecoration(
-                        fillColor: AppColors.white,
+                        fillColor: colorScheme.surface,
                         filled: true,
                         labelText: 'Confirme a senha',
-                        labelStyle: TextStyle(color: AppColors.grey),
+                        labelStyle:
+                            TextStyle(color: colorScheme.onSurfaceVariant),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue, width: 2),
+                          borderSide:
+                              BorderSide(color: colorScheme.primary, width: 2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         errorStyle: TextStyle(
@@ -214,6 +219,7 @@ class _AuthFormState extends State<AuthForm> {
                             _isSecury
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                           onPressed: () {
                             setState(() => _isSecury = !_isSecury);
@@ -243,7 +249,12 @@ class _AuthFormState extends State<AuthForm> {
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                         ),
-                        Text("Permanecer conectado"),
+                        Text(
+                          "Permanecer conectado",
+                          style: TextStyle(
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -257,7 +268,7 @@ class _AuthFormState extends State<AuthForm> {
                       onPressed: () {},
                       child: Text(
                         "Recuperar senha",
-                        style: TextStyle(color: AppColors.black),
+                        style: TextStyle(color: colorScheme.onSurface),
                       ),
                     ),
                   ),
@@ -270,7 +281,7 @@ class _AuthFormState extends State<AuthForm> {
                 onPressed: _isLoading ? () {} : _submitForm,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(12),
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: colorScheme.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -280,18 +291,26 @@ class _AuthFormState extends State<AuthForm> {
                         height: 23,
                         width: 23,
                         child: CircularProgressIndicator(
-                            color: AppColors.white, strokeWidth: 3),
+                            color: colorScheme.onPrimary, strokeWidth: 3),
                       )
                     : Text(
                         _isLogin() ? "Entrar" : "Registrar",
-                        style: TextStyle(color: AppColors.white, fontSize: 16),
+                        style: TextStyle(
+                          color: colorScheme.onPrimary,
+                          fontSize: 16,
+                        ),
                       ),
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(_isLogin() ? "Não possui conta?" : "Já possui conta?"),
+                Text(
+                  _isLogin() ? "Não possui conta?" : "Já possui conta?",
+                  style: TextStyle(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
                 SizedBox(
                   width: 8,
                 ),
@@ -303,7 +322,7 @@ class _AuthFormState extends State<AuthForm> {
                   onPressed: _isLoading ? null : _switchFormMode,
                   child: Text(
                     _isLogin() ? "Registre-se" : "Logar",
-                    style: TextStyle(color: AppColors.primary),
+                    style: TextStyle(color: colorScheme.primary),
                   ),
                 ),
               ],

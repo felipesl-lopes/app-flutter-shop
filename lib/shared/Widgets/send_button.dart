@@ -1,4 +1,3 @@
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
@@ -16,22 +15,26 @@ class SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ElevatedButton(
       onPressed: _onPressed,
       child: Text(_title,
           style: TextStyle(
-              color: secondaryButton! ? AppColors.primary : AppColors.white,
+              color: secondaryButton!
+                  ? colorScheme.primary
+                  : colorScheme.onPrimary,
               fontSize: 16)),
       style: ElevatedButton.styleFrom(
           backgroundColor: secondaryButton!
               ? null
               : color == null
-                  ? AppColors.primary
+                  ? colorScheme.primary
                   : color,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: secondaryButton!
-                  ? BorderSide(width: 2, color: AppColors.primary)
+                  ? BorderSide(width: 2, color: colorScheme.primary)
                   : BorderSide.none),
           elevation: secondaryButton! ? 0 : null),
     );

@@ -1,4 +1,3 @@
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Badgee extends StatelessWidget {
@@ -25,10 +24,11 @@ class Badgee extends StatelessWidget {
             padding: EdgeInsets.all(2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: color ?? Colors.redAccent),
+                color: color ?? Theme.of(context).colorScheme.error),
             child: Text(
               value,
-              style: TextStyle(fontSize: 10, color: AppColors.white),
+              style: TextStyle(
+                  fontSize: 10, color: Theme.of(context).colorScheme.onError),
               textAlign: TextAlign.center,
             ),
             constraints: BoxConstraints(

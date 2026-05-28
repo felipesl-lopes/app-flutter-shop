@@ -1,3 +1,4 @@
+import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,23 @@ class MaterialAppWidget extends StatelessWidget {
     return MaterialApp(
       title: "Shopp",
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          primary: AppColors.primary,
+          onPrimary: AppColors.textOnPrimary,
+          secondary: AppColors.primaryLight,
+          onSecondary: AppColors.textPrimary,
+          error: AppColors.error,
+          onError: AppColors.textOnPrimary,
+          surface: AppColors.surface,
+          onSurface: AppColors.textPrimary,
+          background: AppColors.background,
+        ),
+        textTheme: null,
+        appBarTheme: null,
+        elevatedButtonTheme: null,
+        inputDecorationTheme: null,
+        cardTheme: null,
         fontFamily: "Lato",
       ),
       debugShowCheckedModeBanner: false,

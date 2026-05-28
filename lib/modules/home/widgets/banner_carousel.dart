@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:appshop/shared/Models/banner_model.dart';
 import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BannerCarousel extends StatefulWidget {
@@ -51,6 +50,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     if (widget.bannerList.isEmpty) return const SizedBox.shrink();
 
     final banners = widget.bannerList;
@@ -97,8 +97,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                   height: 6,
                   decoration: BoxDecoration(
                     color: _currentIndex == index
-                        ? AppColors.white
-                        : AppColors.white.withOpacity(0.6),
+                        ? colorScheme.onPrimary
+                        : colorScheme.onPrimary.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),

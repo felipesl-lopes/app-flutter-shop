@@ -1,8 +1,9 @@
 import 'package:appshop/shared/Widgets/input_decoration.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 Future<void> modalFiltroProduto({required BuildContext context}) async {
+  final colorScheme = Theme.of(context).colorScheme;
+
   RangeValues _currentRangeValues = const RangeValues(0, 0);
 
   final _productName = TextEditingController();
@@ -47,23 +48,25 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12),
                     ),
-                    color: AppColors.background,
+                    color: colorScheme.surfaceContainerLowest,
                   ),
                   padding: EdgeInsets.all(12),
                   child: Row(
                     children: [
-                      Icon(Icons.filter_list_alt),
+                      Icon(Icons.filter_list_alt, color: colorScheme.onSurface),
                       SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           'Filtros',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface),
                         ),
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(ctx).pop(),
-                        icon: Icon(Icons.close),
+                        icon: Icon(Icons.close, color: colorScheme.onSurface),
                         style: IconButton.styleFrom(
                           minimumSize: Size.zero,
                           padding: EdgeInsets.zero,
@@ -75,7 +78,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                 ),
                 Flexible(
                   child: Container(
-                    color: Colors.white,
+                    color: colorScheme.surface,
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     child: SingleChildScrollView(
                       child: Column(
@@ -88,7 +91,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                             input: TextFormField(
                               controller: _productName,
                               decoration: getInputDecoration(
-                                  'Digite o nome do produto',
+                                  context, 'Digite o nome do produto',
                                   activityHint: true),
                             ),
                           ),
@@ -98,7 +101,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                             input: TextFormField(
                               controller: _description,
                               decoration: getInputDecoration(
-                                  'Digite uma palavra-chave',
+                                  context, 'Digite uma palavra-chave',
                                   activityHint: true),
                             ),
                           ),
@@ -135,9 +138,15 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                          'R\$ ${_currentRangeValues.start.floor()}'),
+                                        'R\$ ${_currentRangeValues.start.floor()}',
+                                        style: TextStyle(
+                                            color: colorScheme.onSurface),
+                                      ),
                                       Text(
-                                          'R\$ ${_currentRangeValues.end.floor()}'),
+                                        'R\$ ${_currentRangeValues.end.floor()}',
+                                        style: TextStyle(
+                                            color: colorScheme.onSurface),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -149,7 +158,9 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                               padding: EdgeInsets.symmetric(
                                   vertical: 3, horizontal: 12),
                               decoration: BoxDecoration(
-                                  border: Border.all(width: 1),
+                                  border: Border.all(
+                                      width: 1,
+                                      color: colorScheme.outlineVariant),
                                   borderRadius: BorderRadius.circular(8)),
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
@@ -159,9 +170,11 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                                 title: Text(
                                   'Selecionar categoria',
                                   style: TextStyle(
-                                      fontSize: 16, color: AppColors.grey),
+                                      fontSize: 16,
+                                      color: colorScheme.onSurfaceVariant),
                                 ),
-                                trailing: Icon(Icons.arrow_drop_down),
+                                trailing: Icon(Icons.arrow_drop_down,
+                                    color: colorScheme.onSurface),
                                 onTap: () {
                                   setState(() {});
                                 },
@@ -176,7 +189,8 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                             title: Text('Apenas favoritos'),
                             subtitle:
                                 Text('Mostrar somente produtos favoritos'),
-                            secondary: Icon(Icons.favorite),
+                            secondary: Icon(Icons.favorite,
+                                color: colorScheme.primary),
                           ),
                           SwitchListTile(
                             value: _onlyPromotionals,
@@ -192,7 +206,8 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                             title: Text('Apenas promocionais'),
                             subtitle:
                                 Text('Mostrar somente produtos promocionais'),
-                            secondary: Icon(Icons.local_offer),
+                            secondary: Icon(Icons.local_offer,
+                                color: colorScheme.primary),
                           ),
                           if (_onlyPromotionals)
                             Column(
@@ -204,7 +219,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                                     focusNode: promocionalFocus,
                                     controller: _maxAccount,
                                     keyboardType: TextInputType.number,
-                                    decoration: getInputDecoration(
+                                    decoration: getInputDecoration(context,
                                         'Digite a porcentagem de desconto',
                                         activityHint: true),
                                   ),
@@ -223,7 +238,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                       bottomLeft: Radius.circular(12),
                       bottomRight: Radius.circular(12),
                     ),
-                    color: AppColors.background,
+                    color: colorScheme.surfaceContainerLowest,
                   ),
                   padding: EdgeInsets.all(12),
                   child: Row(
@@ -238,15 +253,19 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                                     borderRadius: BorderRadius.circular(6),
                                     side: BorderSide(
                                       width: 1,
+                                      color: colorScheme.outlineVariant,
                                     ))),
                             onPressed: limparFiltros,
-                            child: Text('Limpar filtros')),
+                            child: Text(
+                              'Limpar filtros',
+                              style: TextStyle(color: colorScheme.onSurface),
+                            )),
                       ),
                       SizedBox(width: 8),
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: colorScheme.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
@@ -254,7 +273,7 @@ Future<void> modalFiltroProduto({required BuildContext context}) async {
                           onPressed: aplicarFiltro,
                           child: Text(
                             'Aplicar filtros',
-                            style: TextStyle(color: AppColors.white),
+                            style: TextStyle(color: colorScheme.onPrimary),
                           ),
                         ),
                       ),
@@ -281,10 +300,14 @@ class InputColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
+        Text(title,
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
         SizedBox(height: 8),
         input
       ],

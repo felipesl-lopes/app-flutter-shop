@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/shared/Widgets/back_app_bar.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/get_iniciais.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = AppColors.primary;
+    final colorScheme = Theme.of(context).colorScheme;
     final _auth = Provider.of<AuthProvider>(context);
 
     final List<(IconData, String, VoidCallback?)> topics = [
@@ -53,12 +54,12 @@ class ProfilePage extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           children: [
-            // _ProfileHeader(themeColor: themeColor, auth: _auth),
             Card(
               elevation: 2,
-              shadowColor: Colors.black26,
+              shadowColor: colorScheme.shadow,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(20),
@@ -68,8 +69,8 @@ class ProfilePage extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      themeColor.withOpacity(0.08),
-                      themeColor.withOpacity(0.03),
+                      colorScheme.primary.withOpacity(0.08),
+                      colorScheme.primary.withOpacity(0.03),
                     ],
                   ),
                 ),
@@ -82,10 +83,10 @@ class ProfilePage extends StatelessWidget {
                       padding: EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: themeColor.withOpacity(0.15),
+                        color: colorScheme.primary.withOpacity(0.15),
                         boxShadow: [
                           BoxShadow(
-                            color: themeColor.withOpacity(0.2),
+                            color: colorScheme.primary.withOpacity(0.2),
                             blurRadius: 12,
                             offset: Offset(0, 4),
                           ),
@@ -93,16 +94,20 @@ class ProfilePage extends StatelessWidget {
                       ),
                       child: CircleAvatar(
                         radius: 56,
-                        backgroundColor: themeColor.withOpacity(0.2),
+                        backgroundColor: colorScheme.primary.withOpacity(0.2),
                         child: !_auth.isAuth
-                            ? Icon(Icons.person,
-                                size: 64, color: Colors.black54)
+                            ? Icon(
+                                Icons.person,
+                                size: 64,
+                                color: colorScheme.onSurface.withOpacity(0.7),
+                              )
                             : Text(
                                 getIniciais(
-                                    _auth.isAuth ? _auth.user!.name : ''),
+                                  _auth.isAuth ? _auth.user!.name : '',
+                                ),
                                 style: TextStyle(
                                   fontSize: 50,
-                                  color: Colors.black54,
+                                  color: colorScheme.onSurface.withOpacity(0.7),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -114,7 +119,7 @@ class ProfilePage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade800,
+                        color: colorScheme.onSurface,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -130,14 +135,14 @@ class ProfilePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
+                  color: colorScheme.onSurface.withOpacity(0.8),
                 ),
               ),
             ),
             SizedBox(height: 12),
             Card(
               elevation: 1,
-              shadowColor: Colors.black12,
+              shadowColor: colorScheme.shadow,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               child: ClipRRect(
@@ -147,22 +152,26 @@ class ProfilePage extends StatelessWidget {
                     ...topics.asMap().entries.map((entry) {
                       final index = entry.key;
                       final (icon, title, action) = entry.value;
+
                       return Column(
                         children: [
                           ListTile(
                             contentPadding: EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
-                            leading: Icon(icon, color: themeColor, size: 22),
+                              horizontal: 24,
+                              vertical: 8,
+                            ),
+                            leading: Icon(icon,
+                                color: colorScheme.primary, size: 22),
                             title: Text(
                               title,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey.shade800,
+                                color: colorScheme.onSurface,
                               ),
                             ),
                             trailing: Icon(
                               Icons.chevron_right,
-                              color: Colors.grey.shade400,
+                              color: colorScheme.onSurface.withOpacity(0.4),
                             ),
                             onTap: action,
                           ),

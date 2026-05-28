@@ -1,5 +1,4 @@
 import 'package:appshop/shared/Models/order.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ class ListaDeCompras extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final firstProduct = order.products.first;
 
     final totalItems = order.products.fold(
@@ -35,7 +35,7 @@ class ListaDeCompras extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-          side: BorderSide(width: 1, color: Colors.grey.shade400),
+          side: BorderSide(width: 1, color: colorScheme.outline),
         ),
         child: Padding(
           padding: EdgeInsets.all(18),
@@ -46,12 +46,12 @@ class ListaDeCompras extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Icon(
                       Icons.shopping_bag_outlined,
-                      color: AppColors.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
                   SizedBox(width: 14),
@@ -62,9 +62,9 @@ class ListaDeCompras extends StatelessWidget {
                         Text(
                           "Pedido realizado",
                           style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onSurface),
                         ),
                         SizedBox(height: 4),
                         Text(
@@ -72,7 +72,7 @@ class ListaDeCompras extends StatelessWidget {
                             "dd/MM/yyyy • HH:mm",
                           ).format(order.date),
                           style: TextStyle(
-                            color: AppColors.black.withOpacity(0.55),
+                            color: colorScheme.onSurface.withOpacity(0.55),
                           ),
                         ),
                       ],
@@ -80,7 +80,7 @@ class ListaDeCompras extends StatelessWidget {
                   ),
                   Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.black.withOpacity(0.4),
+                    color: colorScheme.onSurface.withOpacity(0.4),
                   ),
                 ],
               ),
@@ -112,6 +112,7 @@ class ListaDeCompras extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -123,7 +124,7 @@ class ListaDeCompras extends StatelessWidget {
                     child: Text(
                       "+ ${order.products.length - 1} produto(s)",
                       style: TextStyle(
-                        color: AppColors.black.withOpacity(0.55),
+                        color: colorScheme.onSurface.withOpacity(0.55),
                       ),
                     ),
                   ),
@@ -147,10 +148,12 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -160,7 +163,7 @@ class _InfoCard extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 12,
-              color: AppColors.black.withOpacity(0.55),
+              color: colorScheme.onSurface.withOpacity(0.55),
             ),
           ),
           SizedBox(height: 6),
@@ -169,6 +172,7 @@ class _InfoCard extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
+              color: colorScheme.onSurface,
             ),
           ),
         ],

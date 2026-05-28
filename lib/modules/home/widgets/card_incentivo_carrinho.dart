@@ -1,5 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:appshop/modules/cart/Provider/cart_provider.dart';
-import 'package:appshop/shared/constants/app_colors.dart';
 import 'package:appshop/shared/constants/app_routes.dart';
 import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +18,19 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
   Widget build(BuildContext context) {
     final CartProvider _cartItens = Provider.of<CartProvider>(context);
     final bool _carrinhoVazio = _cartItens.carrinhoDeProdutos.isEmpty;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Card(
         elevation: 1,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(width: 1, color: Colors.grey.shade400)),
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            width: 1,
+            color: colorScheme.outline.withOpacity(0.3),
+          ),
+        ),
         child: InkWell(
           onTap: () {
             _carrinhoVazio
@@ -38,14 +44,14 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: colorScheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     _carrinhoVazio
                         ? Icons.add_shopping_cart
                         : Icons.shopping_cart,
-                    color: AppColors.primary,
+                    color: colorScheme.primary,
                     size: 28,
                   ),
                 ),
@@ -61,7 +67,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.black.withOpacity(0.6),
+                          color: colorScheme.onSurface.withOpacity(0.7),
                         ),
                       ),
                       SizedBox(height: 4),
@@ -71,7 +77,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                             : "${_cartItens.totalDeItens} ${_cartItens.carrinhoDeProdutos.length == 1 ? 'item' : 'itens'} • ${formatPrice(_cartItens.valorTotal)}",
                         style: TextStyle(
                           fontSize: 14,
-                          color: AppColors.black.withOpacity(0.6),
+                          color: colorScheme.onSurface.withOpacity(0.7),
                         ),
                       ),
                     ],
@@ -79,7 +85,7 @@ class _CardIncentivoCarrinhoState extends State<CardIncentivoCarrinho> {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: AppColors.black.withOpacity(0.4),
+                  color: colorScheme.onSurface.withOpacity(0.6),
                 ),
               ],
             ),
