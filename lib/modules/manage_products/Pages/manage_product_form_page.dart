@@ -205,7 +205,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _editedProduct = arg as ProductModel;
 
         _nameController.text = _editedProduct!.name;
-        _priceController.text = _editedProduct!.price.toString();
+        _priceController.text = NumberFormat.currency(
+          locale: 'pt_BR',
+          symbol: '',
+        ).format(_editedProduct!.price);
         _quantityController.text = _editedProduct!.quantity.toString();
         _descriptionController.text = _editedProduct!.description;
         _imageUrls = List.from(_editedProduct!.imageUrls);
