@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:appshop/shared/Models/product_image_model.dart';
+import 'package:flutter/foundation.dart';
 
 class ProductModel {
   final String id;
@@ -44,68 +47,29 @@ class ProductModel {
     return price;
   }
 
-  factory ProductModel.fromJson(String id, Map<String, dynamic> json) {
-    return ProductModel(
-      id: id,
-      name: json['name'],
-      description: json['description'],
-      price: (json['price'] as num).toDouble(),
-      quantity: json['quantity'] == null ? 1 : json['quantity'],
-      imageUrls: (json['imageUrls'] as List)
-          .map((e) => ProductImageModel.fromJson(e))
-          .toList(),
-      categories: json['categories'] == null
-          ? []
-          : List<String>.from(json['categories']),
-      userId: json['userId'],
-      isPromotional: json['isPromotional'] ?? false,
-      discountPercentage: json['discountPercentage'] != null
-          ? (json['discountPercentage'] as num).toInt()
-          : null,
-      promotionEndDate: json['promotionEndDate'] != null
-          ? DateTime.parse(json['promotionEndDate'])
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'description': description,
-      'price': price,
-      'imageUrls': imageUrls.map((e) => e.toJson()).toList(),
-      'categories': categories.map((e) => e.toString()).toList(),
-      'userId': userId,
-      'isPromotional': isPromotional,
-      'discountPercentage': discountPercentage,
-      'promotionEndDate': promotionEndDate?.toIso8601String(),
-      'quantity': quantity,
-    };
-  }
-
   ProductModel copyWith({
     String? id,
     String? name,
     String? description,
     double? price,
-    String? imageUrl,
+    List<ProductImageModel>? imageUrls,
     List<String>? categories,
     String? userId,
+    int? quantity,
     bool? isFavorite,
     bool? isPromotional,
     int? Function()? discountPercentage,
     DateTime? Function()? promotionEndDate,
-    int? quantity,
   }) {
     return ProductModel(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-      imageUrls: imageUrls,
+      imageUrls: imageUrls ?? this.imageUrls,
       categories: categories ?? this.categories,
       userId: userId ?? this.userId,
+      quantity: quantity ?? this.quantity,
       isFavorite: isFavorite ?? this.isFavorite,
       isPromotional: isPromotional ?? this.isPromotional,
       discountPercentage: discountPercentage != null
@@ -116,19 +80,36 @@ class ProductModel {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'imageUrls': imageUrls.map((x) => x.toMap()).toList(),
+      'categories': categories,
+      'userId': userId,
+      'quantity': quantity,
+      'isFavorite': isFavorite,
+      'isPromotional': isPromotional,
+      'discountPercentage': discountPercentage,
+      'promotionEndDate': promotionEndDate?.toIso8601String(),
+    };
+  }
+
   factory ProductModel.fromMap(String id, Map<String, dynamic> map) {
     return ProductModel(
       id: id,
       name: map['name'],
       description: map['description'],
       price: (map['price'] as num).toDouble(),
-      quantity: map['quantity'] == null ? 1 : map['quantity'],
       imageUrls: (map['imageUrls'] as List)
           .map((e) => ProductImageModel.fromMap(e))
           .toList(),
-      userId: map['userId'],
       categories:
           map['categories'] == null ? [] : List<String>.from(map['categories']),
+      userId: map['userId'],
+      quantity: map['quantity'] == null ? 1 : map['quantity'],
       isFavorite: map['isFavorite'] ?? false,
       isPromotional: map['isPromotional'] ?? false,
       discountPercentage: map['discountPercentage'] != null
@@ -140,19 +121,47 @@ class ProductModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'description': description,
-      'price': price,
-      'quantity': quantity,
-      'imageUrls': imageUrls.map((e) => e.toMap()).toList(),
-      'categories': categories,
-      'userId': userId,
-      'isFavorite': isFavorite,
-      'isPromotional': isPromotional,
-      'discountPercentage': discountPercentage,
-      'promotionEndDate': promotionEndDate?.toIso8601String(),
-    };
+  String toJson() => json.encode(toMap());
+
+  factory ProductModel.fromJson(String id, String source) =>
+      ProductModel.fromMap(id, json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'ProductModel(id: $id, name: $name, description: $description, price: $price, imageUrls: $imageUrls, categories: $categories, userId: $userId, quantity: $quantity, isFavorite: $isFavorite, isPromotional: $isPromotional, discountPercentage: $discountPercentage, promotionEndDate: $promotionEndDate)';
+  }
+
+  @override
+  bool operator ==(covariant ProductModel other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.name == name &&
+        other.description == description &&
+        other.price == price &&
+        listEquals(other.imageUrls, imageUrls) &&
+        listEquals(other.categories, categories) &&
+        other.userId == userId &&
+        other.quantity == quantity &&
+        other.isFavorite == isFavorite &&
+        other.isPromotional == isPromotional &&
+        other.discountPercentage == discountPercentage &&
+        other.promotionEndDate == promotionEndDate;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        description.hashCode ^
+        price.hashCode ^
+        imageUrls.hashCode ^
+        categories.hashCode ^
+        userId.hashCode ^
+        quantity.hashCode ^
+        isFavorite.hashCode ^
+        isPromotional.hashCode ^
+        discountPercentage.hashCode ^
+        promotionEndDate.hashCode;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class UserModel {
   final String name;
   final int phoneNumber;
@@ -17,34 +19,6 @@ class UserModel {
     required this.avatarUrl,
   });
 
-  factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
-      name: map['name'] ?? '',
-      phoneNumber: map['phoneNumber'] is int
-          ? map['phoneNumber']
-          : int.tryParse(map['phoneNumber'] ?? '0') ?? 0,
-      city: map['city'] ?? '',
-      country: map['country'] ?? '',
-      address: map['address'] ?? '',
-      birthDate: map['birthDate'] != null && map['birthDate'] != ''
-          ? DateTime.parse(map['birthDate'])
-          : null,
-      avatarUrl: map['avatarUrl'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'city': city,
-      'country': country,
-      'address': address,
-      'birthDate': birthDate,
-      'avatarUrl': avatarUrl,
-    };
-  }
-
   UserModel copyWith({
     String? name,
     int? phoneNumber,
@@ -63,5 +37,67 @@ class UserModel {
       birthDate: birthDate ?? this.birthDate,
       avatarUrl: avatarUrl ?? this.avatarUrl,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'city': city,
+      'country': country,
+      'address': address,
+      'birthDate': birthDate,
+      'avatarUrl': avatarUrl,
+    };
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      name: map['name'] ?? '',
+      phoneNumber: map['phoneNumber'] is int
+          ? map['phoneNumber']
+          : int.tryParse(map['phoneNumber'] ?? '0') ?? 0,
+      city: map['city'] ?? '',
+      country: map['country'] ?? '',
+      address: map['address'] ?? '',
+      birthDate: map['birthDate'] != null && map['birthDate'] != ''
+          ? DateTime.parse(map['birthDate'])
+          : null,
+      avatarUrl: map['avatarUrl'] ?? '',
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'UserModel(name: $name, phoneNumber: $phoneNumber, city: $city, country: $country, address: $address, birthDate: $birthDate, avatarUrl: $avatarUrl)';
+  }
+
+  @override
+  bool operator ==(covariant UserModel other) {
+    if (identical(this, other)) return true;
+
+    return other.name == name &&
+        other.phoneNumber == phoneNumber &&
+        other.city == city &&
+        other.country == country &&
+        other.address == address &&
+        other.birthDate == birthDate &&
+        other.avatarUrl == avatarUrl;
+  }
+
+  @override
+  int get hashCode {
+    return name.hashCode ^
+        phoneNumber.hashCode ^
+        city.hashCode ^
+        country.hashCode ^
+        address.hashCode ^
+        birthDate.hashCode ^
+        avatarUrl.hashCode;
   }
 }

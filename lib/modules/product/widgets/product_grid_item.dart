@@ -34,7 +34,7 @@ class ProductGridItem extends StatelessWidget {
             color: colorScheme.surfaceContainerLowest,
             border: Border.all(
               width: 2,
-              color: colorScheme.outlineVariant,
+              color: colorScheme.outlineVariant.withOpacity(0.2),
             ),
             borderRadius: BorderRadius.circular(4)),
         child: Column(

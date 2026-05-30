@@ -53,7 +53,7 @@ class EnderecoRepository {
     try {
       final response = await client.get('address/$userId/$enderecoId');
 
-      return EnderecoModel.fromJson(enderecoId, response.data);
+      return EnderecoModel.fromMap(enderecoId, response.data);
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao buscar endereço');

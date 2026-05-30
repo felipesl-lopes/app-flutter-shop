@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class EnderecoModel {
   final String id;
   final String cep;
@@ -18,31 +20,6 @@ class EnderecoModel {
     required this.cidade,
     required this.uf,
   });
-
-  factory EnderecoModel.fromJson(String id, Map<String, dynamic> json) {
-    return EnderecoModel(
-      id: id,
-      cep: json['cep'],
-      rua: json['rua'],
-      numero: json['numero'],
-      complemento: json['complemento'] ?? '',
-      bairro: json['bairro'],
-      cidade: json['cidade'],
-      uf: json['uf'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'cep': cep,
-      'rua': rua,
-      'numero': numero,
-      'complemento': complemento,
-      'bairro': bairro,
-      'cidade': cidade,
-      'uf': uf,
-    };
-  }
 
   EnderecoModel copyWith({
     String? id,
@@ -66,6 +43,18 @@ class EnderecoModel {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'cep': cep,
+      'rua': rua,
+      'numero': numero,
+      'complemento': complemento,
+      'bairro': bairro,
+      'cidade': cidade,
+      'uf': uf,
+    };
+  }
+
   factory EnderecoModel.fromMap(String id, Map<String, dynamic> map) {
     return EnderecoModel(
       id: id,
@@ -79,15 +68,39 @@ class EnderecoModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'cep': cep,
-      'rua': rua,
-      'numero': numero,
-      'complemento': complemento,
-      'bairro': bairro,
-      'cidade': cidade,
-      'uf': uf,
-    };
+  String toJson() => json.encode(toMap());
+
+  factory EnderecoModel.fromJson(String id, String source) =>
+      EnderecoModel.fromMap(id, json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'EnderecoModel(id: $id, cep: $cep, rua: $rua, numero: $numero, complemento: $complemento, bairro: $bairro, cidade: $cidade, uf: $uf)';
+  }
+
+  @override
+  bool operator ==(covariant EnderecoModel other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.cep == cep &&
+        other.rua == rua &&
+        other.numero == numero &&
+        other.complemento == complemento &&
+        other.bairro == bairro &&
+        other.cidade == cidade &&
+        other.uf == uf;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        cep.hashCode ^
+        rua.hashCode ^
+        numero.hashCode ^
+        complemento.hashCode ^
+        bairro.hashCode ^
+        cidade.hashCode ^
+        uf.hashCode;
   }
 }

@@ -29,7 +29,7 @@ class CartRepository {
 
         if (product != null) {
           items.add(
-            CartItemModel.fromJson(item, product),
+            CartItemModel.fromMap(item, product),
           );
         }
       });
