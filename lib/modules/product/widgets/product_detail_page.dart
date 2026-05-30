@@ -99,12 +99,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     .any((categoria) => product.categories.contains(categoria)))
             .toList();
 
-    void handleBuy() {
-      // TODO: verificar se já existe, ou se já bateu a quantidade disponivel do produto.
-      // para implementação da primeira opção, segue para a próxima etapa com a quantidade que já tem no carrinho.
-      // para implementação da segunda opção, não tentar adicionar mais quantidade e seguir para a próxima etapa.
-      cart.adcItemAoCarrinho(product);
-      Navigator.of(context).pushNamed(AppRoutes.CART);
+    Future<void> handleBuy() async {
+      try {
+        await cart.adcItemAoCarrinho(product);
+      } catch (_) {
+      } finally {
+        Navigator.of(context).pushNamed(AppRoutes.CART);
+      }
     }
 
     Future<void> toggleFavorite() async {

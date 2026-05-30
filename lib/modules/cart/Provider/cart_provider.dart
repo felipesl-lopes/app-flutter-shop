@@ -4,6 +4,7 @@ import 'package:appshop/modules/auth/Provider/auth_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/product/Provider/product_provider.dart';
 import 'package:appshop/shared/Models/cart_item_model.dart';
+import 'package:appshop/shared/Models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
@@ -71,7 +72,7 @@ class CartProvider with ChangeNotifier {
     }
   }
 
-  Future<void> adcItemAoCarrinho(dynamic product) async {
+  Future<void> adcItemAoCarrinho(ProductModel product) async {
     final index =
         _carrinhoDeProdutos.indexWhere((e) => e.product.id == product.id);
 
