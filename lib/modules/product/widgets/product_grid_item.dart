@@ -63,31 +63,32 @@ class ProductGridItem extends StatelessWidget {
                             child: ImageFallbackIcon(size: 48),
                           ),
                   ),
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest
-                            .withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: InkWell(
-                        onTap: () => ProductMethod.adicionarProdutoAoCarrinho(
-                          cart: cart,
-                          context: context,
-                          product: product,
+                  if (product.quantity > 0)
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest
+                              .withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(40),
                         ),
-                        child: Icon(
-                          Icons.shopping_cart,
-                          size: 20,
-                          color: colorScheme.primary,
+                        child: InkWell(
+                          onTap: () => ProductMethod.adicionarProdutoAoCarrinho(
+                            cart: cart,
+                            context: context,
+                            product: product,
+                          ),
+                          child: Icon(
+                            Icons.shopping_cart,
+                            size: 20,
+                            color: colorScheme.primary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -97,6 +98,16 @@ class ProductGridItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (product.quantity <= 0)
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: colorScheme.onSurface.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text('Indisponível'),
+                      ),
                     if (product.isPromotional)
                       DiscountBadge(
                         percentage: product.discountPercentage!,

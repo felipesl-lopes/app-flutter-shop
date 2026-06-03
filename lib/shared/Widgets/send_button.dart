@@ -26,6 +26,9 @@ class SendButton extends StatelessWidget {
                   : colorScheme.onPrimary,
               fontSize: 16)),
       style: ElevatedButton.styleFrom(
+          disabledBackgroundColor:
+              color ?? colorScheme.primary.withOpacity(0.6),
+          disabledForegroundColor: colorScheme.onPrimary.withOpacity(0.6),
           backgroundColor: secondaryButton!
               ? null
               : color == null

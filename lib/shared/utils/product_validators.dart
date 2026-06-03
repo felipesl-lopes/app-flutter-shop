@@ -32,8 +32,8 @@ String? isValidQuantity(String quantity) {
   if (quantity.trim().isEmpty) {
     "Quantidade é obrigatória.";
   }
-  if (quant == null || quant <= 0 || quantity.endsWith('.')) {
-    return "Digite uma quantidade válida.";
+  if (quant == null || quant < 0 || quantity.endsWith('.')) {
+    return "Quantidade inválida.";
   }
   return null;
 }

@@ -260,34 +260,44 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           color: colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Row(
-                          children: [
-                            Text(
-                              unidadesArredondadas < product.quantity
-                                  ? 'Unidades disponíveis: + de $unidadesArredondadas'
-                                  : 'Unidades disponíveis: ${product.quantity}',
-                              style: TextStyle(
-                                  fontSize: 15, color: colorScheme.onSurface),
-                            ),
-                          ],
-                        ),
+                        child: product.quantity <= 0
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(4)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                child: Text('Produto indisponível'))
+                            : Text(
+                                unidadesArredondadas < product.quantity
+                                    ? 'Unidades disponíveis: + de $unidadesArredondadas'
+                                    : 'Unidades disponíveis: ${product.quantity}',
+                                style: TextStyle(
+                                    fontSize: 15, color: colorScheme.onSurface),
+                              ),
                       ),
                     ],
                   ),
                   SizedBox(height: 12),
                   Container(
                     width: double.infinity,
-                    child: SendButton("Comprar agora", handleBuy),
+                    child: SendButton(
+                      "Comprar agora",
+                      product.quantity <= 0 ? null : handleBuy,
+                    ),
                   ),
                   Container(
                     width: double.infinity,
                     child: SendButton(
                       'Adicionar ao carrinho',
-                      () => ProductMethod.adicionarProdutoAoCarrinho(
-                        cart: cart,
-                        context: context,
-                        product: product,
-                      ),
+                      product.quantity <= 0
+                          ? null
+                          : () => ProductMethod.adicionarProdutoAoCarrinho(
+                                cart: cart,
+                                context: context,
+                                product: product,
+                              ),
                     ),
                   ),
                   SizedBox(height: 20),
