@@ -61,6 +61,43 @@ class ProductRepository {
     }
   }
 
+  Future<ProductModel?> buscarProdutoPorId(String productId) async {
+    debugPrint('[ProductRepository]: buscarProdutoPorId:');
+
+    try {
+      final response = await client.get("products/$productId");
+
+      if (response.data == null) return null;
+
+      final data = response.data;
+
+      return ProductModel(
+        id: productId,
+        name: data["name"],
+        description: data["description"],
+        price: data["price"],
+        quantity: data["quantity"] ?? 1,
+        imageUrls: ((data["imageUrls"] ?? []) as List)
+            .map((e) => ProductImageModel.fromMap(e))
+            .toList(),
+        categories: data["categories"] == null
+            ? []
+            : List<String>.from(data["categories"]),
+        userId: data["userId"],
+        isPromotional: data["isPromotional"] ?? false,
+        discountPercentage: data["discountPercentage"] != null
+            ? (data["discountPercentage"] as num).toInt()
+            : null,
+        promotionEndDate: data["promotionEndDate"] != null
+            ? DateTime.parse(data["promotionEndDate"])
+            : null,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   Future<List<String>> carregarFavoritos({
     required String userId,
   }) async {

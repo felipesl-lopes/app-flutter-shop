@@ -3,6 +3,7 @@ import 'package:appshop/modules/cart/Provider/cart_provider.dart';
 import 'package:appshop/modules/cart/Repository/cart_repository.dart';
 import 'package:appshop/modules/compras/Repository/order_repository.dart';
 import 'package:appshop/modules/endereco/Repository/endereco_repository.dart';
+import 'package:appshop/modules/product/Repository/product_repository.dart';
 import 'package:appshop/shared/Models/endereco_model.dart';
 import 'package:appshop/shared/Models/order.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class OrderListProvider with ChangeNotifier {
   final CartRepository _cartRepository;
   final OrderRepository _orderRepository;
   final EnderecoRepository _enderecoRepository;
+  final ProductRepository _productRepository;
 
   late final Command0<List<Order>> loadOrdersCommand;
 
@@ -22,6 +24,7 @@ class OrderListProvider with ChangeNotifier {
     this._cartRepository,
     this._orderRepository,
     this._enderecoRepository,
+    this._productRepository,
   ) {
     loadOrdersCommand = Command0(_loadOrders);
   }
@@ -76,7 +79,29 @@ class OrderListProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addOrder(CartProvider cart, String enderecoId) async {
+  Future<void> finalizarCompra(CartProvider cart, String enderecoId) async {
+    for (final item in cart.carrinhoDeProdutos) {
+      final produtoAtualizado =
+          await _productRepository.buscarProdutoPorId(item.product.id);
+
+      if (produtoAtualizado!.quantity < item.quantity) {
+        print('Estoque insuficiente');
+        throw Exception('Quantidade indisponível');
+      }
+    }
+
+    for (final item in cart.carrinhoDeProdutos) {
+      final produtoAtualizado =
+          await _productRepository.buscarProdutoPorId(item.product.id);
+
+      final produtoComEstoqueAtualizado = produtoAtualizado!.copyWith(
+        quantity: produtoAtualizado.quantity - item.quantity,
+      );
+
+      await _productRepository.atualizarProduto(produtoComEstoqueAtualizado,
+          userId: produtoComEstoqueAtualizado.userId);
+    }
+
     final date = DateTime.now();
 
     final responseEndereco = await _enderecoRepository.buscarEndereco(
@@ -102,7 +127,7 @@ class OrderListProvider with ChangeNotifier {
             })
         .toList();
 
-    final orderId = await _orderRepository.addOrderRepository(
+    final orderId = await _orderRepository.finalizarCompraRepository(
       userId: _userId,
       total: cart.valorTotal,
       date: date,

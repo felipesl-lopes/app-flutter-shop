@@ -28,7 +28,7 @@ class OrderRepository {
     }
   }
 
-  Future<String> addOrderRepository({
+  Future<String> finalizarCompraRepository({
     required String userId,
     required double total,
     required DateTime date,
