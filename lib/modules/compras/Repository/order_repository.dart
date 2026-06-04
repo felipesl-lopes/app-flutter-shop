@@ -22,8 +22,10 @@ class OrderRepository {
       }
 
       if (response.data == null) return {};
+
       return response.data;
-    } catch (_) {
+    } catch (e) {
+      debugPrint(e.toString());
       throw Exception('Erro ao carregar compras.');
     }
   }
@@ -41,7 +43,7 @@ class OrderRepository {
       "total": total,
       "date": date.toIso8601String(),
       "products": products,
-      "address": endereco.toJson(),
+      "address": endereco.toMap(),
     };
 
     try {
