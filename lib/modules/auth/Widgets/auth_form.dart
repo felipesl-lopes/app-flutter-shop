@@ -159,7 +159,10 @@ class _AuthFormState extends State<AuthForm> {
                 fillColor: colorScheme.surface,
                 filled: true,
                 labelText: 'Senha',
-                labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                labelStyle: TextStyle(
+                    color: colorScheme.onSurfaceVariant.withOpacity(0.7)),
+                hintStyle: TextStyle(
+                    color: colorScheme.onSurfaceVariant.withOpacity(0.7)),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 border:
@@ -177,7 +180,7 @@ class _AuthFormState extends State<AuthForm> {
                     _isSecury
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
-                    color: colorScheme.onSurfaceVariant,
+                    color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                   ),
                   onPressed: () {
                     setState(() => _isSecury = !_isSecury);

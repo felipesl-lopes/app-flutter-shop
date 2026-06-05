@@ -13,8 +13,8 @@ InputDecoration getInputDecoration(
     filled: true,
     hintText: activityHint == true ? label : null,
     labelText: activityLabel == true ? label : null,
-    labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+    labelStyle: TextStyle(color: colorScheme.onSurfaceVariant.withOpacity(0.7)),
+    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withOpacity(0.7)),
     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
     focusedBorder: OutlineInputBorder(

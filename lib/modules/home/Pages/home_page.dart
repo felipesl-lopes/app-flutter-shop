@@ -99,6 +99,9 @@ class _HomePageState extends State<HomePage> {
             fillColor: Theme.of(context).colorScheme.surface,
             filled: true,
             hintText: "Buscar produto",
+            hintStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
             ),
