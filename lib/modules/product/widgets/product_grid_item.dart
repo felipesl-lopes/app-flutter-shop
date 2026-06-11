@@ -1,10 +1,10 @@
-import 'package:appshop/modules/cart/Provider/cart_provider.dart';
+import 'package:appshop/core/utils/formatters.dart';
+import 'package:appshop/core/widgets/image_fallback_icon.dart';
+import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/product/functions/adicionarproduto.dart';
+import 'package:appshop/modules/product/models/product_model.dart';
+import 'package:appshop/modules/product/pages/product_detail_page.dart';
 import 'package:appshop/modules/product/widgets/discount_badge.dart';
-import 'package:appshop/modules/product/widgets/product_detail_page.dart';
-import 'package:appshop/shared/Models/product_model.dart';
-import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
-import 'package:appshop/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

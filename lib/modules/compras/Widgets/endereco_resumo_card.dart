@@ -1,4 +1,4 @@
-import 'package:appshop/shared/Models/endereco_model.dart';
+import 'package:appshop/modules/endereco/models/endereco_model.dart';
 import 'package:flutter/material.dart';
 
 class EnderecoResumoCard extends StatelessWidget {

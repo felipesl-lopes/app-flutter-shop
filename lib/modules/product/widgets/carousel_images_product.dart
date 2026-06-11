@@ -1,5 +1,5 @@
-import 'package:appshop/shared/Models/product_image_model.dart';
-import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
+import 'package:appshop/core/widgets/image_fallback_icon.dart';
+import 'package:appshop/modules/product/models/product_image_model.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable

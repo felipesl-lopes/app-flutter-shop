@@ -1,15 +1,15 @@
-import 'package:appshop/modules/cart/Provider/cart_provider.dart';
+import 'package:appshop/core/utils/flushbar_helper.dart';
+import 'package:appshop/core/utils/formatters.dart';
+import 'package:appshop/core/widgets/image_avatar.dart';
 import 'package:appshop/modules/cart/Widgets/quantity_button.dart';
-import 'package:appshop/shared/Models/cart_item_model.dart';
-import 'package:appshop/shared/Models/product_model.dart';
-import 'package:appshop/shared/Widgets/image_avatar.dart';
-import 'package:appshop/shared/utils/flushbar_helper.dart';
-import 'package:appshop/shared/utils/formatters.dart';
+import 'package:appshop/modules/cart/models/cart_product_model.dart';
+import 'package:appshop/modules/cart/providers/cart_provider.dart';
+import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CartItemWidget extends StatelessWidget {
-  final CartItemModel cartItem;
+  final CartProductModel cartItem;
 
   CartItemWidget(this.cartItem);
 

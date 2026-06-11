@@ -1,4 +1,4 @@
-import 'package:appshop/shared/utils/formatters.dart';
+import 'package:appshop/core/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
 class PromotionCountdownText extends StatelessWidget {

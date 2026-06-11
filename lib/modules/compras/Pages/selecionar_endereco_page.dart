@@ -1,8 +1,8 @@
-import 'package:appshop/modules/endereco/Provider/endereco_provider.dart';
-import 'package:appshop/shared/Widgets/back_app_bar.dart';
-import 'package:appshop/shared/Widgets/send_button.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/utils/flushbar_helper.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/flushbar_helper.dart';
+import 'package:appshop/core/widgets/back_app_bar.dart';
+import 'package:appshop/core/widgets/send_button.dart';
+import 'package:appshop/modules/endereco/providers/endereco_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

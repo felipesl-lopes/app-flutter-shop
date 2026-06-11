@@ -1,17 +1,17 @@
-import 'package:appshop/modules/cart/Provider/cart_provider.dart';
-import 'package:appshop/modules/categorias/Provider/categorias_provider.dart';
-import 'package:appshop/modules/endereco/Provider/endereco_provider.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/widgets/app_drawer.dart';
+import 'package:appshop/core/widgets/badgee.dart';
+import 'package:appshop/core/widgets/drawer_app_bar.dart';
+import 'package:appshop/modules/cart/providers/cart_provider.dart';
+import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
+import 'package:appshop/modules/endereco/providers/endereco_provider.dart';
+import 'package:appshop/modules/home/providers/banners_provider.dart';
 import 'package:appshop/modules/home/widgets/banner_carousel.dart';
 import 'package:appshop/modules/home/widgets/card_incentivo_carrinho.dart';
 import 'package:appshop/modules/home/widgets/category_roundels.dart';
-import 'package:appshop/modules/product/Provider/product_provider.dart';
+import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
-import 'package:appshop/modules/search/Models/search_model.dart';
-import 'package:appshop/shared/Widgets/app_drawer.dart';
-import 'package:appshop/shared/Widgets/badgee.dart';
-import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/repository/banners_provider.dart';
+import 'package:appshop/modules/search/models/search_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

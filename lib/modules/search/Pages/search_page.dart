@@ -1,12 +1,12 @@
-import 'package:appshop/modules/cart/Provider/cart_provider.dart';
-import 'package:appshop/modules/product/Provider/product_provider.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/widgets/badgee.dart';
+import 'package:appshop/core/widgets/drawer_app_bar.dart';
+import 'package:appshop/modules/cart/providers/cart_provider.dart';
+import 'package:appshop/modules/product/models/product_model.dart';
+import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:appshop/modules/product/widgets/product_grid.dart';
-import 'package:appshop/modules/search/Models/search_model.dart';
-import 'package:appshop/modules/search/Pages/modal_filtro_produto.dart';
-import 'package:appshop/shared/Models/product_model.dart';
-import 'package:appshop/shared/Widgets/badgee.dart';
-import 'package:appshop/shared/Widgets/drawer_app_bar.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
+import 'package:appshop/modules/search/models/search_model.dart';
+import 'package:appshop/modules/search/pages/modal_filtro_produto.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

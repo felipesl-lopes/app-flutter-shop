@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:appshop/modules/auth/Pages/auth_page.dart';
-import 'package:appshop/modules/auth/Pages/is_offline_page.dart';
-import 'package:appshop/modules/auth/Pages/loading_page.dart';
-import 'package:appshop/modules/auth/Provider/auth_provider.dart';
-import 'package:appshop/modules/home/Pages/home_page.dart';
-import 'package:appshop/shared/services/preferencies_values.dart';
-import 'package:appshop/shared/services/secure_storage.dart';
+import 'package:appshop/core/services/preferencies_values.dart';
+import 'package:appshop/core/services/secure_storage.dart';
+import 'package:appshop/modules/auth/pages/auth_page.dart';
+import 'package:appshop/modules/auth/pages/is_offline_page.dart';
+import 'package:appshop/modules/auth/pages/loading_page.dart';
+import 'package:appshop/modules/auth/providers/auth_provider.dart';
+import 'package:appshop/modules/home/pages/home_page.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

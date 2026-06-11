@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:appshop/modules/cart/Provider/cart_provider.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/utils/formatters.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/formatters.dart';
+import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

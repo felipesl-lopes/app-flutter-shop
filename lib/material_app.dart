@@ -1,5 +1,5 @@
-import 'package:appshop/shared/constants/app_colors.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
+import 'package:appshop/core/constants/app_colors.dart';
+import 'package:appshop/core/constants/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class MaterialAppWidget extends StatelessWidget {

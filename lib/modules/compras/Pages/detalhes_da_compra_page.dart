@@ -1,9 +1,10 @@
-import 'package:appshop/modules/product/Provider/product_provider.dart';
-import 'package:appshop/shared/Models/order.dart';
-import 'package:appshop/shared/Widgets/back_app_bar.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/utils/flushbar_helper.dart';
-import 'package:appshop/shared/utils/formatters.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/flushbar_helper.dart';
+import 'package:appshop/core/utils/formatters.dart';
+import 'package:appshop/core/widgets/back_app_bar.dart';
+import 'package:appshop/modules/compras/models/compras_model.dart';
+import 'package:appshop/modules/compras/models/order.dart';
+import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

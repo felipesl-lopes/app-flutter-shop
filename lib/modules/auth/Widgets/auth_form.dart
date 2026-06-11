@@ -1,8 +1,8 @@
-import 'package:appshop/modules/auth/Provider/auth_provider.dart';
+import 'package:appshop/core/services/preferencies_values.dart';
+import 'package:appshop/core/utils/auth_validators.dart';
+import 'package:appshop/core/widgets/input_decoration.dart';
 import 'package:appshop/modules/auth/enum/auth_mode.dart';
-import 'package:appshop/shared/Widgets/input_decoration.dart';
-import 'package:appshop/shared/services/preferencies_values.dart';
-import 'package:appshop/shared/utils/auth_validators.dart';
+import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

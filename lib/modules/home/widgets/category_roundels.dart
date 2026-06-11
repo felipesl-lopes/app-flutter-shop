@@ -1,5 +1,5 @@
-import 'package:appshop/modules/categorias/Models/categorias_model.dart';
-import 'package:appshop/modules/categorias/Widgets/categoria_icon_helper.dart';
+import 'package:appshop/modules/categorias/models/categorias_model.dart';
+import 'package:appshop/modules/categorias/widgets/categoria_icon_helper.dart';
 import 'package:flutter/material.dart';
 
 class CategoryRoundels extends StatelessWidget {

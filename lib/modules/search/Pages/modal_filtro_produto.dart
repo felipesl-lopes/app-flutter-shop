@@ -1,4 +1,4 @@
-import 'package:appshop/shared/Widgets/input_decoration.dart';
+import 'package:appshop/core/widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
 
 Future<void> modalFiltroProduto({required BuildContext context}) async {

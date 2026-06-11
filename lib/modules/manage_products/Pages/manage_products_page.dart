@@ -1,7 +1,7 @@
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/modules/manage_products/widgets/manage_product_grid.dart';
-import 'package:appshop/modules/product/Provider/product_provider.dart';
-import 'package:appshop/shared/Widgets/back_app_bar.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
+import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

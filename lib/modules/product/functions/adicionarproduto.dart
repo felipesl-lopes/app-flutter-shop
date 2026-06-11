@@ -1,7 +1,7 @@
-import 'package:appshop/modules/cart/Provider/cart_provider.dart';
-import 'package:appshop/shared/Models/product_model.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/utils/show_snackbar.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/show_snackbar.dart';
+import 'package:appshop/modules/cart/providers/cart_provider.dart';
+import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductMethod {

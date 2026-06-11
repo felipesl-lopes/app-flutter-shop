@@ -1,6 +1,6 @@
+import 'package:appshop/core/constants/app_providers.dart';
+import 'package:appshop/core/injection_dependency/injection_dependency.dart';
 import 'package:appshop/material_app.dart';
-import 'package:appshop/shared/constants/app_providers.dart';
-import 'package:appshop/shared/injection_dependency/injection_dependency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';

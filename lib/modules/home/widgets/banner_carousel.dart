@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:appshop/shared/Models/banner_model.dart';
-import 'package:appshop/shared/Widgets/image_fallback_icon.dart';
+import 'package:appshop/core/widgets/image_fallback_icon.dart';
+import 'package:appshop/modules/home/models/banner_model.dart';
 import 'package:flutter/material.dart';
 
 class BannerCarousel extends StatefulWidget {

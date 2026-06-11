@@ -1,7 +1,7 @@
-import 'package:appshop/shared/Models/product_model.dart';
-import 'package:appshop/shared/Widgets/image_avatar.dart';
-import 'package:appshop/shared/constants/app_routes.dart';
-import 'package:appshop/shared/utils/formatters.dart';
+import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/formatters.dart';
+import 'package:appshop/core/widgets/image_avatar.dart';
+import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ManageProductGrid extends StatelessWidget {

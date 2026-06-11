@@ -1,6 +1,6 @@
-import 'package:appshop/modules/compras/Provider/order_list_provider.dart';
+import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/modules/compras/Widgets/lista_de_compras.dart';
-import 'package:appshop/shared/Widgets/back_app_bar.dart';
+import 'package:appshop/modules/compras/providers/order_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
