@@ -1,4 +1,5 @@
 import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/enums/endereco_result_action.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/send_button.dart';
@@ -82,10 +83,30 @@ class _SelecionarEnderecoPageState extends State<SelecionarEnderecoPage> {
                                 .pushNamed(AppRoutes.NOVO_ENDERECO,
                                     arguments: end);
 
-                            if (result == true) {
+                            print(result);
+
+                            if (result == EnderecoResultAction.updated) {
                               showAppFlushbar(
                                 context,
-                                message: 'Endereço salvo com sucesso',
+                                message: 'Endereço atualizado',
+                                type: FlushType.success,
+                                position: FlushPosition.top,
+                              );
+                            }
+
+                            if (result == EnderecoResultAction.created) {
+                              showAppFlushbar(
+                                context,
+                                message: 'Endereço adicionado',
+                                type: FlushType.success,
+                                position: FlushPosition.top,
+                              );
+                            }
+
+                            if (result == EnderecoResultAction.deleted) {
+                              showAppFlushbar(
+                                context,
+                                message: 'Endereço removido',
                                 type: FlushType.success,
                                 position: FlushPosition.top,
                               );

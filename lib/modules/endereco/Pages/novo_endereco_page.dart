@@ -1,3 +1,5 @@
+import 'package:appshop/core/enums/endereco_result_action.dart';
+import 'package:appshop/core/helpers/app_alert.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/input_decoration.dart';
@@ -85,10 +87,11 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
     try {
       if (_endereco != null) {
         await _enderecoProvider!.editarEndereco(endereco);
+        Navigator.of(context).pop(EnderecoResultAction.updated);
       } else {
         await _enderecoProvider!.adicionarEndereco(endereco);
+        Navigator.of(context).pop(EnderecoResultAction.created);
       }
-      Navigator.of(context).pop(true);
     } catch (e) {
       showAppFlushbar(
         context,
@@ -130,7 +133,65 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BackAppBar(
-          title: _endereco != null ? 'Editar endereço' : 'Novo endereço'),
+        title: _endereco != null ? 'Editar endereço' : 'Novo endereço',
+        actions: [
+          if (_endereco != null)
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text("Confirmar exclusão"),
+                    content: Text(
+                      "Deseja excluir o endereço?",
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(
+                          "Cancelar",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        onPressed: () => {
+                          Navigator.of(ctx).pop(),
+                        },
+                      ),
+                      TextButton(
+                        child: Text(
+                          "Confirmar",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                        onPressed: () async {
+                          try {
+                            await Provider.of<EnderecoProvider>(context,
+                                    listen: false)
+                                .removerEndereco(_endereco!.id!);
+
+                            Navigator.of(ctx).pop();
+                            Navigator.of(context)
+                                .pop(EnderecoResultAction.deleted);
+                          } catch (e) {
+                            AppAlert.showError(
+                              context,
+                              message: e.toString(),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Form(

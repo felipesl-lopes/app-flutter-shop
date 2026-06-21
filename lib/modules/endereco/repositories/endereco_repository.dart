@@ -53,7 +53,7 @@ class EnderecoRepository {
     }
   }
 
-  Future<void> adicionarEndereco({
+  Future<EnderecoModel> adicionarEndereco({
     required String userId,
     required EnderecoModel endereco,
   }) async {
@@ -68,6 +68,10 @@ class EnderecoRepository {
       if (response.statusCode >= 400) {
         throw HttpException('Erro ao adicionar endereço');
       }
+
+      final data = EnderecoModel.fromMap(response.data);
+
+      return data;
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao adicionar endereço.');
@@ -95,10 +99,16 @@ class EnderecoRepository {
     }
   }
 
-  Future<void> removerEndereco({required String userId}) async {
+  Future<void> removerEndereco({
+    required String userId,
+    required String addressId,
+  }) async {
     debugPrint('[CartRepository]: removerEndereco');
 
-    try {} catch (_) {
+    try {
+      await _client.delete('address/$userId/$addressId');
+    } catch (e) {
+      debugPrint(e.toString());
       throw Exception('Erro ao remover endereço.');
     }
   }

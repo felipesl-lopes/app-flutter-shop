@@ -51,12 +51,14 @@ class EnderecoProvider with ChangeNotifier {
     EnderecoModel endereco,
   ) async {
     try {
-      await _enderecoRepository.adicionarEndereco(
+      final response = await _enderecoRepository.adicionarEndereco(
         userId: _auth.userId!,
         endereco: endereco,
       );
 
-      setEnderecos([..._enderecos, endereco]);
+      _enderecos.add(response);
+
+      setEnderecos(_enderecos);
     } catch (e) {
       rethrow;
     }
@@ -79,7 +81,15 @@ class EnderecoProvider with ChangeNotifier {
 
   Future<void> removerEndereco(String enderecoId) async {
     try {
-      await _enderecoRepository.removerEndereco(userId: _userId);
+      await _enderecoRepository.removerEndereco(
+        userId: _userId,
+        addressId: enderecoId,
+      );
+
+      final listaAtualizada = List<EnderecoModel>.from(_enderecos)
+        ..removeWhere((e) => e.id == enderecoId);
+
+      setEnderecos(listaAtualizada);
     } catch (e) {}
   }
 }
