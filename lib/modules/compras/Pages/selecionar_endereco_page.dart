@@ -107,21 +107,23 @@ class _SelecionarEnderecoPageState extends State<SelecionarEnderecoPage> {
               );
             },
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  )),
-              onPressed: () async => await Navigator.of(context)
-                  .pushNamed(AppRoutes.NOVO_ENDERECO),
-              child:
-                  Text('Novo endereço', style: TextStyle(color: Colors.white)),
+          if (enderecos.length < 3) ...[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    )),
+                onPressed: () async => await Navigator.of(context)
+                    .pushNamed(AppRoutes.NOVO_ENDERECO),
+                child: Text('Novo endereço',
+                    style: TextStyle(color: Colors.white)),
+              ),
             ),
-          ),
-          SizedBox(height: 10),
+            SizedBox(height: 10),
+          ],
         ],
       ),
       bottomNavigationBar: SafeArea(

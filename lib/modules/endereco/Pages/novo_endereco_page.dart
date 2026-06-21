@@ -235,9 +235,9 @@ class _NovoEnderecoPageState extends State<NovoEnderecoPage> {
                   secondaryButton: true),
               SizedBox(height: 8),
               if (_endereco != null) ...[
-                SendButton('Editar endereço', () async => editarEndereco()),
+                SendButton('Salvar', () async => editarEndereco()),
               ] else ...[
-                SendButton('Salvar endereço', salvar),
+                SendButton('Salvar', salvar),
               ]
             ],
           ),
