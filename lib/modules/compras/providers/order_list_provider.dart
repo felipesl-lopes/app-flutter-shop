@@ -4,7 +4,6 @@ import 'package:appshop/modules/cart/repositories/cart_repository.dart';
 import 'package:appshop/modules/compras/models/compras_model.dart';
 import 'package:appshop/modules/compras/models/order.dart';
 import 'package:appshop/modules/compras/repositories/order_repository.dart';
-import 'package:appshop/modules/endereco/models/endereco_model.dart';
 import 'package:appshop/modules/endereco/repositories/endereco_repository.dart';
 import 'package:appshop/modules/product/repositories/product_repository.dart';
 import 'package:flutter/material.dart';
@@ -51,28 +50,9 @@ class OrderListProvider with ChangeNotifier {
     try {
       final data = await _orderRepository.loadOrdersRepository(userId: _userId);
 
-      List<Order> items = [];
+      setOrders(data.reversed.toList());
 
-      data.forEach((orderId, orderData) {
-        items.add(Order(
-          id: orderId,
-          date: DateTime.parse(orderData["date"]),
-          total: (orderData["total"] as num).toDouble(),
-          products: (orderData["products"] as List)
-              .map((item) => ComprasModel.fromMap(
-                    Map<String, dynamic>.from(item),
-                  ))
-              .toList(),
-          endereco: orderData['address'] != null
-              ? EnderecoModel.fromMap(orderData['address']['id'] ?? '',
-                  Map<String, dynamic>.from(orderData['address']))
-              : null,
-        ));
-      });
-
-      setOrders(items.reversed.toList());
-
-      return Success(_items);
+      return Success(data);
     } catch (e) {
       return Failure(
         Exception(e.toString()),
@@ -91,6 +71,7 @@ class OrderListProvider with ChangeNotifier {
       }
     }
 
+    // o produto só pode ser atualizado se a compra for concluida com sucesso.
     for (final item in cart.carrinhoDeProdutos) {
       final produtoAtualizado =
           await _productRepository.buscarProdutoPorId(item.product.id);

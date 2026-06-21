@@ -3,9 +3,9 @@ import 'package:appshop/modules/categorias/models/categorias_model.dart';
 import 'package:flutter/material.dart';
 
 class CategoriasRepository {
-  final IHttpClient client;
+  final IHttpClient _client;
 
-  CategoriasRepository(this.client);
+  CategoriasRepository(this._client);
 
   Future<List<CategoriasModel>> carregarCategorias({
     required String userId,
@@ -13,26 +13,20 @@ class CategoriasRepository {
     debugPrint('[CategoriasRepository]: carregarCategorias');
 
     try {
-      final response = await client.get('categories');
+      final response = await _client.get('categories');
 
-      if (response.data == null) {
+      if (response.statusCode > 400 || response.data == null) {
         return [];
       }
 
-      final Map<String, dynamic> data = response.data;
+      final data = response.data as List;
 
-      final List<CategoriasModel> categorias = [];
+      final categorias = data.map((e) {
+        return CategoriasModel.fromJson(Map<String, dynamic>.from(e));
+      }).toList();
 
-      data.forEach((id, value) {
-        categorias.add(
-          CategoriasModel(
-            id: id,
-            nome: value['name'],
-          ),
-        );
-      });
       return categorias;
-    } catch (_) {
+    } catch (e) {
       throw Exception('Erro ao carregar categorias.');
     }
   }

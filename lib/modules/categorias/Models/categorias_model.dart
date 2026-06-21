@@ -7,9 +7,9 @@ class CategoriasModel {
     required this.nome,
   });
 
-  factory CategoriasModel.fromJson(String id, Map<String, dynamic> json) {
+  factory CategoriasModel.fromJson(Map<String, dynamic> json) {
     return CategoriasModel(
-      id: id,
+      id: json['id'],
       nome: json['name'] ?? '',
     );
   }

@@ -5,9 +5,9 @@ import 'package:appshop/modules/endereco/models/endereco_model.dart';
 import 'package:flutter/material.dart';
 
 class EnderecoRepository {
-  final IHttpClient client;
+  final IHttpClient _client;
 
-  EnderecoRepository(this.client);
+  EnderecoRepository(this._client);
 
   Future<List<EnderecoModel>> carregarEnderecos({
     required String userId,
@@ -15,27 +15,18 @@ class EnderecoRepository {
     debugPrint('[CartRepository]: carregarEnderecos');
 
     try {
-      final response = await client.get('address/$userId');
+      final response = await _client.get('address/$userId');
+      final data = response.data;
 
       if (response.statusCode >= 400) {
         throw HttpException('Erro ao buscar endereços');
       }
 
-      if (response.data == null) return [];
+      if (data == null) return [];
 
-      final Map<String, dynamic> data =
-          Map<String, dynamic>.from(response.data);
-
-      final List<EnderecoModel> enderecos = [];
-
-      data.forEach((id, enderecoData) {
-        enderecos.add(
-          EnderecoModel.fromMap(
-            id,
-            Map<String, dynamic>.from(enderecoData),
-          ),
-        );
-      });
+      final enderecos = (response.data as List)
+          .map((e) => EnderecoModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
 
       return enderecos;
     } catch (e) {
@@ -51,9 +42,11 @@ class EnderecoRepository {
     debugPrint('[CartRepository]: buscarEndereco');
 
     try {
-      final response = await client.get('address/$userId/$enderecoId');
+      final response = await _client.get('address/$userId/$enderecoId');
 
-      return EnderecoModel.fromMap(enderecoId, response.data);
+      final Map<String, dynamic> data = response.data;
+
+      return EnderecoModel.fromMap(data);
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao buscar endereço');
@@ -66,25 +59,15 @@ class EnderecoRepository {
   }) async {
     debugPrint('[CartRepository]: adicionarEndereco');
 
-    final body = {
-      'cep': endereco.cep,
-      'rua': endereco.rua,
-      'numero': endereco.numero,
-      'complemento': endereco.complemento,
-      'bairro': endereco.bairro,
-      'cidade': endereco.cidade,
-      'uf': endereco.uf,
-    };
-
     try {
-      final response = await client.post('address/$userId', body: body);
+      final response = await _client.post(
+        'address/$userId',
+        body: endereco.toMap(),
+      );
 
       if (response.statusCode >= 400) {
         throw HttpException('Erro ao adicionar endereço');
       }
-
-      final data = response.data;
-      return data['name'];
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao adicionar endereço.');
@@ -97,20 +80,10 @@ class EnderecoRepository {
   }) async {
     debugPrint('[CartRepository]: editarEndereco');
 
-    final body = {
-      'cep': endereco.cep,
-      'rua': endereco.rua,
-      'numero': endereco.numero,
-      'complemento': endereco.complemento,
-      'bairro': endereco.bairro,
-      'cidade': endereco.cidade,
-      'uf': endereco.uf,
-    };
-
     try {
-      final response = await client.put(
+      final response = await _client.put(
         'address/$userId/${endereco.id}',
-        body: body,
+        body: endereco.toMap(),
       );
 
       if (response.statusCode >= 400) {

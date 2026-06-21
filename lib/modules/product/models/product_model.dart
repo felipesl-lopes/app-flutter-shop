@@ -82,7 +82,6 @@ class ProductModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'name': name,
       'description': description,
       'price': price,
@@ -97,19 +96,34 @@ class ProductModel {
     };
   }
 
-  factory ProductModel.fromMap(String id, Map<String, dynamic> map) {
+  Map<String, dynamic> toUpdateMap() {
+    return {
+      'name': name,
+      'description': description,
+      'price': price,
+      'imageUrls': imageUrls.map((x) => x.toMap()).toList(),
+      'categories': categories,
+      'userId': userId,
+      'quantity': quantity,
+      'isPromotional': isPromotional,
+      'discountPercentage': discountPercentage,
+      'promotionEndDate': promotionEndDate?.toIso8601String(),
+    };
+  }
+
+  factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      id: id,
+      id: map['id'],
       name: map['name'],
       description: map['description'],
       price: (map['price'] as num).toDouble(),
-      imageUrls: (map['imageUrls'] as List)
-          .map((e) => ProductImageModel.fromMap(e))
+      imageUrls: (map['imageUrls'] ?? [])
+          .map<ProductImageModel>((e) => ProductImageModel.fromMap(e))
           .toList(),
       categories:
           map['categories'] == null ? [] : List<String>.from(map['categories']),
       userId: map['userId'],
-      quantity: map['quantity'] == null ? 1 : map['quantity'],
+      quantity: map['quantity'] ?? 1,
       isFavorite: map['isFavorite'] ?? false,
       isPromotional: map['isPromotional'] ?? false,
       discountPercentage: map['discountPercentage'] != null
@@ -123,8 +137,8 @@ class ProductModel {
 
   String toJson() => json.encode(toMap());
 
-  factory ProductModel.fromJson(String id, String source) =>
-      ProductModel.fromMap(id, json.decode(source) as Map<String, dynamic>);
+  factory ProductModel.fromJson(String source) =>
+      ProductModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

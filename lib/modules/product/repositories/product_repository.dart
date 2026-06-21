@@ -1,59 +1,27 @@
 import 'package:appshop/core/errors/generic_exception.dart';
 import 'package:appshop/core/services/i_http_client.dart';
-import 'package:appshop/modules/product/models/product_image_model.dart';
 import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductRepository {
-  final IHttpClient client;
+  final IHttpClient _client;
 
-  ProductRepository(this.client);
+  ProductRepository(this._client);
 
   Future<List<ProductModel>> carregarProdutos() async {
-    debugPrint('[ProductRepository]: carregarProdutos:');
+    debugPrint('[ProductRepository]: carregarProdutos');
 
     try {
-      final response = await client.get("products");
+      final response = await _client.get('products');
 
-      if (response.data == "null") {
-        return [];
+      if (response.statusCode != 200) {
+        throw Exception('Erro na requisição');
       }
 
-      final data = response.data;
-      final List<ProductModel> produtos = [];
-      if (data == null) return [];
+      final produtos = (response.data as List)
+          .map((e) => ProductModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
 
-      data.forEach(
-        (productId, productData) {
-          final List imageData = (productData['imageUrls'] ?? []) as List;
-          final promotionDateRaw = productData['promotionEndDate'] ??
-              productData['promotionValidUntil'];
-
-          produtos.add(
-            ProductModel(
-              id: productId,
-              name: productData["name"],
-              description: productData["description"],
-              price: productData["price"],
-              quantity:
-                  productData['quantity'] == null ? 1 : productData['quantity'],
-              imageUrls:
-                  imageData.map((e) => ProductImageModel.fromMap(e)).toList(),
-              categories: productData['categories'] == null
-                  ? []
-                  : List<String>.from(productData['categories']),
-              userId: productData["userId"],
-              isPromotional: productData['isPromotional'] ?? false,
-              discountPercentage: productData['discountPercentage'] != null
-                  ? (productData['discountPercentage'] as num).toInt()
-                  : null,
-              promotionEndDate: promotionDateRaw != null
-                  ? DateTime.parse(promotionDateRaw as String)
-                  : null,
-            ),
-          );
-        },
-      );
       return produtos;
     } catch (e) {
       debugPrint(e.toString());
@@ -65,33 +33,15 @@ class ProductRepository {
     debugPrint('[ProductRepository]: buscarProdutoPorId:');
 
     try {
-      final response = await client.get("products/$productId");
+      final response = await _client.get('products/$productId');
 
-      if (response.data == null) return null;
+      if (response.statusCode != 200) {
+        throw Exception('Erro na requisição');
+      }
 
       final data = response.data;
 
-      return ProductModel(
-        id: productId,
-        name: data["name"],
-        description: data["description"],
-        price: data["price"],
-        quantity: data["quantity"] ?? 1,
-        imageUrls: ((data["imageUrls"] ?? []) as List)
-            .map((e) => ProductImageModel.fromMap(e))
-            .toList(),
-        categories: data["categories"] == null
-            ? []
-            : List<String>.from(data["categories"]),
-        userId: data["userId"],
-        isPromotional: data["isPromotional"] ?? false,
-        discountPercentage: data["discountPercentage"] != null
-            ? (data["discountPercentage"] as num).toInt()
-            : null,
-        promotionEndDate: data["promotionEndDate"] != null
-            ? DateTime.parse(data["promotionEndDate"])
-            : null,
-      );
+      return ProductModel.fromMap(Map<String, dynamic>.from(data));
     } catch (e) {
       debugPrint(e.toString());
       return null;
@@ -104,18 +54,15 @@ class ProductRepository {
     debugPrint('[ProductRepository]: carregarFavoritos:');
 
     try {
-      final response = await client.get("userFavorites/$userId");
-      if (response.data == null) return [];
-      final data = response.data as Map<String, dynamic>;
-      final List<String> favoritos = [];
+      final response = await _client.get('userFavorites/$userId');
 
-      data.forEach((productId, isFavorite) {
-        if (isFavorite == true) {
-          favoritos.add(productId);
-        }
-      });
+      if (response.statusCode != 200) {
+        return [];
+      }
 
-      return favoritos;
+      final List<dynamic> data = response.data;
+
+      return data.map((e) => e.toString()).toList();
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao carregar favoritos.');
@@ -129,23 +76,12 @@ class ProductRepository {
     debugPrint('[ProductRepository]: adicionarProduto:');
 
     try {
-      final body = {
-        "userId": userId,
-        "name": product.name,
-        "description": product.description,
-        "price": product.price,
-        "quantity": product.quantity,
-        "imageUrls": product.imageUrls.map((e) => e.toMap()).toList(),
-        "categories": product.categories,
-        "isPromotional": product.isPromotional,
-        "discountPercentage": product.discountPercentage,
-        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-      };
+      final response = await _client.post(
+        'products',
+        body: product.toMap()..['userId'] = userId,
+      );
 
-      final response = await client.post('products', body: body);
-      final data = response.data;
-
-      return data['name'];
+      return response.data;
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao adicionar produto.');
@@ -159,20 +95,10 @@ class ProductRepository {
     debugPrint('[ProductRepository]: atualizarProduto:');
 
     try {
-      final body = {
-        "userId": userId,
-        "name": product.name,
-        "description": product.description,
-        "price": product.price,
-        "quantity": product.quantity,
-        "imageUrls": product.imageUrls.map((e) => e.toMap()).toList(),
-        "categories": product.categories,
-        "isPromotional": product.isPromotional,
-        "discountPercentage": product.discountPercentage,
-        "promotionEndDate": product.promotionEndDate?.toIso8601String(),
-      };
-
-      await client.patch('products/${product.id}', body: body);
+      await _client.patch(
+        'products/${product.id}',
+        body: product.toUpdateMap()..['userId'] = userId,
+      );
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao atualizar produto.');
@@ -183,7 +109,7 @@ class ProductRepository {
     debugPrint('[ProductRepository]: deletarProduto:');
 
     try {
-      final response = await client.delete('products/$idProduto');
+      final response = await _client.delete('products/$idProduto');
 
       if (response.statusCode >= 400) {
         throw GenericExeption.ExceptionMsg(
@@ -202,15 +128,16 @@ class ProductRepository {
     required bool isFavorite,
     required String userId,
   }) async {
-    debugPrint('[ProductRepository]: adicionarOuRemoverFavorito:');
+    debugPrint('[ProductRepository]: adicionarOuRemoverFavorito');
 
     try {
-      final path = 'userFavorites/$userId/$productId';
-
       if (isFavorite) {
-        await client.put(path, body: true);
+        await _client.put(
+          'userFavorites/$userId/$productId',
+          body: {},
+        );
       } else {
-        await client.delete(path);
+        await _client.delete('userFavorites/$userId/$productId');
       }
     } catch (e) {
       debugPrint(e.toString());

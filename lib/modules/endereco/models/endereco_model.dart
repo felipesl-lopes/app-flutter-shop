@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class EnderecoModel {
-  final String id;
+  final String? id;
   final String cep;
   final String rua;
   final String numero;
@@ -55,9 +55,9 @@ class EnderecoModel {
     };
   }
 
-  factory EnderecoModel.fromMap(String id, Map<String, dynamic> map) {
+  factory EnderecoModel.fromMap(Map<String, dynamic> map) {
     return EnderecoModel(
-      id: id,
+      id: map['id'] as String?,
       cep: map['cep'],
       rua: map['rua'],
       numero: map['numero'],
@@ -71,7 +71,7 @@ class EnderecoModel {
   String toJson() => json.encode(toMap());
 
   factory EnderecoModel.fromJson(String id, String source) =>
-      EnderecoModel.fromMap(id, json.decode(source) as Map<String, dynamic>);
+      EnderecoModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

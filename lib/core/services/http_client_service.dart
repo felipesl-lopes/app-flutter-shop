@@ -27,13 +27,15 @@ class HttpClientService implements IHttpClient {
       if (token != null) 'auth': token,
     };
 
-    return Uri.parse('$baseUrl$path.json').replace(
+    return Uri.parse('$baseUrl/$path').replace(
       queryParameters: queryParams,
     );
   }
 
   HttpResponse _handleResponse(http.Response response) {
-    final data = response.body.isNotEmpty ? jsonDecode(response.body) : null;
+    final body = response.body;
+
+    final data = body.isNotEmpty ? _tryDecode(body) : null;
 
     final httpResponse = HttpResponse(
       data: data,
@@ -47,6 +49,14 @@ class HttpClientService implements IHttpClient {
     }
 
     return httpResponse;
+  }
+
+  dynamic _tryDecode(String body) {
+    try {
+      return jsonDecode(body);
+    } catch (_) {
+      return body;
+    }
   }
 
   HttpResponse _rawResponse(http.Response response) {

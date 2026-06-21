@@ -4,9 +4,9 @@ import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class CartRepository {
-  final IHttpClient client;
+  final IHttpClient _client;
 
-  CartRepository(this.client);
+  CartRepository(this._client);
 
   Future<List<CartProductModel>> carregarCarrinho({
     required String userId,
@@ -14,7 +14,8 @@ class CartRepository {
   }) async {
     debugPrint('[CartRepository]: getCart');
     try {
-      final response = await client.get('cartProducts/$userId');
+      final response = await _client.get('cartProducts/$userId');
+
       final data = response.data;
 
       if (data == null) return [];
@@ -47,22 +48,9 @@ class CartRepository {
     debugPrint('[CartRepository]: updateItemQuantity');
 
     try {
-      final response = await client.get('cartProducts/$userId/$productId');
-
-      if (response.data == null) {
-        await client.put('cartProducts/$userId/$productId',
-            body: {'productId': productId, 'quantity': quantity});
-        return;
-      }
-
-      if (quantity <= 0) {
-        await client.delete('cartProducts/$userId/$productId');
-      } else {
-        await client.patch(
-          'cartProducts/$userId/$productId',
-          body: {'quantity': quantity},
-        );
-      }
+      await _client.patch('cartProducts/$userId/$productId', body: {
+        'quantity': quantity,
+      });
     } catch (_) {
       throw Exception('Erro ao adicionar/remover quantidade.');
     }
@@ -72,8 +60,9 @@ class CartRepository {
     debugPrint('[CartRepository]: limparCarrinho');
 
     try {
-      await client.delete('cartProducts/$userId');
-    } catch (_) {
+      await _client.delete('cartProducts/$userId');
+    } catch (e) {
+      debugPrint(e.toString());
       throw Exception('Erro ao limpar carrinho.');
     }
   }

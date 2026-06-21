@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:appshop/core/errors/auth_exception.dart';
@@ -20,20 +19,20 @@ class AuthRepository {
     required Map<String, dynamic> authBody,
   }) async {
     debugPrint('[AuthRepository]: autenticar');
+
     try {
-      final url = mode == AuthMode.signIn
-          ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey'
-          : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey';
-      final response = await client.postAbsolute(
-        url,
-        body: jsonEncode(authBody),
-        headers: {'Content-Type': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
+      final endpoint = mode == AuthMode.signIn ? 'auth/signin' : 'auth/signup';
+
+      final response = await client
+          .post(endpoint, body: authBody)
+          .timeout(const Duration(seconds: 10));
 
       final data = response.data;
+
       if (data is! Map) {
         throw AuthException();
       }
+
       final body = Map<String, dynamic>.from(data);
 
       if (body['error'] != null) {
@@ -53,24 +52,22 @@ class AuthRepository {
   }) async {
     debugPrint('[AuthRepository]: refreshToken');
     try {
-      final response = await client.postAbsolute(
-        'https://securetoken.googleapis.com/v1/token?key=$apiKey',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'refresh_token',
-          'refresh_token': refreshToken,
-        },
-      ).timeout(const Duration(seconds: 10));
+      final response = await client.post('auth/refresh-token', body: {
+        'refreshToken': refreshToken
+      }).timeout(const Duration(seconds: 10));
 
       final data = response.data;
+
       if (data is! Map) {
         throw AuthException();
       }
+
       final body = Map<String, dynamic>.from(data);
 
       if (response.statusCode != 200 || body['error'] != null) {
         throw AuthException();
       }
+
       return body;
     } catch (e) {
       debugPrint(e.toString());
@@ -91,14 +88,14 @@ class AuthRepository {
       final response = mode == AuthMode.signIn
           ? await client
               .get(
-                'users/$userId',
+                'auth/$userId',
                 queryParameters: queryParameters,
                 validateStatus: false,
               )
               .timeout(const Duration(seconds: 10))
           : await client
               .put(
-                'users/$userId',
+                'auth/$userId',
                 body: userMap,
                 queryParameters: queryParameters,
                 validateStatus: false,

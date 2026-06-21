@@ -5,11 +5,11 @@ import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 class BannersProvider with ChangeNotifier {
-  final IHttpClient client;
+  final IHttpClient _client;
 
   late final Command0<List<BannerModel>> loadBannersCommand;
 
-  BannersProvider(this.client) {
+  BannersProvider(this._client) {
     loadBannersCommand = Command0(_loadBanners);
   }
 
@@ -23,23 +23,17 @@ class BannersProvider with ChangeNotifier {
 
   Future<Result<List<BannerModel>>> _loadBanners() async {
     try {
-      final response = await client.get('banners');
+      final response = await _client.get('banners');
 
-      if (response.data == null || response.statusCode != 200) {
+      if (response.statusCode > 400) {
         return Failure(Exception());
       }
 
-      final Map<String, dynamic> data = response.data;
-      final List<BannerModel> loadedItems = [];
+      final data = response.data as List;
 
-      data.forEach((bannerId, bannerData) {
-        final model =
-            BannerModel.fromJson(Map<String, dynamic>.from(bannerData));
-
-        if (model.imageUrl.isNotEmpty && model.imageUrl.contains('http')) {
-          loadedItems.add(model);
-        }
-      });
+      final loadedItems = data.map((e) {
+        return BannerModel.fromJson(Map<String, dynamic>.from(e));
+      }).toList();
 
       setBanners(loadedItems);
       return Success(loadedItems);
