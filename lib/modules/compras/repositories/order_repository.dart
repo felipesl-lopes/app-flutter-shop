@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:appshop/core/services/i_http_client.dart';
 import 'package:appshop/modules/compras/models/order.dart';
-import 'package:appshop/modules/endereco/models/endereco_model.dart';
 import 'package:flutter/material.dart';
 
 class OrderRepository {
@@ -39,22 +38,17 @@ class OrderRepository {
 
   Future<String> finalizarCompraRepository({
     required String userId,
-    required double total,
-    required DateTime date,
-    required List<Map<String, dynamic>> products,
-    required EnderecoModel endereco,
+    required String addressId,
   }) async {
     debugPrint('[OrderRepository]: addOrderRepository');
 
-    final body = {
-      "total": total,
-      "date": date.toIso8601String(),
-      "products": products,
-      "address": endereco.toMap(),
-    };
-
     try {
-      final response = await _client.post('orders/$userId', body: body);
+      final response = await _client.post(
+        'checkout/$userId',
+        body: {
+          "addressId": addressId,
+        },
+      );
 
       if (response.statusCode >= 400) {
         throw HttpException('Erro ao adicionar pedido');

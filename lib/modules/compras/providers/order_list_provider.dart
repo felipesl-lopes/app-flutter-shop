@@ -1,30 +1,20 @@
 import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
-import 'package:appshop/modules/cart/repositories/cart_repository.dart';
-import 'package:appshop/modules/compras/models/compras_model.dart';
 import 'package:appshop/modules/compras/models/order.dart';
 import 'package:appshop/modules/compras/repositories/order_repository.dart';
-import 'package:appshop/modules/endereco/repositories/endereco_repository.dart';
-import 'package:appshop/modules/product/repositories/product_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 class OrderListProvider with ChangeNotifier {
   final AuthProvider _auth;
-  final CartRepository _cartRepository;
   final OrderRepository _orderRepository;
-  final EnderecoRepository _enderecoRepository;
-  final ProductRepository _productRepository;
 
   late final Command0<List<Order>> loadOrdersCommand;
 
   OrderListProvider(
     this._auth,
-    this._cartRepository,
     this._orderRepository,
-    this._enderecoRepository,
-    this._productRepository,
   ) {
     loadOrdersCommand = Command0(_loadOrders);
   }
@@ -61,73 +51,11 @@ class OrderListProvider with ChangeNotifier {
   }
 
   Future<void> finalizarCompra(CartProvider cart, String enderecoId) async {
-    for (final item in cart.carrinhoDeProdutos) {
-      final produtoAtualizado =
-          await _productRepository.buscarProdutoPorId(item.product.id);
-
-      if (produtoAtualizado!.quantity < item.quantity) {
-        print('Estoque insuficiente');
-        throw Exception('Quantidade indisponível');
-      }
-    }
-
-    // o produto só pode ser atualizado se a compra for concluida com sucesso.
-    for (final item in cart.carrinhoDeProdutos) {
-      final produtoAtualizado =
-          await _productRepository.buscarProdutoPorId(item.product.id);
-
-      final produtoComEstoqueAtualizado = produtoAtualizado!.copyWith(
-        quantity: produtoAtualizado.quantity - item.quantity,
-      );
-
-      await _productRepository.atualizarProduto(produtoComEstoqueAtualizado,
-          userId: produtoComEstoqueAtualizado.userId);
-    }
-
-    final date = DateTime.now();
-
-    final responseEndereco = await _enderecoRepository.buscarEndereco(
-        userId: _auth.userId!, enderecoId: enderecoId);
-
-    final List<ComprasModel> produtosPedido = cart.carrinhoDeProdutos
-        .map((cartItem) => ComprasModel(
-              id: cartItem.product.id,
-              name: cartItem.product.name,
-              quantity: cartItem.quantity,
-              price: cartItem.product.valorFinalDoProduto(),
-              imageUrl: cartItem.product.imageUrls.first.toString(),
-            ))
-        .toList();
-
-    final productsMap = produtosPedido
-        .map((p) => {
-              'id': p.id,
-              'name': p.name,
-              'quantity': p.quantity,
-              'price': p.price,
-              'imageUrl': p.imageUrl,
-            })
-        .toList();
-
-    final orderId = await _orderRepository.finalizarCompraRepository(
+    await _orderRepository.finalizarCompraRepository(
       userId: _userId,
-      total: cart.valorTotal,
-      date: date,
-      endereco: responseEndereco,
-      products: productsMap,
+      addressId: enderecoId,
     );
 
-    _items.insert(
-      0,
-      Order(
-        id: orderId,
-        total: cart.valorTotal,
-        date: date,
-        products: produtosPedido,
-      ),
-    );
-
-    await _cartRepository.limparCarrinho(userId: _userId);
     cart.limparCarrinho();
     notifyListeners();
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:appshop/core/errors/auth_exception.dart';
@@ -58,13 +59,10 @@ class AuthRepository {
 
       final data = response.data;
 
-      if (data is! Map) {
-        throw AuthException();
-      }
+      final body =
+          data is String ? jsonDecode(data) : Map<String, dynamic>.from(data);
 
-      final body = Map<String, dynamic>.from(data);
-
-      if (response.statusCode != 200 || body['error'] != null) {
+      if (response.statusCode < 200 || response.statusCode >= 300) {
         throw AuthException();
       }
 
