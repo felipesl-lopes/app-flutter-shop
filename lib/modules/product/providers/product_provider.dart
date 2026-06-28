@@ -182,11 +182,13 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> deletarProduto(ProductModel produto) async {
-    await _productRepository.deletarProduto(produto.id);
-
-    final lista = _produtos.where((p) => p.id != produto.id).toList();
-
-    setProdutos(lista);
+    try {
+      await _productRepository.deletarProduto(produto.id);
+      final lista = _produtos.where((p) => p.id != produto.id).toList();
+      setProdutos(lista);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> adicionarOuRemoverFavorito(String productId) async {

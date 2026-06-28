@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:appshop/core/errors/generic_exception.dart';
 import 'package:appshop/core/helpers/app_alert.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/formatters.dart';
@@ -122,11 +121,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
       _initialFormData = _getCurrentFormData();
       _hasChanges = false;
+      Navigator.of(context).pop();
     } catch (error) {
+      setState(() => _isLoading = false);
       await AppAlert.showError(context, message: error.toString());
     } finally {
-      setState(() => _isLoading = true);
-      Navigator.of(context).pop();
+      setState(() => _isLoading = false);
     }
   }
 
@@ -290,8 +290,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final msg = ScaffoldMessenger.of(context);
-
     final days = int.tryParse(_promotionDateController.text) ?? 0;
 
     final promotionDate = DateTime.now().add(
@@ -301,6 +299,23 @@ class _ProductFormPageState extends State<ProductFormPage> {
     final categorias = Provider.of<CategoriasProvider>(context, listen: false)
         .categorias
         .toList();
+
+    Future<void> excluirProduto(BuildContext ctx) async {
+      try {
+        await Provider.of<ProductProvider>(
+          context,
+          listen: false,
+        ).deletarProduto(_editedProduct!);
+
+        Navigator.of(ctx).pop();
+        Navigator.of(context).pop();
+      } catch (error) {
+        AppAlert.showError(
+          context,
+          message: error.toString(),
+        );
+      }
+    }
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -345,27 +360,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                 color: colorScheme.error,
                               ),
                             ),
-                            onPressed: () async {
-                              try {
-                                Navigator.of(ctx).pop();
-
-                                await Provider.of<ProductProvider>(
-                                  context,
-                                  listen: false,
-                                ).deletarProduto(_editedProduct!);
-                              } on GenericExeption catch (error) {
-                                msg.showSnackBar(
-                                  SnackBar(
-                                    content: Text(error.toString()),
-                                  ),
-                                );
-                              } catch (error) {
-                                AppAlert.showError(
-                                  context,
-                                  message: error.toString(),
-                                );
-                              }
-                            },
+                            onPressed: () => excluirProduto(ctx),
                           ),
                         ],
                       ),
