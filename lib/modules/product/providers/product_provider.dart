@@ -66,32 +66,7 @@ class ProductProvider with ChangeNotifier {
         debugPrint(e.toString());
       }
 
-      DateTime today = DateTime.now();
-      today = DateTime(today.year, today.month, today.day);
-
-      final List<ProductModel> atualizados = [];
-
-      for (var product in produtos) {
-        if (product.isPromotional &&
-            product.promotionEndDate != null &&
-            product.promotionEndDate!.isBefore(today)) {
-          final novoProduto = product.copyWith(
-            isPromotional: false,
-            discountPercentage: () => null,
-            promotionEndDate: () => null,
-          );
-
-          await _productRepository.atualizarProduto(
-            novoProduto,
-            userId: _userId,
-          );
-          atualizados.add(novoProduto);
-        } else {
-          atualizados.add(product);
-        }
-      }
-
-      final produtosAtualizados = atualizados.map((produto) {
+      final produtosAtualizados = produtos.map((produto) {
         return produto.copyWith(
           isFavorite: favoritos.contains(produto.id),
         );
