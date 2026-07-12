@@ -6,12 +6,14 @@ class ComprasModel {
   final String imageUrl;
   final double price;
   final int quantity;
+  final String? avaliacaoId;
   ComprasModel({
     required this.id,
     required this.name,
     required this.imageUrl,
     required this.price,
     required this.quantity,
+    this.avaliacaoId,
   });
 
   ComprasModel copyWith({
@@ -20,6 +22,7 @@ class ComprasModel {
     String? imageUrl,
     double? price,
     int? quantity,
+    String? avaliacaoId,
   }) {
     return ComprasModel(
       id: id ?? this.id,
@@ -27,6 +30,7 @@ class ComprasModel {
       imageUrl: imageUrl ?? this.imageUrl,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
+      avaliacaoId: avaliacaoId ?? this.avaliacaoId,
     );
   }
 
@@ -37,6 +41,7 @@ class ComprasModel {
       'imageUrl': imageUrl,
       'price': price,
       'quantity': quantity,
+      'avaliacaoId': avaliacaoId,
     };
   }
 
@@ -47,6 +52,7 @@ class ComprasModel {
       imageUrl: map['imageUrl'],
       price: (map['price'] as num).toDouble(),
       quantity: map['quantity'],
+      avaliacaoId: map['avaliacaoId'],
     );
   }
 
@@ -68,7 +74,8 @@ class ComprasModel {
         other.name == name &&
         other.imageUrl == imageUrl &&
         other.price == price &&
-        other.quantity == quantity;
+        other.quantity == quantity &&
+        other.avaliacaoId == avaliacaoId;
   }
 
   @override
@@ -77,6 +84,7 @@ class ComprasModel {
         name.hashCode ^
         imageUrl.hashCode ^
         price.hashCode ^
-        quantity.hashCode;
+        quantity.hashCode ^
+        avaliacaoId.hashCode;
   }
 }

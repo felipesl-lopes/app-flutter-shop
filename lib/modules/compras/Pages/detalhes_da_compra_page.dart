@@ -167,80 +167,92 @@ class DetalhesDaCompraPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 onTap: () => _openProduct(context, item),
                 child: Container(
-                  margin: EdgeInsets.only(
-                    bottom: 14,
-                  ),
+                  margin: EdgeInsets.only(bottom: 14),
                   padding: EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      16,
-                    ),
+                    borderRadius: BorderRadius.circular(16),
                     color: colorScheme.surfaceContainerLowest,
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Container(
-                        width: 58,
-                        height: 58,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            14,
-                          ),
-                          color: colorScheme.surface,
-                        ),
-                        child: Icon(
-                          Icons.inventory_2_outlined,
-                          color: colorScheme.primary,
-                        ),
-                      ),
-                      SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                            SizedBox(height: 6),
-                            Text(
-                              "${item.quantity}x unidade(s)",
-                              style: TextStyle(
-                                  color: colorScheme.onSurfaceVariant),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      Row(
                         children: [
-                          Text(
-                            formatPrice(
-                              item.price,
+                          Container(
+                            width: 58,
+                            height: 58,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: colorScheme.surface,
                             ),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onSurface,
+                            child: Icon(
+                              Icons.inventory_2_outlined,
+                              color: colorScheme.primary,
                             ),
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            formatPrice(
-                              item.price * item.quantity,
+                          SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Text(
+                                  "${item.quantity}x unidade(s)",
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
-                            style: TextStyle(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                formatPrice(item.price),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                formatPrice(item.price * item.quantity),
+                                style: TextStyle(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      if (item.avaliacaoId == null) ...[
+                        SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  AppRoutes.AVALIACAO_PRODUTO,
+                                  arguments: {
+                                    'item': item,
+                                    'orderId': order.id
+                                  });
+                            },
+                            child: Text('Avaliar produto'),
+                          ),
+                        ),
+                      ]
                     ],
                   ),
                 ),

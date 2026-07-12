@@ -22,6 +22,7 @@ dependencies:
   flutter_dotenv: 6.0.0
   result_command: 2.2.0
   cupertino_icons: 1.0.6
+  flutter_rating_bar: 4.0.1
 
 dev_dependencies:
   flutter_test:

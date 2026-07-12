@@ -1,5 +1,6 @@
 import 'package:appshop/core/injection_dependency/injection_dependency.dart';
 import 'package:appshop/modules/auth/providers/auth_provider.dart';
+import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
 import 'package:appshop/modules/compras/providers/order_list_provider.dart';
@@ -31,6 +32,9 @@ class AppProviders {
     ),
     ChangeNotifierProvider(
       create: (_) => getIt<EnderecoProvider>(),
+    ),
+    ChangeNotifierProvider(
+      create: (_) => getIt<AvaliacaoProvider>(),
     )
   ];
 }

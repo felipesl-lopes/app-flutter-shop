@@ -16,6 +16,8 @@ class ProductModel {
   final bool isPromotional;
   final int? discountPercentage;
   final DateTime? promotionEndDate;
+  final double notaMedia;
+  final int totalAvaliacoes;
 
   ProductModel({
     required this.id,
@@ -30,6 +32,8 @@ class ProductModel {
     this.isPromotional = false,
     this.discountPercentage,
     this.promotionEndDate,
+    this.notaMedia = 0.0,
+    this.totalAvaliacoes = 0,
   });
 
   double valorFinalDoProduto() {
@@ -60,6 +64,8 @@ class ProductModel {
     bool? isPromotional,
     int? Function()? discountPercentage,
     DateTime? Function()? promotionEndDate,
+    double? notaMedia,
+    int? totalAvaliacoes,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -77,6 +83,8 @@ class ProductModel {
           : this.discountPercentage,
       promotionEndDate:
           promotionEndDate != null ? promotionEndDate() : this.promotionEndDate,
+      notaMedia: notaMedia ?? this.notaMedia,
+      totalAvaliacoes: totalAvaliacoes ?? this.totalAvaliacoes,
     );
   }
 
@@ -93,6 +101,8 @@ class ProductModel {
       'isPromotional': isPromotional,
       'discountPercentage': discountPercentage,
       'promotionEndDate': promotionEndDate?.toIso8601String(),
+      'notaMedia': notaMedia,
+      'totalAvaliacoes': totalAvaliacoes,
     };
   }
 
@@ -132,6 +142,8 @@ class ProductModel {
       promotionEndDate: map['promotionEndDate'] != null
           ? DateTime.parse(map['promotionEndDate'])
           : null,
+      notaMedia: (map['notaMedia'] as num).toDouble(),
+      totalAvaliacoes: map['totalAvaliacoes'],
     );
   }
 
@@ -160,7 +172,9 @@ class ProductModel {
         other.isFavorite == isFavorite &&
         other.isPromotional == isPromotional &&
         other.discountPercentage == discountPercentage &&
-        other.promotionEndDate == promotionEndDate;
+        other.promotionEndDate == promotionEndDate &&
+        other.notaMedia == notaMedia &&
+        other.totalAvaliacoes == totalAvaliacoes;
   }
 
   @override
@@ -176,6 +190,8 @@ class ProductModel {
         isFavorite.hashCode ^
         isPromotional.hashCode ^
         discountPercentage.hashCode ^
-        promotionEndDate.hashCode;
+        promotionEndDate.hashCode ^
+        notaMedia.hashCode ^
+        totalAvaliacoes.hashCode;
   }
 }

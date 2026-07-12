@@ -38,7 +38,7 @@ class ListaDeCompras extends StatelessWidget {
           side: BorderSide(width: 1, color: colorScheme.outline),
         ),
         child: Padding(
-          padding: EdgeInsets.all(18),
+          padding: EdgeInsets.all(12),
           child: Column(
             children: [
               Row(
@@ -71,9 +71,6 @@ class ListaDeCompras extends StatelessWidget {
                           DateFormat(
                             "dd/MM/yyyy • HH:mm",
                           ).format(order.date),
-                          style: TextStyle(
-                            color: colorScheme.onSurface.withOpacity(0.55),
-                          ),
                         ),
                       ],
                     ),
@@ -84,7 +81,6 @@ class ListaDeCompras extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
               Row(
                 children: [
                   Expanded(
@@ -102,7 +98,6 @@ class ListaDeCompras extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -123,9 +118,6 @@ class ListaDeCompras extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "+ ${order.products.length - 1} produto(s)",
-                      style: TextStyle(
-                        color: colorScheme.onSurface.withOpacity(0.55),
-                      ),
                     ),
                   ),
                 ),
@@ -151,26 +143,21 @@ class _InfoCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: EdgeInsets.all(14),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 12,
-              color: colorScheme.onSurface.withOpacity(0.55),
-            ),
           ),
-          SizedBox(height: 6),
+          SizedBox(width: 8),
           Text(
             value,
             style: TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w900,
               fontSize: 15,
               color: colorScheme.onSurface,
             ),

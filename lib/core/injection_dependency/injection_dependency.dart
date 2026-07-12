@@ -2,6 +2,8 @@ import 'package:appshop/core/services/http_client_service.dart';
 import 'package:appshop/core/services/i_http_client.dart';
 import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/auth/repositories/auth_repository.dart';
+import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
+import 'package:appshop/modules/avaliacao/repositories/avaliacao_repository.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/cart/repositories/cart_repository.dart';
 import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
@@ -50,6 +52,9 @@ void configureDependencies() {
   getIt.registerLazySingleton<EnderecoRepository>(
     () => EnderecoRepository(getIt<IHttpClient>()),
   );
+  getIt.registerLazySingleton<AvaliacaoRepository>(
+    () => AvaliacaoRepository(getIt<IHttpClient>()),
+  );
 
   getIt.registerLazySingleton<CartProvider>(() => CartProvider(
         getIt<AuthProvider>(),
@@ -65,6 +70,12 @@ void configureDependencies() {
   getIt.registerLazySingleton<CategoriasProvider>(() => CategoriasProvider(
         getIt<AuthProvider>(),
         getIt<CategoriasRepository>(),
+      ));
+
+  getIt.registerLazySingleton<AvaliacaoProvider>(() => AvaliacaoProvider(
+        getIt<AuthProvider>(),
+        getIt<AvaliacaoRepository>(),
+        getIt<OrderListProvider>(),
       ));
 
   getIt.registerLazySingleton<OrderListProvider>(() => OrderListProvider(

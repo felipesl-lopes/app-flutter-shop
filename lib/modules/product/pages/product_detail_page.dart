@@ -5,6 +5,8 @@ import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/badgee.dart';
 import 'package:appshop/core/widgets/image_fallback_icon.dart';
 import 'package:appshop/core/widgets/send_button.dart';
+import 'package:appshop/modules/avaliacao/enum/scale_size.dart';
+import 'package:appshop/modules/avaliacao/widgets/rating_bar_widget.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
 import 'package:appshop/modules/product/functions/adicionarproduto.dart';
@@ -220,6 +222,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   PromotionCountdownText(
                     isPromotional: product.isPromotional,
                     promotionEndDate: product.promotionEndDate,
+                  ),
+                  RatingBarWidget(
+                    scaleSize: ScaleSize.medium,
+                    notaMedia: product.notaMedia,
+                    totalAvaliacoes: product.totalAvaliacoes,
                   ),
                   SizedBox(height: 8),
                   Divider(),

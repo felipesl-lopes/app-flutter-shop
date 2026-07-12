@@ -1,5 +1,7 @@
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/widgets/image_fallback_icon.dart';
+import 'package:appshop/modules/avaliacao/enum/scale_size.dart';
+import 'package:appshop/modules/avaliacao/widgets/rating_bar_widget.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/product/functions/adicionarproduto.dart';
 import 'package:appshop/modules/product/models/product_model.dart';
@@ -141,6 +143,10 @@ class ProductGridItem extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface),
                       ),
+                    ),
+                    RatingBarWidget(
+                      scaleSize: ScaleSize.small,
+                      notaMedia: product.notaMedia,
                     ),
                   ],
                 ),
