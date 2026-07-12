@@ -1,5 +1,5 @@
 import 'package:appshop/core/services/i_http_client.dart';
-import 'package:appshop/modules/categorias/models/categorias_model.dart';
+import 'package:appshop/modules/avaliacao/models/avaliacao_model.dart';
 import 'package:flutter/material.dart';
 
 class AvaliacaoRepository {
@@ -7,13 +7,14 @@ class AvaliacaoRepository {
 
   AvaliacaoRepository(this._client);
 
-  Future<List<CategoriasModel>> carregarCategorias({
+  Future<List<AvaliacaoModel>> carregarAvaliacoesPorProduto({
     required String userId,
+    required String productId,
   }) async {
-    debugPrint('[CategoriasRepository]: carregarCategorias');
+    debugPrint('[AvaliacaoRepository]: carregarAvaliacoesPorProduto');
 
     try {
-      final response = await _client.get('categories');
+      final response = await _client.get('avaliacao/$productId');
 
       if (response.statusCode > 400 || response.data == null) {
         return [];
@@ -21,13 +22,13 @@ class AvaliacaoRepository {
 
       final data = response.data as List;
 
-      final categorias = data.map((e) {
-        return CategoriasModel.fromJson(Map<String, dynamic>.from(e));
+      final avaliacoes = data.map((e) {
+        return AvaliacaoModel.fromMap(Map<String, dynamic>.from(e));
       }).toList();
 
-      return categorias;
+      return avaliacoes;
     } catch (e) {
-      throw Exception('Erro ao carregar categorias.');
+      throw Exception('Erro ao carregar avaliações.');
     }
   }
 

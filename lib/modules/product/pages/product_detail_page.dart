@@ -6,6 +6,8 @@ import 'package:appshop/core/widgets/badgee.dart';
 import 'package:appshop/core/widgets/image_fallback_icon.dart';
 import 'package:appshop/core/widgets/send_button.dart';
 import 'package:appshop/modules/avaliacao/enum/scale_size.dart';
+import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
+import 'package:appshop/modules/avaliacao/widgets/avaliacao_list.dart';
 import 'package:appshop/modules/avaliacao/widgets/rating_bar_widget.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
@@ -29,6 +31,7 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
+  late AvaliacaoProvider _avaliacaoProvider;
   ProductModel? _productFromRouteOrProvider(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is ProductModel) return args;
@@ -42,6 +45,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       }
     }
     return null;
+  }
+
+  bool _loaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_loaded) return;
+
+    final product = widget.product ?? _productFromRouteOrProvider(context);
+
+    if (product != null) {
+      _avaliacaoProvider =
+          Provider.of<AvaliacaoProvider>(context, listen: false);
+
+      _avaliacaoProvider.carregarAvaliacoesPorProduto(product.id);
+      _loaded = true;
+    }
   }
 
   @override
@@ -286,7 +308,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 8),
+                  Divider(),
+                  SizedBox(height: 8),
+                  AvaliacaoList(),
+                  SizedBox(height: 8),
                   Container(
                     width: double.infinity,
                     child: SendButton(

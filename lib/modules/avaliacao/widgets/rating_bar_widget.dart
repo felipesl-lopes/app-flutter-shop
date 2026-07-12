@@ -32,7 +32,7 @@ class RatingBarWidget extends StatelessWidget {
         SizedBox(width: 8),
         if (totalAvaliacoes != null)
           Text(
-            "(" + totalAvaliacoes.toString() + ' avaliações)',
+            '(${totalAvaliacoes} ${totalAvaliacoes == 1 ? 'avaliação' : 'avaliações'})',
             style: TextStyle(
               color: Colors.black54,
               fontWeight: FontWeight.w900,

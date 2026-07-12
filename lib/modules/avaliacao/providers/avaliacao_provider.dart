@@ -1,4 +1,5 @@
 import 'package:appshop/modules/auth/providers/auth_provider.dart';
+import 'package:appshop/modules/avaliacao/models/avaliacao_model.dart';
 import 'package:appshop/modules/avaliacao/repositories/avaliacao_repository.dart';
 import 'package:appshop/modules/categorias/models/categorias_model.dart';
 import 'package:appshop/modules/compras/providers/order_list_provider.dart';
@@ -17,6 +18,28 @@ class AvaliacaoProvider with ChangeNotifier {
     this._avaliacaoRepository,
     this._orderListProvider,
   );
+
+  List<AvaliacaoModel> _avaliacoes = [];
+  List<AvaliacaoModel> get avaliacoes => [..._avaliacoes];
+
+  void setAvaliacoes(List<AvaliacaoModel> value) {
+    _avaliacoes = value;
+    notifyListeners();
+  }
+
+  Future<List<AvaliacaoModel>> carregarAvaliacoesPorProduto(
+      String productId) async {
+    try {
+      final list = await _avaliacaoRepository.carregarAvaliacoesPorProduto(
+          userId: _auth.userId!, productId: productId);
+
+      setAvaliacoes(list);
+
+      return list;
+    } catch (e) {
+      return throw Exception(e);
+    }
+  }
 
   Future<String> enviarAvaliacao(
     String comentario,
