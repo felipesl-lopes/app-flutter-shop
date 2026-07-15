@@ -47,46 +47,66 @@ class AvaliacaoList extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12),
-            ...provider.avaliacoes.map(
-              (avaliacao) => Card(
-                margin: EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              avaliacao.nomeUsuario,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+            if (provider.loadingAvaliacoes) ...[
+              loadingAvaliations()
+            ] else ...[
+              ...provider.avaliacoes.map(
+                (avaliacao) => Card(
+                  margin: EdgeInsets.only(bottom: 12),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                avaliacao.nomeUsuario,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          RatingBarWidget(
-                              scaleSize: ScaleSize.small,
-                              notaMedia: avaliacao.nota),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Text(avaliacao.comentario),
-                      SizedBox(height: 8),
-                      Text(
-                        DateFormat("dd/MM/yyyy - HH:mm")
-                            .format(avaliacao.dataCriacao),
-                        style:
-                            TextStyle(fontSize: 13, color: colorScheme.outline),
-                      ),
-                    ],
+                            RatingBarWidget(
+                                scaleSize: ScaleSize.small,
+                                notaMedia: avaliacao.nota),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text(avaliacao.comentario),
+                        SizedBox(height: 8),
+                        Text(
+                          DateFormat("dd/MM/yyyy - HH:mm")
+                              .format(avaliacao.dataCriacao),
+                          style: TextStyle(
+                              fontSize: 13, color: colorScheme.outline),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
         );
       },
     );
+  }
+}
+
+class loadingAvaliations extends StatelessWidget {
+  const loadingAvaliations();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Padding(
+      padding: EdgeInsets.all(20),
+      child: SizedBox(
+          height: 24,
+          width: 24,
+          child: CircularProgressIndicator(strokeWidth: 3)),
+    ));
   }
 }

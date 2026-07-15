@@ -22,6 +22,14 @@ class AvaliacaoProvider with ChangeNotifier {
   List<AvaliacaoModel> _avaliacoes = [];
   List<AvaliacaoModel> get avaliacoes => [..._avaliacoes];
 
+  bool _loadingAvaliacoes = false;
+  bool get loadingAvaliacoes => _loadingAvaliacoes;
+
+  void setLoadingAvaliacoes(bool value) {
+    _loadingAvaliacoes = value;
+    notifyListeners();
+  }
+
   void setAvaliacoes(List<AvaliacaoModel> value) {
     _avaliacoes = value;
     notifyListeners();
@@ -29,6 +37,8 @@ class AvaliacaoProvider with ChangeNotifier {
 
   Future<List<AvaliacaoModel>> carregarAvaliacoesPorProduto(
       String productId) async {
+    setLoadingAvaliacoes(true);
+
     try {
       final list = await _avaliacaoRepository.carregarAvaliacoesPorProduto(
           userId: _auth.userId!, productId: productId);
@@ -38,6 +48,8 @@ class AvaliacaoProvider with ChangeNotifier {
       return list;
     } catch (e) {
       return throw Exception(e);
+    } finally {
+      setLoadingAvaliacoes(false);
     }
   }
 

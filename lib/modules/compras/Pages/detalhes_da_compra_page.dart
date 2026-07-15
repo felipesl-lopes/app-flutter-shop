@@ -9,9 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class DetalhesDaCompraPage extends StatelessWidget {
+class DetalhesDaCompraPage extends StatefulWidget {
   const DetalhesDaCompraPage({super.key});
 
+  @override
+  State<DetalhesDaCompraPage> createState() => _DetalhesDaCompraPageState();
+}
+
+class _DetalhesDaCompraPageState extends State<DetalhesDaCompraPage> {
   void _openProduct(
     BuildContext context,
     ComprasModel item,
@@ -241,13 +246,24 @@ class DetalhesDaCompraPage extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: OutlinedButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  AppRoutes.AVALIACAO_PRODUTO,
-                                  arguments: {
-                                    'item': item,
-                                    'orderId': order.id
-                                  });
+                            onPressed: () async {
+                              final resultado =
+                                  await Navigator.of(context).pushNamed(
+                                AppRoutes.AVALIACAO_PRODUTO,
+                                arguments: {
+                                  'item': item,
+                                  'orderId': order.id,
+                                },
+                              );
+
+                              if (resultado == true && context.mounted) {
+                                showAppFlushbar(
+                                  context,
+                                  message: "Produto avaliado com sucesso!",
+                                  type: FlushType.success,
+                                  position: FlushPosition.top,
+                                );
+                              }
                             },
                             child: Text('Avaliar produto'),
                           ),

@@ -54,6 +54,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     super.didChangeDependencies();
 
     if (_loaded) return;
+    _loaded = true;
 
     final product = widget.product ?? _productFromRouteOrProvider(context);
 
@@ -61,8 +62,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       _avaliacaoProvider =
           Provider.of<AvaliacaoProvider>(context, listen: false);
 
-      _avaliacaoProvider.carregarAvaliacoesPorProduto(product.id);
-      _loaded = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _avaliacaoProvider.carregarAvaliacoesPorProduto(product.id);
+      });
     }
   }
 
@@ -311,6 +313,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   SizedBox(height: 8),
                   Divider(),
                   SizedBox(height: 8),
+                  // Consumer<AvaliacaoProvider>(
+                  //   builder: (_, provider, __) {
+                  //     return provider.loadingAvaliacoes
+                  //         ? const Center(child: CircularProgressIndicator())
+                  //         : AvaliacaoList();
+                  //   },
+                  // ),
                   AvaliacaoList(),
                   SizedBox(height: 8),
                   Container(

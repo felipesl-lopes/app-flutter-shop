@@ -1,3 +1,4 @@
+import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/input_decoration.dart';
 import 'package:appshop/core/widgets/send_button.dart';
@@ -136,8 +137,16 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
               ),
               SizedBox(height: 40),
               SendButton("Enviar avaliação", () async {
-                await _avaliacaoProvider.enviarAvaliacao(
-                    _comentarioController.text, _nota, item.id, orderId);
+                try {
+                  await _avaliacaoProvider.enviarAvaliacao(
+                      _comentarioController.text, _nota, item.id, orderId);
+                  Navigator.of(context).pop(true);
+                } catch (e) {
+                  showAppFlushbar(context,
+                      message: "Erro ao avaliar produto.!",
+                      type: FlushType.error,
+                      position: FlushPosition.top);
+                }
               }),
             ],
           ),
