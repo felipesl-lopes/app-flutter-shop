@@ -1,4 +1,4 @@
-import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/modules/avaliacao/enum/scale_size.dart';
 import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
 import 'package:appshop/modules/avaliacao/widgets/loading_avaliations.dart';
@@ -7,54 +7,46 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class AvaliacaoList extends StatelessWidget {
-  const AvaliacaoList({super.key});
+class ListaAvaliacoesPage extends StatelessWidget {
+  const ListaAvaliacoesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Consumer<AvaliacaoProvider>(
-      builder: (context, provider, _) {
-        if (provider.avaliacoes.isEmpty) {
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Column(
+    return Scaffold(
+      appBar: BackAppBar(title: 'Avaliações'),
+      body: SingleChildScrollView(
+        child: Consumer<AvaliacaoProvider>(
+          builder: (context, provider, _) {
+            if (provider.avaliacoes.isEmpty) {
+              return Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.rate_review_outlined,
+                      size: 42,
+                      color: colorScheme.outline,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Este produto ainda não possui avaliações.',
+                      style: TextStyle(color: colorScheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.rate_review_outlined,
-                  size: 42,
-                  color: colorScheme.outline,
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Este produto ainda não possui avaliações.',
-                  style: TextStyle(color: colorScheme.onSurfaceVariant),
-                ),
-              ],
-            ),
-          );
-        }
-
-        final possuiMaisAvaliacoes = provider.avaliacoes.length > 3;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Avaliações',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            SizedBox(height: 12),
-            if (provider.loadingAvaliacoes) ...[
-              LoadingAvaliations()
-            ] else ...[
-              ...provider.avaliacoes.take(3).map(
+                if (provider.loadingAvaliacoes) ...[
+                  LoadingAvaliations()
+                ] else ...[
+                  ...provider.avaliacoes.map(
                     (avaliacao) => Card(
                       margin: EdgeInsets.only(bottom: 12),
                       child: Padding(
@@ -91,17 +83,12 @@ class AvaliacaoList extends StatelessWidget {
                       ),
                     ),
                   ),
-              if (possuiMaisAvaliacoes)
-                Center(
-                  child: TextButton(
-                      onPressed: () => Navigator.of(context)
-                          .pushNamed(AppRoutes.LISTA_AVALIACOES),
-                      child: Text("Ver todas as avaliações")),
-                )
-            ],
-          ],
-        );
-      },
+                ],
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }

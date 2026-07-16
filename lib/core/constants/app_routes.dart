@@ -1,6 +1,7 @@
 import 'package:appshop/modules/auth/pages/auth_or_home_page.dart';
 import 'package:appshop/modules/auth/pages/auth_page.dart';
 import 'package:appshop/modules/avaliacao/pages/avaliacao_produto_page.dart';
+import 'package:appshop/modules/avaliacao/pages/lista_avaliacoes_page.dart';
 import 'package:appshop/modules/cart/pages/cart_page.dart';
 import 'package:appshop/modules/compras/pages/compras_page.dart';
 import 'package:appshop/modules/compras/pages/detalhes_da_compra_page.dart';
@@ -34,6 +35,7 @@ class AppRoutes {
   static const FINALIZE_PURCHASE = '/finalize_purchase';
   static const NOVO_ENDERECO = '/new';
   static const AVALIACAO_PRODUTO = '/avaliacao_produto';
+  static const LISTA_AVALIACOES = '/lista_avaliacoes';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -101,6 +103,10 @@ class AppRoutes {
 
       case AVALIACAO_PRODUTO:
         page = AvaliacaoProdutoPage();
+        break;
+
+      case LISTA_AVALIACOES:
+        page = ListaAvaliacoesPage();
         break;
 
       default:

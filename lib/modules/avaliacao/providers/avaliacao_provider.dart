@@ -1,17 +1,13 @@
 import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/avaliacao/models/avaliacao_model.dart';
 import 'package:appshop/modules/avaliacao/repositories/avaliacao_repository.dart';
-import 'package:appshop/modules/categorias/models/categorias_model.dart';
 import 'package:appshop/modules/compras/providers/order_list_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:result_command/result_command.dart';
 
 class AvaliacaoProvider with ChangeNotifier {
   final AuthProvider _auth;
   final AvaliacaoRepository _avaliacaoRepository;
   final OrderListProvider _orderListProvider;
-
-  late final Command0<List<CategoriasModel>> loadCategoriesCommand;
 
   AvaliacaoProvider(
     this._auth,

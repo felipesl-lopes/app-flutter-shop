@@ -313,13 +313,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   SizedBox(height: 8),
                   Divider(),
                   SizedBox(height: 8),
-                  // Consumer<AvaliacaoProvider>(
-                  //   builder: (_, provider, __) {
-                  //     return provider.loadingAvaliacoes
-                  //         ? const Center(child: CircularProgressIndicator())
-                  //         : AvaliacaoList();
-                  //   },
-                  // ),
                   AvaliacaoList(),
                   SizedBox(height: 8),
                   Container(
