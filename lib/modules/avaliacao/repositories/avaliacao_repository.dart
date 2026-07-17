@@ -32,7 +32,7 @@ class AvaliacaoRepository {
     }
   }
 
-  Future<String> enviarAvaliacao({
+  Future<Map<String, dynamic>> enviarAvaliacao({
     required String userId,
     required String comentario,
     required double nota,

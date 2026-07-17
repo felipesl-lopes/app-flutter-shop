@@ -76,6 +76,7 @@ void configureDependencies() {
         getIt<AuthProvider>(),
         getIt<AvaliacaoRepository>(),
         getIt<OrderListProvider>(),
+        getIt<ProductProvider>(),
       ));
 
   getIt.registerLazySingleton<OrderListProvider>(() => OrderListProvider(

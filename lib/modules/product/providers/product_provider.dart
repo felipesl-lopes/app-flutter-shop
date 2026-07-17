@@ -52,6 +52,27 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /**
+   * Método void que recebe os dados de avaliação do produto atualizado.
+   * Necessita notificar seu proprio listener para escutar a alteração.
+   */
+  void atualizarAvaliacaoProduto({
+    required String productId,
+    required double notaMedia,
+    required int totalAvaliacoes,
+  }) {
+    final index = _produtos.indexWhere((e) => e.id == productId);
+
+    if (index == -1) return;
+
+    _produtos[index] = _produtos[index].copyWith(
+      notaMedia: notaMedia,
+      totalAvaliacoes: totalAvaliacoes,
+    );
+
+    notifyListeners();
+  }
+
   Future<Result<List<ProductModel>>> _loadProducts() async {
     try {
       final produtos = await _productRepository.carregarProdutos();

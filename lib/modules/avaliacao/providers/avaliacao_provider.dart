@@ -2,17 +2,20 @@ import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/avaliacao/models/avaliacao_model.dart';
 import 'package:appshop/modules/avaliacao/repositories/avaliacao_repository.dart';
 import 'package:appshop/modules/compras/providers/order_list_provider.dart';
+import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 
 class AvaliacaoProvider with ChangeNotifier {
   final AuthProvider _auth;
   final AvaliacaoRepository _avaliacaoRepository;
   final OrderListProvider _orderListProvider;
+  final ProductProvider _productListProvider;
 
   AvaliacaoProvider(
     this._auth,
     this._avaliacaoRepository,
     this._orderListProvider,
+    this._productListProvider,
   );
 
   List<AvaliacaoModel> _avaliacoes = [];
@@ -56,7 +59,7 @@ class AvaliacaoProvider with ChangeNotifier {
     String orderId,
   ) async {
     try {
-      final avaliacaoId = await _avaliacaoRepository.enviarAvaliacao(
+      final data = await _avaliacaoRepository.enviarAvaliacao(
         userId: _auth.userId ?? '',
         comentario: comentario,
         nota: nota,
@@ -70,12 +73,19 @@ class AvaliacaoProvider with ChangeNotifier {
 
       if (index != -1) {
         order.products[index] =
-            order.products[index].copyWith(avaliacaoId: avaliacaoId);
+            order.products[index].copyWith(avaliacaoId: data['avaliacaoId']);
       }
+
+      // metodo criado e chamado pois ProductProvider precisa ser notificado da alteração no produto.
+      _productListProvider.atualizarAvaliacaoProduto(
+        productId: productId,
+        notaMedia: (data['notaMedia'] as num).toDouble(),
+        totalAvaliacoes: data['totalAvaliacoes'],
+      );
 
       notifyListeners();
 
-      return avaliacaoId;
+      return data['avaliacaoId'];
     } catch (e) {
       return e.toString();
     }
