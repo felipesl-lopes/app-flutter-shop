@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/endereco/models/endereco_model.dart';
 import 'package:appshop/modules/endereco/repositories/endereco_repository.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +7,16 @@ import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 class EnderecoProvider with ChangeNotifier {
-  final AuthProvider _auth;
   final EnderecoRepository _enderecoRepository;
 
   late final Command0<List<EnderecoModel>> loadAddressCommand;
 
   EnderecoProvider(
-    this._auth,
     this._enderecoRepository,
   ) {
     loadAddressCommand = Command0(_loadAddress);
   }
 
-  String get _userId => _auth.userId ?? '';
 
   List<EnderecoModel> _enderecos = [];
   List<EnderecoModel> get enderecos => [..._enderecos];
@@ -32,9 +28,7 @@ class EnderecoProvider with ChangeNotifier {
 
   Future<Result<List<EnderecoModel>>> _loadAddress() async {
     try {
-      final response = await _enderecoRepository.carregarEnderecos(
-        userId: _userId,
-      );
+      final response = await _enderecoRepository.carregarEnderecos();
 
       setEnderecos(response);
 
@@ -52,7 +46,6 @@ class EnderecoProvider with ChangeNotifier {
   ) async {
     try {
       final response = await _enderecoRepository.adicionarEndereco(
-        userId: _auth.userId!,
         endereco: endereco,
       );
 
@@ -66,8 +59,7 @@ class EnderecoProvider with ChangeNotifier {
 
   Future<void> editarEndereco(EnderecoModel endereco) async {
     try {
-      await _enderecoRepository.editarEndereco(
-          userId: _auth.userId!, endereco: endereco);
+      await _enderecoRepository.editarEndereco(endereco: endereco);
 
       final listaAtualizada = _enderecos.map((e) {
         return e.id == endereco.id ? endereco : e;
@@ -82,7 +74,6 @@ class EnderecoProvider with ChangeNotifier {
   Future<void> removerEndereco(String enderecoId) async {
     try {
       await _enderecoRepository.removerEndereco(
-        userId: _userId,
         addressId: enderecoId,
       );
 

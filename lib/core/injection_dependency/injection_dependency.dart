@@ -89,7 +89,6 @@ void configureDependencies() {
       ));
 
   getIt.registerLazySingleton<EnderecoProvider>(() => EnderecoProvider(
-        getIt<AuthProvider>(),
         getIt<EnderecoRepository>(),
       ));
 }

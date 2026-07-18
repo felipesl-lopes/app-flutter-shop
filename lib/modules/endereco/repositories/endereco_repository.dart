@@ -9,13 +9,11 @@ class EnderecoRepository {
 
   EnderecoRepository(this._client);
 
-  Future<List<EnderecoModel>> carregarEnderecos({
-    required String userId,
-  }) async {
+  Future<List<EnderecoModel>> carregarEnderecos() async {
     debugPrint('[CartRepository]: carregarEnderecos');
 
     try {
-      final response = await _client.get('address/$userId');
+      final response = await _client.get('address');
       final data = response.data;
 
       if (response.statusCode >= 400) {
@@ -36,13 +34,12 @@ class EnderecoRepository {
   }
 
   Future<EnderecoModel> buscarEndereco({
-    required String userId,
     required String enderecoId,
   }) async {
     debugPrint('[CartRepository]: buscarEndereco');
 
     try {
-      final response = await _client.get('address/$userId/$enderecoId');
+      final response = await _client.get('address/$enderecoId');
 
       final Map<String, dynamic> data = response.data;
 
@@ -54,14 +51,13 @@ class EnderecoRepository {
   }
 
   Future<EnderecoModel> adicionarEndereco({
-    required String userId,
     required EnderecoModel endereco,
   }) async {
     debugPrint('[CartRepository]: adicionarEndereco');
 
     try {
       final response = await _client.post(
-        'address/$userId',
+        'address',
         body: endereco.toMap(),
       );
 
@@ -79,14 +75,13 @@ class EnderecoRepository {
   }
 
   Future<void> editarEndereco({
-    required String userId,
     required EnderecoModel endereco,
   }) async {
     debugPrint('[CartRepository]: editarEndereco');
 
     try {
       final response = await _client.put(
-        'address/$userId/${endereco.id}',
+        'address/${endereco.id}',
         body: endereco.toMap(),
       );
 
@@ -100,13 +95,12 @@ class EnderecoRepository {
   }
 
   Future<void> removerEndereco({
-    required String userId,
     required String addressId,
   }) async {
     debugPrint('[CartRepository]: removerEndereco');
 
     try {
-      await _client.delete('address/$userId/$addressId');
+      await _client.delete('address/$addressId');
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao remover endereço.');
