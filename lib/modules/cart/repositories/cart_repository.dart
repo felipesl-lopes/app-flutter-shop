@@ -9,12 +9,11 @@ class CartRepository {
   CartRepository(this._client);
 
   Future<List<CartProductModel>> carregarCarrinho({
-    required String userId,
     required Map<String, ProductModel> productsMap,
   }) async {
     debugPrint('[CartRepository]: getCart');
     try {
-      final response = await _client.get('cartProducts/$userId');
+      final response = await _client.get('cartProducts');
 
       final data = response.data;
 
@@ -43,12 +42,11 @@ class CartRepository {
   Future<void> atualizarQuantidadeDeItens({
     required String productId,
     required int quantity,
-    required String userId,
   }) async {
     debugPrint('[CartRepository]: updateItemQuantity');
 
     try {
-      await _client.patch('cartProducts/$userId/$productId', body: {
+      await _client.patch('cartProducts/$productId', body: {
         'quantity': quantity,
       });
     } catch (_) {

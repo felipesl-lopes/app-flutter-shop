@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/cart/models/cart_product_model.dart';
 import 'package:appshop/modules/cart/repositories/cart_repository.dart';
 import 'package:appshop/modules/product/models/product_model.dart';
@@ -10,14 +9,12 @@ import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 class CartProvider with ChangeNotifier {
-  final AuthProvider _auth;
   final CartRepository _cartRepository;
   final ProductProvider _productProvider;
 
   late final Command0<List<CartProductModel>> loadCartCommand;
 
   CartProvider(
-    this._auth,
     this._cartRepository,
     this._productProvider,
   ) {
@@ -25,7 +22,6 @@ class CartProvider with ChangeNotifier {
   }
 
   Timer? _debounce;
-  String get _userId => _auth.userId ?? '';
 
   List<CartProductModel> _carrinhoDeProdutos = [];
   List<CartProductModel> get carrinhoDeProdutos => [..._carrinhoDeProdutos];
@@ -58,7 +54,6 @@ class CartProvider with ChangeNotifier {
       final productsMap = {for (var p in _productProvider.produtos) p.id: p};
 
       final data = await _cartRepository.carregarCarrinho(
-        userId: _userId,
         productsMap: productsMap,
       );
 
@@ -111,7 +106,6 @@ class CartProvider with ChangeNotifier {
         await _cartRepository.atualizarQuantidadeDeItens(
           productId: item.product.id,
           quantity: item.quantity,
-          userId: _userId,
         );
       } catch (e) {
         debugPrint('Erro ao adicionar produto: $e');
@@ -168,7 +162,6 @@ class CartProvider with ChangeNotifier {
         await _cartRepository.atualizarQuantidadeDeItens(
           productId: productId,
           quantity: quantity,
-          userId: _userId,
         );
       } catch (e) {
         debugPrint('Erro ao atualizar produto: $e');
