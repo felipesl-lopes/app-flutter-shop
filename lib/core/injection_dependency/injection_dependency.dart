@@ -67,7 +67,6 @@ void configureDependencies() {
       ));
 
   getIt.registerLazySingleton<CategoriasProvider>(() => CategoriasProvider(
-        getIt<AuthProvider>(),
         getIt<CategoriasRepository>(),
       ));
 

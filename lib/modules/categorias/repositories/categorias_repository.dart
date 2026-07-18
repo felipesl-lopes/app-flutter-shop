@@ -7,9 +7,7 @@ class CategoriasRepository {
 
   CategoriasRepository(this._client);
 
-  Future<List<CategoriasModel>> carregarCategorias({
-    required String userId,
-  }) async {
+  Future<List<CategoriasModel>> carregarCategorias() async {
     debugPrint('[CategoriasRepository]: carregarCategorias');
 
     try {
