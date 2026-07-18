@@ -9,13 +9,11 @@ class OrderRepository {
 
   OrderRepository(this._client);
 
-  Future<List<Order>> loadOrdersRepository({
-    required String userId,
-  }) async {
+  Future<List<Order>> loadOrdersRepository() async {
     debugPrint('[OrderRepository]: loadOrdersRepository');
 
     try {
-      final response = await _client.get('orders/$userId');
+      final response = await _client.get('orders');
 
       if (response.statusCode >= 400) {
         throw HttpException('Erro ao buscar pedidos');
@@ -37,14 +35,13 @@ class OrderRepository {
   }
 
   Future<String> finalizarCompraRepository({
-    required String userId,
     required String addressId,
   }) async {
     debugPrint('[OrderRepository]: addOrderRepository');
 
     try {
       final response = await _client.post(
-        'checkout/$userId',
+        'checkout',
         body: {
           "addressId": addressId,
         },
