@@ -8,7 +8,6 @@ class AvaliacaoRepository {
   AvaliacaoRepository(this._client);
 
   Future<List<AvaliacaoModel>> carregarAvaliacoesPorProduto({
-    required String userId,
     required String productId,
   }) async {
     debugPrint('[AvaliacaoRepository]: carregarAvaliacoesPorProduto');
@@ -33,7 +32,6 @@ class AvaliacaoRepository {
   }
 
   Future<Map<String, dynamic>> enviarAvaliacao({
-    required String userId,
     required String comentario,
     required double nota,
     required String productId,
@@ -43,7 +41,6 @@ class AvaliacaoRepository {
 
     try {
       final response = await _client.post('avaliacao/$productId', body: {
-        'usuarioId': userId,
         'nota': nota,
         'comentario': comentario,
         'orderId': orderId,

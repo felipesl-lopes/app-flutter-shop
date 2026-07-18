@@ -73,7 +73,6 @@ void configureDependencies() {
       ));
 
   getIt.registerLazySingleton<AvaliacaoProvider>(() => AvaliacaoProvider(
-        getIt<AuthProvider>(),
         getIt<AvaliacaoRepository>(),
         getIt<OrderListProvider>(),
         getIt<ProductProvider>(),

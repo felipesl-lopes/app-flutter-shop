@@ -1,4 +1,3 @@
-import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/avaliacao/models/avaliacao_model.dart';
 import 'package:appshop/modules/avaliacao/repositories/avaliacao_repository.dart';
 import 'package:appshop/modules/compras/providers/order_list_provider.dart';
@@ -6,13 +5,11 @@ import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 
 class AvaliacaoProvider with ChangeNotifier {
-  final AuthProvider _auth;
   final AvaliacaoRepository _avaliacaoRepository;
   final OrderListProvider _orderListProvider;
   final ProductProvider _productListProvider;
 
   AvaliacaoProvider(
-    this._auth,
     this._avaliacaoRepository,
     this._orderListProvider,
     this._productListProvider,
@@ -40,7 +37,7 @@ class AvaliacaoProvider with ChangeNotifier {
 
     try {
       final list = await _avaliacaoRepository.carregarAvaliacoesPorProduto(
-          userId: _auth.userId!, productId: productId);
+          productId: productId);
 
       setAvaliacoes(list);
 
@@ -60,7 +57,6 @@ class AvaliacaoProvider with ChangeNotifier {
   ) async {
     try {
       final data = await _avaliacaoRepository.enviarAvaliacao(
-        userId: _auth.userId ?? '',
         comentario: comentario,
         nota: nota,
         orderId: orderId,
