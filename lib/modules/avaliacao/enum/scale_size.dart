@@ -1,7 +1,7 @@
 enum ScaleSize {
-  small(16),
-  medium(24),
-  large(32);
+  small(14),
+  medium(22),
+  large(30);
 
   const ScaleSize(this.value);
 

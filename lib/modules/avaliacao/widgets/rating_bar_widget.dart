@@ -28,7 +28,7 @@ class RatingBarWidget extends StatelessWidget {
           itemSize: scaleSize.value,
         ),
         SizedBox(width: 4),
-        Text(notaMedia.toStringAsFixed(1)),
+        Text(notaMedia.toStringAsFixed(1), style: TextStyle(fontSize: 13)),
         SizedBox(width: 8),
         if (totalAvaliacoes != null)
           Text(

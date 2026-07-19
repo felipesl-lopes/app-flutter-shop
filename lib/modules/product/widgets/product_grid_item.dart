@@ -108,41 +108,49 @@ class ProductGridItem extends StatelessWidget {
                           color: colorScheme.onSurface.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Text('Indisponível'),
+                        child: Text('Indisponível',
+                            style: TextStyle(fontSize: 11)),
                       ),
                     if (product.isPromotional)
                       DiscountBadge(
                         percentage: product.discountPercentage!,
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     Text(
                       product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style:
-                          TextStyle(fontSize: 15, color: colorScheme.onSurface),
+                          TextStyle(fontSize: 14, color: colorScheme.onSurface),
                     ),
-                    if (product.isPromotional)
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          formatPrice(product.price),
-                          style: TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              decorationColor:
-                                  colorScheme.onSurface.withOpacity(0.5),
-                              color: colorScheme.onSurface.withOpacity(0.5)),
+                    Row(
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            formatPrice(product.valorFinalDoProduto()),
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onSurface),
+                          ),
                         ),
-                      ),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        formatPrice(product.valorFinalDoProduto()),
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface),
-                      ),
+                        SizedBox(width: 4),
+                        if (product.isPromotional)
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              formatPrice(product.price),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor:
+                                      colorScheme.onSurface.withOpacity(0.5),
+                                  color:
+                                      colorScheme.onSurface.withOpacity(0.5)),
+                            ),
+                          ),
+                      ],
                     ),
                     RatingBarWidget(
                       scaleSize: ScaleSize.small,

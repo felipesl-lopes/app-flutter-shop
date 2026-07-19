@@ -172,7 +172,7 @@ class ProductProvider with ChangeNotifier {
 
     final novoProduto = produto.copyWith(id: generateId);
 
-    setProdutos([..._produtos, novoProduto]);
+    setMeusProdutos([..._meusProdutos, novoProduto]);
   }
 
   Future<void> atualizarProduto(ProductModel produto) async {
