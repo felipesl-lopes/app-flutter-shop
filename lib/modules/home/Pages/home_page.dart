@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
       context.read<CartProvider>().loadCartCommand.execute(),
       context.read<EnderecoProvider>().loadAddressCommand.execute(),
       context.read<ProductProvider>().loadProductsCommand.execute(),
+      context.read<ProductProvider>().loadMyProductsCommand.execute(),
     ]);
   }
 
@@ -168,13 +169,13 @@ class _HomePageState extends State<HomePage> {
                           gridHorizontal: true,
                         ),
                       CardIncentivoCarrinho(),
-                      if (produtosProvider.produtosParaCompra.isEmpty)
+                      if (produtosProvider.produtos.isEmpty)
                         Text(
                           "Nenhum produto encontrado",
                         )
                       else
                         ProductGrid(
-                          list_products: produtosProvider.produtosParaCompra,
+                          list_products: produtosProvider.produtos,
                           quantityGrid: 6,
                           title: "Produtos para você",
                         ),

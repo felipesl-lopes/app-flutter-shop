@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
       }
 
       final products =
-          _hasSearched ? _filteredProducts : provider.produtosParaCompra;
+          _hasSearched ? _filteredProducts : provider.produtos;
 
       _allProducts = products;
       _visibleProducts = _allProducts.take(_currentLimit).toList();

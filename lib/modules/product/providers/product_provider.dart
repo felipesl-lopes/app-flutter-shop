@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:appshop/modules/product/models/product_image_model.dart';
 import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:appshop/modules/product/repositories/product_repository.dart';
@@ -9,39 +8,32 @@ import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 class ProductProvider with ChangeNotifier {
-  final AuthProvider _auth;
   final ProductRepository _productRepository;
 
   late final Command0<List<ProductModel>> loadProductsCommand;
+  late final Command0<List<ProductModel>> loadMyProductsCommand;
 
   List<ProductModel> _produtos = [];
+  List<ProductModel> _meusProdutos = [];
 
   ProductProvider(
-    this._auth,
     this._productRepository,
   ) {
     loadProductsCommand = Command0(_loadProducts);
+    loadMyProductsCommand = Command0(_loadMyProducts);
   }
 
-  String get _userId => _auth.userId ?? '';
-
   List<ProductModel> get produtos => [..._produtos];
-  List<ProductModel> get produtosFavoritos => _produtos
-      .where((prod) => prod.isFavorite && prod.userId != _userId)
-      .toList();
+  List<ProductModel> get meusProdutos => [..._meusProdutos];
 
-  List<ProductModel> get meusProdutos =>
-      _produtos.where((p) => p.userId == _userId).toList();
-
-  List<ProductModel> get produtosParaCompra =>
-      _produtos.where((p) => p.userId != _userId).toList();
+  List<ProductModel> get produtosFavoritos =>
+      _produtos.where((prod) => prod.isFavorite).toList();
 
   List<ProductModel> get produtosEmOferta =>
-      _produtos.where((p) => p.isPromotional && p.userId != _userId).toList();
+      _produtos.where((p) => p.isPromotional).toList();
 
-  List<ProductModel> get meusFavoritos => _produtos
-      .where((p) => p.isFavorite == true && p.userId != _userId)
-      .toList();
+  List<ProductModel> get meusFavoritos =>
+      _produtos.where((p) => p.isFavorite == true).toList();
 
   int get quantidadeDeProdutos {
     return _produtos.length;
@@ -49,6 +41,11 @@ class ProductProvider with ChangeNotifier {
 
   void setProdutos(List<ProductModel> value) {
     _produtos = value;
+    notifyListeners();
+  }
+
+  void setMeusProdutos(List<ProductModel> value) {
+    _meusProdutos = value;
     notifyListeners();
   }
 
@@ -76,16 +73,7 @@ class ProductProvider with ChangeNotifier {
   Future<Result<List<ProductModel>>> _loadProducts() async {
     try {
       final produtos = await _productRepository.carregarProdutos();
-
-      List<String> favoritos = [];
-
-      try {
-        favoritos = await _productRepository.carregarFavoritos(
-          userId: _userId,
-        );
-      } catch (e) {
-        debugPrint(e.toString());
-      }
+      final favoritos = await _carregarFavoritos();
 
       final produtosAtualizados = produtos.map((produto) {
         return produto.copyWith(
@@ -94,10 +82,33 @@ class ProductProvider with ChangeNotifier {
       }).toList();
 
       setProdutos(produtosAtualizados);
+
       return Success(produtosAtualizados);
     } catch (e) {
       debugPrint(e.toString());
       return Failure(Exception(e.toString()));
+    }
+  }
+
+  Future<Result<List<ProductModel>>> _loadMyProducts() async {
+    try {
+      final produtos = await _productRepository.carregarMeusProdutos();
+
+      setMeusProdutos(produtos);
+
+      return Success(produtos);
+    } catch (e) {
+      debugPrint(e.toString());
+      return Failure(Exception(e.toString()));
+    }
+  }
+
+  Future<List<String>> _carregarFavoritos() async {
+    try {
+      return await _productRepository.carregarFavoritos();
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
     }
   }
 
@@ -108,7 +119,7 @@ class ProductProvider with ChangeNotifier {
       return p.name.toLowerCase().contains(q);
     }).toList();
 
-    return lista.where((p) => p.userId != _userId).toList();
+    return lista.toList();
   }
 
   List<ProductModel> produtosPorCategoria(String categoryId) {
@@ -116,7 +127,7 @@ class ProductProvider with ChangeNotifier {
       return p.categories.contains(categoryId);
     }).toList();
 
-    return lista.where((p) => p.userId != _userId).toList();
+    return lista.toList();
   }
 
   Future<void> salvarProduto(Map<String, Object> data) {
@@ -141,7 +152,6 @@ class ProductProvider with ChangeNotifier {
       quantity: data['quantity'] as int,
       imageUrls: data["imageUrls"] as List<ProductImageModel>,
       categories: List<String>.from(data['categories'] as List<String>),
-      userId: _userId,
       isPromotional: isPromotional,
       discountPercentage: data["discountPercentage"] as int?,
       promotionEndDate: promotionEndDate,
@@ -155,10 +165,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> adicionarProduto(ProductModel produto) async {
-    final generateId = await _productRepository.adicionarProduto(
-      produto,
-      userId: _auth.userId!,
-    );
+    final generateId = await _productRepository.adicionarProduto(produto);
 
     final novoProduto = produto.copyWith(id: generateId);
 
@@ -166,15 +173,13 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> atualizarProduto(ProductModel produto) async {
-    await _productRepository.atualizarProduto(
+    final data = await _productRepository.atualizarProduto(
       produto,
-      userId: _userId,
     );
 
-    final lista =
-        _produtos.map((e) => e.id == produto.id ? produto : e).toList();
+    final lista = _meusProdutos.map((e) => e.id == data.id ? data : e).toList();
 
-    setProdutos(lista);
+    setMeusProdutos(lista);
   }
 
   Future<void> deletarProduto(ProductModel produto) async {
@@ -202,7 +207,6 @@ class ProductProvider with ChangeNotifier {
       await _productRepository.adicionarOuRemoverFavorito(
         productId: productId,
         isFavorite: product.isFavorite,
-        userId: _userId,
       );
     } catch (e) {
       product.isFavorite = oldValue;

@@ -29,6 +29,27 @@ class ProductRepository {
     }
   }
 
+  Future<List<ProductModel>> carregarMeusProdutos() async {
+    debugPrint('[ProductRepository]: carregarMeusProdutos');
+
+    try {
+      final response = await _client.get('products/my');
+
+      if (response.statusCode != 200) {
+        throw Exception('Erro na requisição');
+      }
+
+      final produtos = (response.data as List)
+          .map((e) => ProductModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
+
+      return produtos;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception("Erro ao carregar produtos.");
+    }
+  }
+
   Future<ProductModel?> buscarProdutoPorId(String productId) async {
     debugPrint('[ProductRepository]: buscarProdutoPorId:');
 
@@ -48,13 +69,11 @@ class ProductRepository {
     }
   }
 
-  Future<List<String>> carregarFavoritos({
-    required String userId,
-  }) async {
+  Future<List<String>> carregarFavoritos() async {
     debugPrint('[ProductRepository]: carregarFavoritos:');
 
     try {
-      final response = await _client.get('userFavorites/$userId');
+      final response = await _client.get('userFavorites');
 
       if (response.statusCode != 200) {
         return [];
@@ -69,16 +88,13 @@ class ProductRepository {
     }
   }
 
-  Future<String> adicionarProduto(
-    ProductModel product, {
-    required String userId,
-  }) async {
+  Future<String> adicionarProduto(ProductModel product) async {
     debugPrint('[ProductRepository]: adicionarProduto:');
 
     try {
       final response = await _client.post(
         'products',
-        body: product.toMap()..['userId'] = userId,
+        body: product.toMap(),
       );
 
       return response.data;
@@ -88,17 +104,22 @@ class ProductRepository {
     }
   }
 
-  Future<void> atualizarProduto(
-    ProductModel product, {
-    required String userId,
-  }) async {
+  Future<ProductModel> atualizarProduto(ProductModel product) async {
     debugPrint('[ProductRepository]: atualizarProduto:');
 
     try {
-      await _client.patch(
+      final response = await _client.patch(
         'products/${product.id}',
-        body: product.toUpdateMap()..['userId'] = userId,
+        body: product.toUpdateMap(),
       );
+
+      if (response.statusCode > 400) {
+        return throw Exception('Erro ao atualizar produto.');
+      }
+
+      final produto = ProductModel.fromMap(response.data);
+
+      return produto;
     } catch (e) {
       debugPrint(e.toString());
       throw Exception('Erro ao atualizar produto.');
@@ -126,18 +147,17 @@ class ProductRepository {
   Future<void> adicionarOuRemoverFavorito({
     required String productId,
     required bool isFavorite,
-    required String userId,
   }) async {
     debugPrint('[ProductRepository]: adicionarOuRemoverFavorito');
 
     try {
       if (isFavorite) {
         await _client.put(
-          'userFavorites/$userId/$productId',
+          'userFavorites/$productId',
           body: {},
         );
       } else {
-        await _client.delete('userFavorites/$userId/$productId');
+        await _client.delete('userFavorites/$productId');
       }
     } catch (e) {
       debugPrint(e.toString());

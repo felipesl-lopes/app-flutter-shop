@@ -62,7 +62,6 @@ void configureDependencies() {
       ));
 
   getIt.registerLazySingleton<ProductProvider>(() => ProductProvider(
-        getIt<AuthProvider>(),
         getIt<ProductRepository>(),
       ));
 

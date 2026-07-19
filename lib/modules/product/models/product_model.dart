@@ -10,7 +10,6 @@ class ProductModel {
   final double price;
   final List<ProductImageModel> imageUrls;
   final List<String> categories;
-  final String userId;
   final int quantity;
   bool isFavorite;
   final bool isPromotional;
@@ -26,7 +25,6 @@ class ProductModel {
     required this.price,
     required this.imageUrls,
     required this.categories,
-    required this.userId,
     required this.quantity,
     this.isFavorite = false,
     this.isPromotional = false,
@@ -74,7 +72,6 @@ class ProductModel {
       price: price ?? this.price,
       imageUrls: imageUrls ?? this.imageUrls,
       categories: categories ?? this.categories,
-      userId: userId ?? this.userId,
       quantity: quantity ?? this.quantity,
       isFavorite: isFavorite ?? this.isFavorite,
       isPromotional: isPromotional ?? this.isPromotional,
@@ -95,7 +92,6 @@ class ProductModel {
       'price': price,
       'imageUrls': imageUrls.map((x) => x.toMap()).toList(),
       'categories': categories,
-      'userId': userId,
       'quantity': quantity,
       'isFavorite': isFavorite,
       'isPromotional': isPromotional,
@@ -113,7 +109,6 @@ class ProductModel {
       'price': price,
       'imageUrls': imageUrls.map((x) => x.toMap()).toList(),
       'categories': categories,
-      'userId': userId,
       'quantity': quantity,
       'isPromotional': isPromotional,
       'discountPercentage': discountPercentage,
@@ -132,7 +127,6 @@ class ProductModel {
           .toList(),
       categories:
           map['categories'] == null ? [] : List<String>.from(map['categories']),
-      userId: map['userId'],
       quantity: map['quantity'] ?? 1,
       isFavorite: map['isFavorite'] ?? false,
       isPromotional: map['isPromotional'] ?? false,
@@ -154,7 +148,7 @@ class ProductModel {
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, price: $price, imageUrls: $imageUrls, categories: $categories, userId: $userId, quantity: $quantity, isFavorite: $isFavorite, isPromotional: $isPromotional, discountPercentage: $discountPercentage, promotionEndDate: $promotionEndDate)';
+    return 'ProductModel(id: $id, name: $name, description: $description, price: $price, imageUrls: $imageUrls, categories: $categories, quantity: $quantity, isFavorite: $isFavorite, isPromotional: $isPromotional, discountPercentage: $discountPercentage, promotionEndDate: $promotionEndDate)';
   }
 
   @override
@@ -167,7 +161,6 @@ class ProductModel {
         other.price == price &&
         listEquals(other.imageUrls, imageUrls) &&
         listEquals(other.categories, categories) &&
-        other.userId == userId &&
         other.quantity == quantity &&
         other.isFavorite == isFavorite &&
         other.isPromotional == isPromotional &&
@@ -185,7 +178,6 @@ class ProductModel {
         price.hashCode ^
         imageUrls.hashCode ^
         categories.hashCode ^
-        userId.hashCode ^
         quantity.hashCode ^
         isFavorite.hashCode ^
         isPromotional.hashCode ^
