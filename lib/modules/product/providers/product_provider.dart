@@ -12,22 +12,23 @@ class ProductProvider with ChangeNotifier {
 
   late final Command0<List<ProductModel>> loadProductsCommand;
   late final Command0<List<ProductModel>> loadMyProductsCommand;
+  late final Command0<List<ProductModel>> loadFavoritesProductsCommand;
 
   List<ProductModel> _produtos = [];
   List<ProductModel> _meusProdutos = [];
+  List<ProductModel> _produtosFavoritos = [];
 
   ProductProvider(
     this._productRepository,
   ) {
     loadProductsCommand = Command0(_loadProducts);
     loadMyProductsCommand = Command0(_loadMyProducts);
+    loadFavoritesProductsCommand = Command0(_loadFavoritesProducts);
   }
 
   List<ProductModel> get produtos => [..._produtos];
   List<ProductModel> get meusProdutos => [..._meusProdutos];
-
-  List<ProductModel> get produtosFavoritos =>
-      _produtos.where((prod) => prod.isFavorite).toList();
+  List<ProductModel> get produtosFavoritos => [..._produtosFavoritos];
 
   List<ProductModel> get produtosEmOferta =>
       _produtos.where((p) => p.isPromotional).toList();
@@ -46,6 +47,11 @@ class ProductProvider with ChangeNotifier {
 
   void setMeusProdutos(List<ProductModel> value) {
     _meusProdutos = value;
+    notifyListeners();
+  }
+
+  void setProdutosFavoritos(List<ProductModel> value) {
+    _produtosFavoritos = value;
     notifyListeners();
   }
 
@@ -73,17 +79,10 @@ class ProductProvider with ChangeNotifier {
   Future<Result<List<ProductModel>>> _loadProducts() async {
     try {
       final produtos = await _productRepository.carregarProdutos();
-      final favoritos = await _carregarFavoritos();
 
-      final produtosAtualizados = produtos.map((produto) {
-        return produto.copyWith(
-          isFavorite: favoritos.contains(produto.id),
-        );
-      }).toList();
+      setProdutos(produtos);
 
-      setProdutos(produtosAtualizados);
-
-      return Success(produtosAtualizados);
+      return Success(produtos);
     } catch (e) {
       debugPrint(e.toString());
       return Failure(Exception(e.toString()));
@@ -103,12 +102,16 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<List<String>> _carregarFavoritos() async {
+  Future<Result<List<ProductModel>>> _loadFavoritesProducts() async {
     try {
-      return await _productRepository.carregarFavoritos();
+      final produtos = await _productRepository.carregarProdutosFavoritos();
+
+      setProdutosFavoritos(produtos);
+
+      return Success(produtos);
     } catch (e) {
       debugPrint(e.toString());
-      return [];
+      return Failure(Exception(e.toString()));
     }
   }
 
@@ -193,21 +196,46 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> adicionarOuRemoverFavorito(String productId) async {
-    final index = _produtos.indexWhere((p) => p.id == productId);
+    ProductModel? product;
 
-    if (index < 0) return;
+    final indexProdutos = _produtos.indexWhere((p) => p.id == productId);
 
-    final product = _produtos[index];
+    if (indexProdutos != -1) {
+      product = _produtos[indexProdutos];
+    } else {
+      final indexFavoritos =
+          _produtosFavoritos.indexWhere((p) => p.id == productId);
+
+      if (indexFavoritos != -1) {
+        product = _meusProdutos[indexFavoritos];
+      }
+    }
+
+    if (product == null) return;
+
     final oldValue = product.isFavorite;
+    final isFavoritando = !oldValue;
 
-    product.isFavorite = !product.isFavorite;
+    product.isFavorite = isFavoritando;
     notifyListeners();
 
     try {
       await _productRepository.adicionarOuRemoverFavorito(
         productId: productId,
-        isFavorite: product.isFavorite,
+        isFavorite: isFavoritando,
       );
+
+      if (isFavoritando) {
+        final exists = _produtosFavoritos.any((p) => p.id == productId);
+
+        if (!exists) {
+          _produtosFavoritos.add(product.copyWith(isFavorite: true));
+        }
+      } else {
+        _produtosFavoritos.removeWhere((p) => p.id == productId);
+      }
+
+      notifyListeners();
     } catch (e) {
       product.isFavorite = oldValue;
       notifyListeners();

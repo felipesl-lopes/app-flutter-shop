@@ -50,6 +50,27 @@ class ProductRepository {
     }
   }
 
+  Future<List<ProductModel>> carregarProdutosFavoritos() async {
+    debugPrint('[ProductRepository]: carregarProdutosFavoritos');
+
+    try {
+      final response = await _client.get('products/favorites');
+
+      if (response.statusCode != 200) {
+        throw Exception('Erro na requisição');
+      }
+
+      final produtos = (response.data as List)
+          .map((e) => ProductModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
+
+      return produtos;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception("Erro ao carregar produtos favoritos.");
+    }
+  }
+
   Future<ProductModel?> buscarProdutoPorId(String productId) async {
     debugPrint('[ProductRepository]: buscarProdutoPorId:');
 
@@ -66,25 +87,6 @@ class ProductRepository {
     } catch (e) {
       debugPrint(e.toString());
       return null;
-    }
-  }
-
-  Future<List<String>> carregarFavoritos() async {
-    debugPrint('[ProductRepository]: carregarFavoritos:');
-
-    try {
-      final response = await _client.get('userFavorites');
-
-      if (response.statusCode != 200) {
-        return [];
-      }
-
-      final List<dynamic> data = response.data;
-
-      return data.map((e) => e.toString()).toList();
-    } catch (e) {
-      debugPrint(e.toString());
-      throw Exception('Erro ao carregar favoritos.');
     }
   }
 

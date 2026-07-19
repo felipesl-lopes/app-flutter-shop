@@ -82,8 +82,9 @@ class ProductGrid extends StatelessWidget {
                   minimumSize: Size(0, 0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.SEARCH_PRODUCT),
+                onPressed: () => Navigator.of(context).pushNamed(
+                    AppRoutes.SEARCH_PRODUCT,
+                    arguments: list_products),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

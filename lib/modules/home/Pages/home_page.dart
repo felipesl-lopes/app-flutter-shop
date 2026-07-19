@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       context.read<EnderecoProvider>().loadAddressCommand.execute(),
       context.read<ProductProvider>().loadProductsCommand.execute(),
       context.read<ProductProvider>().loadMyProductsCommand.execute(),
+      context.read<ProductProvider>().loadFavoritesProductsCommand.execute(),
     ]);
   }
 
@@ -161,9 +162,9 @@ class _HomePageState extends State<HomePage> {
                         categorias: categorias,
                         onCategorySelected: _searchProductCategory,
                       ),
-                      if (produtosProvider.meusFavoritos.isNotEmpty)
+                      if (produtosProvider.produtosFavoritos.isNotEmpty)
                         ProductGrid(
-                          list_products: produtosProvider.meusFavoritos,
+                          list_products: produtosProvider.produtosFavoritos,
                           quantityGrid: 4,
                           title: "Seus favoritos",
                           gridHorizontal: true,
