@@ -189,7 +189,7 @@ class ProductProvider with ChangeNotifier {
     try {
       await _productRepository.deletarProduto(produto.id);
       final lista = _produtos.where((p) => p.id != produto.id).toList();
-      setProdutos(lista);
+      setMeusProdutos(lista);
     } catch (e) {
       rethrow;
     }
