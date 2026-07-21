@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:appshop/core/errors/auth_exception.dart';
 import 'package:appshop/core/services/i_http_client.dart';
-import 'package:appshop/modules/auth/enum/auth_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -15,36 +13,51 @@ class AuthRepository {
 
   String get apiKey => dotenv.env['API_KEY'] ?? '';
 
-  Future<Map<String, dynamic>> autenticar({
-    required AuthMode mode,
-    required Map<String, dynamic> authBody,
+  Future<Map<String, dynamic>> logar({
+    required String email,
+    required String password,
   }) async {
-    debugPrint('[AuthRepository]: autenticar');
+    debugPrint('[AuthRepository]: logar');
 
     try {
-      final endpoint = mode == AuthMode.signIn ? 'auth/signin' : 'auth/signup';
+      final response = await client.post('auth/signin', body: {
+        'email': email,
+        'password': password,
+      });
 
-      final response = await client
-          .post(endpoint, body: authBody)
-          .timeout(const Duration(seconds: 10));
-
-      final data = response.data;
-
-      if (data is! Map) {
-        throw AuthException();
+      if (response.statusCode > 400) {
+        throw Exception('');
       }
 
-      final body = Map<String, dynamic>.from(data);
+      return Map<String, dynamic>.from(response.data);
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception(e.toString());
+    }
+  }
 
-      if (body['error'] != null) {
-        throw AuthException();
+  Future<Map<String, dynamic>> registrar({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    debugPrint('[AuthRepository]: registrar');
+
+    try {
+      final response = await client.post('auth/signup', body: {
+        'email': email,
+        'password': password,
+        'name': name,
+      });
+
+      if (response.statusCode > 400) {
+        throw Exception('');
       }
 
-      return body;
-    } on SocketException {
-      throw SocketException('Internet instável.');
-    } on TimeoutException {
-      throw TimeoutException('Tempo de espera excedido.');
+      return Map<String, dynamic>.from(response.data);
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception(e.toString());
     }
   }
 
@@ -67,58 +80,6 @@ class AuthRepository {
       }
 
       return body;
-    } catch (e) {
-      debugPrint(e.toString());
-      throw AuthException();
-    }
-  }
-
-  Future<Map<String, dynamic>> fetchOrCreateUser({
-    required AuthMode mode,
-    required String userId,
-    required String token,
-    required Map<String, dynamic> userMap,
-  }) async {
-    debugPrint('[AuthRepository]: fetchOrCreateUser');
-    try {
-      final queryParameters = {'auth': token};
-
-      final response = mode == AuthMode.signIn
-          ? await client
-              .get(
-                'auth/$userId',
-                queryParameters: queryParameters,
-                validateStatus: false,
-              )
-              .timeout(const Duration(seconds: 10))
-          : await client
-              .put(
-                'auth/$userId',
-                body: userMap,
-                queryParameters: queryParameters,
-                validateStatus: false,
-              )
-              .timeout(const Duration(seconds: 10));
-
-      if (response.statusCode != 200) {
-        throw AuthException();
-      }
-
-      final raw = response.data;
-
-      if (raw == null || (raw is String && raw.isEmpty)) {
-        return {};
-      }
-
-      if (raw is Map<String, dynamic>) {
-        return raw;
-      }
-
-      if (raw is Map) {
-        return Map<String, dynamic>.from(raw);
-      }
-
-      return {};
     } catch (e) {
       debugPrint(e.toString());
       throw AuthException();

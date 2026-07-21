@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/services/secure_storage.dart';
-import 'package:appshop/modules/auth/enum/auth_mode.dart';
 import 'package:appshop/modules/auth/models/user_model.dart';
 import 'package:appshop/modules/auth/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
@@ -34,69 +33,44 @@ class AuthProvider with ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
 
-  Future<void> _autenticar(String email, String password, AuthMode mode,
-      {String? name}) async {
-    try {
-      final authBody = {
-        'email': email,
-        'password': password,
-        'returnSecureToken': true,
-      };
-
-      final authData =
-          await _repository.autenticar(mode: mode, authBody: authBody);
-
-      final userJson = UserModel(
-        name: name ?? '',
-        phoneNumber: 0,
-        city: '',
-        country: '',
-        address: '',
-        birthDate: null,
-        avatarUrl: '',
-      );
-
-      final userData = await _repository.fetchOrCreateUser(
-        mode: mode,
-        userId: authData['localId'],
-        token: authData['idToken'],
-        userMap: userJson.toMap(),
-      );
-
-      final bool keepLogged = await _prefs.getKeepLogged();
-      if (mode == AuthMode.signIn && keepLogged) {
-        await _storage.saveCredentials(email, password);
-      }
-
-      if (userData.isNotEmpty) {
-        _refreshToken = authData['refreshToken'];
-        _token = authData['idToken'];
-        _email = authData['email'];
-        _userId = authData['localId'];
-        _expiryDate = DateTime.now().add(
-          Duration(seconds: int.parse(authData['expiresIn'])),
-        );
-      }
-
-      _user = UserModel.fromMap(userData);
-
-      _generateNewToken();
-      notifyListeners();
-    } catch (e) {
-      debugPrint(e.toString());
-      rethrow;
-    }
-  }
-
   Future<void> registrar(String email, String password, String name) async {
-    return _autenticar(email, password, AuthMode.signUp, name: name);
+    final body = await _repository.registrar(
+        name: name, email: email, password: password);
+
+    _token = body['accessToken'];
+    _refreshToken = body['refreshToken'];
+    _email = email;
+    _expiryDate = DateTime.now().add(Duration(seconds: body['expiresIn']));
+
+    _user = UserModel.fromMap(Map<String, dynamic>.from(body['user']));
+
+    _generateNewToken();
+    notifyListeners();
   }
 
   Future<void> logar(String email, String password) async {
-    return _autenticar(email, password, AuthMode.signIn);
+    final body = await _repository.logar(email: email, password: password);
+
+    final bool keepLogged = await _prefs.getKeepLogged();
+
+    if (keepLogged) {
+      await _storage.saveCredentials(email, password);
+    }
+
+    _token = body['accessToken'];
+    _refreshToken = body['refreshToken'];
+    _email = email;
+    _expiryDate = DateTime.now().add(Duration(seconds: body['expiresIn']));
+
+    _user = UserModel.fromMap(Map<String, dynamic>.from(body['user']));
+
+    _generateNewToken();
+    notifyListeners();
   }
 
   Future<void> deslogar() async {
+    _refreshToken = null;
+    _user = null;
     _token = null;
     _email = null;
     _userId = null;
