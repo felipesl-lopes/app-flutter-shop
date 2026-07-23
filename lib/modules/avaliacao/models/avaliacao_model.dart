@@ -6,6 +6,7 @@ class AvaliacaoModel {
   final String comentario;
   final DateTime dataCriacao;
   final String nomeUsuario;
+  final bool? minhaAvaliacao;
 
   AvaliacaoModel({
     required this.id,
@@ -13,6 +14,7 @@ class AvaliacaoModel {
     required this.comentario,
     required this.dataCriacao,
     required this.nomeUsuario,
+    this.minhaAvaliacao,
   });
 
   AvaliacaoModel copyWith({
@@ -21,6 +23,7 @@ class AvaliacaoModel {
     String? comentario,
     DateTime? dataCriacao,
     String? nomeUsuario,
+    bool? minhaAvaliacao,
   }) {
     return AvaliacaoModel(
       id: id ?? this.id,
@@ -28,6 +31,7 @@ class AvaliacaoModel {
       comentario: comentario ?? this.comentario,
       dataCriacao: dataCriacao ?? this.dataCriacao,
       nomeUsuario: nomeUsuario ?? this.nomeUsuario,
+      minhaAvaliacao: minhaAvaliacao ?? this.minhaAvaliacao,
     );
   }
 
@@ -38,6 +42,7 @@ class AvaliacaoModel {
       comentario: map['comentario'] as String,
       dataCriacao: DateTime.parse(map['dataCriacao']).toLocal(),
       nomeUsuario: map['nomeUsuario'],
+      minhaAvaliacao: map['minhaAvaliacao'],
     );
   }
 
@@ -52,7 +57,8 @@ class AvaliacaoModel {
         other.nota == nota &&
         other.comentario == comentario &&
         other.dataCriacao == dataCriacao &&
-        other.nomeUsuario == nomeUsuario;
+        other.nomeUsuario == nomeUsuario &&
+        other.minhaAvaliacao == minhaAvaliacao;
   }
 
   @override
@@ -61,6 +67,7 @@ class AvaliacaoModel {
         nota.hashCode ^
         comentario.hashCode ^
         dataCriacao.hashCode ^
-        nomeUsuario.hashCode;
+        nomeUsuario.hashCode ^
+        minhaAvaliacao.hashCode;
   }
 }

@@ -65,10 +65,21 @@ class AvaliacaoList extends StatelessWidget {
                             Row(
                               children: [
                                 Expanded(
-                                  child: Text(
-                                    avaliacao.nomeUsuario,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text: avaliacao.nomeUsuario,
+                                            style: TextStyle(
+                                                color: colorScheme.outline,
+                                                fontWeight: FontWeight.bold)),
+                                        WidgetSpan(child: SizedBox(width: 6)),
+                                        if (avaliacao.minhaAvaliacao == true)
+                                          TextSpan(
+                                              text: '(você)',
+                                              style: TextStyle(
+                                                  color: colorScheme.outline)),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -78,13 +89,38 @@ class AvaliacaoList extends StatelessWidget {
                               ],
                             ),
                             SizedBox(height: 8),
-                            Text(avaliacao.comentario),
-                            SizedBox(height: 8),
                             Text(
-                              DateFormat("dd/MM/yyyy - HH:mm")
-                                  .format(avaliacao.dataCriacao),
-                              style: TextStyle(
-                                  fontSize: 13, color: colorScheme.outline),
+                              avaliacao.comentario,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  DateFormat("dd/MM/yyyy - HH:mm")
+                                      .format(avaliacao.dataCriacao),
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      color:
+                                          colorScheme.outline.withOpacity(0.7)),
+                                ),
+                                TextButton(
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      minimumSize: Size.zero,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                    child: Text("Editar avaliação"),
+                                    onPressed: () {}
+                                    // os parametros não batem,
+                                    // onPressed: () => Navigator.of(context)
+                                    //     .pushNamed(AppRoutes.AVALIACAO_PRODUTO, arguments: {'item': avaliacao}),
+                                    )
+                              ],
                             ),
                           ],
                         ),
