@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:appshop/core/services/preferencies_values.dart';
 import 'package:appshop/core/services/secure_storage.dart';
@@ -15,7 +14,6 @@ class AuthProvider with ChangeNotifier {
   String? _token;
   String? _refreshToken;
   String? _email;
-  String? _userId;
   DateTime? _expiryDate;
   Timer? _logoutTimer;
   final _prefs = PreferenciesValues();
@@ -28,7 +26,6 @@ class AuthProvider with ChangeNotifier {
 
   String? get token => isAuth ? _token : null;
   String? get email => isAuth ? _email : null;
-  String? get userId => isAuth ? _userId : null;
 
   UserModel? _user;
   UserModel? get user => _user;
@@ -43,6 +40,8 @@ class AuthProvider with ChangeNotifier {
     _expiryDate = DateTime.now().add(Duration(seconds: body['expiresIn']));
 
     _user = UserModel.fromMap(Map<String, dynamic>.from(body['user']));
+
+    await _storage.saveRefreshToken(_refreshToken!);
 
     _generateNewToken();
     notifyListeners();
@@ -64,6 +63,8 @@ class AuthProvider with ChangeNotifier {
 
     _user = UserModel.fromMap(Map<String, dynamic>.from(body['user']));
 
+    await _storage.saveRefreshToken(_refreshToken!);
+
     _generateNewToken();
     notifyListeners();
   }
@@ -73,7 +74,6 @@ class AuthProvider with ChangeNotifier {
     _user = null;
     _token = null;
     _email = null;
-    _userId = null;
     _expiryDate = null;
     await _prefs.deleteKeepLogged();
     await _storage.deleteCredentials();
@@ -107,13 +107,13 @@ class AuthProvider with ChangeNotifier {
     try {
       final body = await _repository.refreshToken(refreshToken: _refreshToken!);
 
-      _token = body['id_token'];
-      _refreshToken = body['refresh_token'];
+      _token = body['accessToken'];
+      _refreshToken = body['refreshToken'];
       _expiryDate = DateTime.now().add(
-        Duration(seconds: int.parse(body['expires_in'])),
+        Duration(seconds: body['expiresIn'] as int),
       );
 
-      await _storage.saveRefreshToken(jsonEncode(_refreshToken));
+      await _storage.saveRefreshToken(_refreshToken!);
 
       _generateNewToken();
       notifyListeners();
