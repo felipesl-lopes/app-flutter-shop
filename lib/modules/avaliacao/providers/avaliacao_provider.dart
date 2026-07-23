@@ -31,6 +31,11 @@ class AvaliacaoProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _avaliacoes.clear();
+    notifyListeners();
+  }
+
   Future<List<AvaliacaoModel>> carregarAvaliacoesPorProduto(
       String productId) async {
     setLoadingAvaliacoes(true);

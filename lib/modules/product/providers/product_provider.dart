@@ -55,6 +55,11 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _meusProdutos.clear();
+    _produtosFavoritos.clear();
+  }
+
   /**
    * Método void que recebe os dados de avaliação do produto atualizado.
    * Necessita notificar seu proprio listener para escutar a alteração.

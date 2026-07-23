@@ -17,12 +17,16 @@ class EnderecoProvider with ChangeNotifier {
     loadAddressCommand = Command0(_loadAddress);
   }
 
-
   List<EnderecoModel> _enderecos = [];
   List<EnderecoModel> get enderecos => [..._enderecos];
 
   void setEnderecos(List<EnderecoModel> value) {
     _enderecos = value;
+    notifyListeners();
+  }
+
+  void clear() {
+    _enderecos.clear();
     notifyListeners();
   }
 

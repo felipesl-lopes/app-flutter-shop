@@ -31,6 +31,11 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _carrinhoDeProdutos.clear();
+    notifyListeners();
+  }
+
   int get totalDeItens {
     return _carrinhoDeProdutos.length;
   }

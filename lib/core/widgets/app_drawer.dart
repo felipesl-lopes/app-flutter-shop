@@ -1,4 +1,5 @@
 import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/session_service.dart';
 import 'package:appshop/core/widgets/modal_custom.dart';
 import 'package:appshop/modules/auth/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -82,12 +83,7 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               modalCustom(
                 context: context,
-                onTap: () {
-                  Provider.of<AuthProvider>(context, listen: false).deslogar();
-                  Navigator.of(context).pushReplacementNamed(
-                    AppRoutes.AUTH_OR_HOME,
-                  );
-                },
+                onTap: () async => await SessionService().logout(context),
                 icon: Icons.logout,
                 title: "Deseja sair?",
                 text:

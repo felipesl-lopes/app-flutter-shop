@@ -31,6 +31,11 @@ class OrderListProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _items.clear();
+    notifyListeners();
+  }
+
   Future<Result<List<Order>>> _loadOrders() async {
     try {
       final data = await _orderRepository.loadOrdersRepository();
