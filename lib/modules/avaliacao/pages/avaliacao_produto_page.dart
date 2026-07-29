@@ -3,10 +3,27 @@ import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/input_decoration.dart';
 import 'package:appshop/core/widgets/send_button.dart';
 import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
-import 'package:appshop/modules/compras/models/compras_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+
+class AvaliacaoArgs {
+  final String productId;
+  final String productName;
+  final String? avaliacaoId;
+  final String? comentario;
+  final double? nota;
+  final String? orderId;
+
+  const AvaliacaoArgs({
+    required this.productId,
+    required this.productName,
+    this.avaliacaoId,
+    this.comentario,
+    this.nota,
+    this.orderId,
+  });
+}
 
 class AvaliacaoProdutoPage extends StatefulWidget {
   const AvaliacaoProdutoPage({super.key});
@@ -17,13 +34,29 @@ class AvaliacaoProdutoPage extends StatefulWidget {
 
 class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
   late AvaliacaoProvider _avaliacaoProvider;
+  late AvaliacaoArgs item;
   final _comentarioController = TextEditingController();
-  double _nota = 3;
+  late double _nota;
 
   @override
   void dispose() {
     _comentarioController.dispose();
     super.dispose();
+  }
+
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_initialized) return;
+    _initialized = true;
+
+    item = ModalRoute.of(context)!.settings.arguments as AvaliacaoArgs;
+
+    _comentarioController.text = item.comentario ?? '';
+    _nota = item.nota ?? 3;
   }
 
   @override
@@ -36,15 +69,10 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-
-    final item = args['item'] as ComprasModel;
-    final orderId = args['orderId'] as String;
-
     return Scaffold(
       appBar: BackAppBar(
-        title: 'Avaliar produto',
+        title:
+            item.avaliacaoId != null ? 'Editar avaliação' : 'Avaliar produto',
       ),
       body: GestureDetector(
         onTap: () {
@@ -87,7 +115,7 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
                       SizedBox(width: 16),
                       Expanded(
                         child: Text(
-                          item.name,
+                          item.productName,
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -138,8 +166,22 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
               SizedBox(height: 40),
               SendButton("Enviar avaliação", () async {
                 try {
-                  await _avaliacaoProvider.enviarAvaliacao(
-                      _comentarioController.text, _nota, item.id, orderId);
+                  if (item.orderId != null) {
+                    await _avaliacaoProvider.enviarAvaliacao(
+                      comentario: _comentarioController.text,
+                      nota: _nota,
+                      productId: item.productId,
+                      orderId: item.orderId!,
+                    );
+                  } else {
+                    await _avaliacaoProvider.editarAvaliacao(
+                      comentario: _comentarioController.text,
+                      nota: _nota,
+                      productId: item.productId,
+                      avaliacaoId: item.avaliacaoId!,
+                    );
+                  }
+
                   Navigator.of(context).pop(true);
                 } catch (e) {
                   showAppFlushbar(context,

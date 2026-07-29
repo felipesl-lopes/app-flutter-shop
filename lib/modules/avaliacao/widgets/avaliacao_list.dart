@@ -1,5 +1,6 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/modules/avaliacao/enum/scale_size.dart';
+import 'package:appshop/modules/avaliacao/pages/avaliacao_produto_page.dart';
 import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
 import 'package:appshop/modules/avaliacao/widgets/loading_avaliations.dart';
 import 'package:appshop/modules/avaliacao/widgets/rating_bar_widget.dart';
@@ -8,7 +9,14 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AvaliacaoList extends StatelessWidget {
-  const AvaliacaoList({super.key});
+  final String productName;
+  final String productId;
+
+  const AvaliacaoList({
+    super.key,
+    required this.productName,
+    required this.productId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -107,19 +115,27 @@ class AvaliacaoList extends StatelessWidget {
                                           colorScheme.outline.withOpacity(0.7)),
                                 ),
                                 TextButton(
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: Size.zero,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      visualDensity: VisualDensity.compact,
-                                    ),
-                                    child: Text("Editar avaliação"),
-                                    onPressed: () {}
-                                    // os parametros não batem,
-                                    // onPressed: () => Navigator.of(context)
-                                    //     .pushNamed(AppRoutes.AVALIACAO_PRODUTO, arguments: {'item': avaliacao}),
-                                    )
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
+                                  ),
+                                  child: Text("Editar avaliação"),
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(
+                                      AppRoutes.AVALIACAO_PRODUTO,
+                                      arguments: AvaliacaoArgs(
+                                        productId: productId,
+                                        productName: productName,
+                                        avaliacaoId: avaliacao.id,
+                                        comentario: avaliacao.comentario,
+                                        nota: avaliacao.nota,
+                                      ),
+                                    );
+                                  },
+                                )
                               ],
                             ),
                           ],

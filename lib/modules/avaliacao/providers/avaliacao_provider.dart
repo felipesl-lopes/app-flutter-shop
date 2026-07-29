@@ -54,12 +54,12 @@ class AvaliacaoProvider with ChangeNotifier {
     }
   }
 
-  Future<String> enviarAvaliacao(
-    String comentario,
-    double nota,
-    String productId,
-    String orderId,
-  ) async {
+  Future<String> enviarAvaliacao({
+    required String comentario,
+    required double nota,
+    required String productId,
+    required String orderId,
+  }) async {
     try {
       final data = await _avaliacaoRepository.enviarAvaliacao(
         comentario: comentario,
@@ -75,6 +75,42 @@ class AvaliacaoProvider with ChangeNotifier {
       if (index != -1) {
         order.products[index] =
             order.products[index].copyWith(avaliacaoId: data['avaliacaoId']);
+      }
+
+      // metodo criado e chamado pois ProductProvider precisa ser notificado da alteração no produto.
+      _productListProvider.atualizarAvaliacaoProduto(
+        productId: productId,
+        notaMedia: (data['notaMedia'] as num).toDouble(),
+        totalAvaliacoes: data['totalAvaliacoes'],
+      );
+
+      notifyListeners();
+
+      return data['avaliacaoId'];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> editarAvaliacao({
+    required String comentario,
+    required double nota,
+    required String productId,
+    required String avaliacaoId,
+  }) async {
+    try {
+      final data = await _avaliacaoRepository.editarAvaliacao(
+        comentario: comentario,
+        nota: nota,
+        productId: productId,
+        avaliacaoId: avaliacaoId,
+      );
+
+      final index = _avaliacoes.indexWhere((e) => e.id == avaliacaoId);
+
+      if (index != -1) {
+        _avaliacoes[index] =
+            avaliacoes[index].copyWith(comentario: comentario, nota: nota);
       }
 
       // metodo criado e chamado pois ProductProvider precisa ser notificado da alteração no produto.

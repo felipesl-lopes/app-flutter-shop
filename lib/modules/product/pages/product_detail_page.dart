@@ -313,7 +313,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   SizedBox(height: 8),
                   Divider(),
                   SizedBox(height: 8),
-                  AvaliacaoList(),
+                  AvaliacaoList(
+                    productId: product.id,
+                    productName: product.name,
+                  ),
                   SizedBox(height: 8),
                   Container(
                     width: double.infinity,

@@ -55,4 +55,29 @@ class AvaliacaoRepository {
       throw Exception('Erro ao realizar avaliação.');
     }
   }
+
+    Future<Map<String, dynamic>> editarAvaliacao({
+    required String comentario,
+    required double nota,
+    required String productId,
+    required String avaliacaoId,
+  }) async {
+    debugPrint('[AvaliacaoRepository]: editarAvaliacao');
+
+    try {
+      final response = await _client.put('avaliacao/$productId', body: {
+        'nota': nota,
+        'comentario': comentario,
+        'avaliacaoId': avaliacaoId,
+      });
+
+      if (response.statusCode > 400 || response.data == null) {
+        return throw Exception("Erro ao atualizar avaliação.");
+      }
+
+      return response.data;
+    } catch (e) {
+      throw Exception('Erro ao atualizar avaliação.');
+    }
+  }
 }

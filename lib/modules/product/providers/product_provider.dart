@@ -69,16 +69,37 @@ class ProductProvider with ChangeNotifier {
     required double notaMedia,
     required int totalAvaliacoes,
   }) {
-    final index = _produtos.indexWhere((e) => e.id == productId);
+    _atualizarProdutosNaLista(
+      _produtos,
+      productId,
+      notaMedia,
+      totalAvaliacoes,
+    );
 
-    if (index == -1) return;
-
-    _produtos[index] = _produtos[index].copyWith(
-      notaMedia: notaMedia,
-      totalAvaliacoes: totalAvaliacoes,
+    _atualizarProdutosNaLista(
+      _produtosFavoritos,
+      productId,
+      notaMedia,
+      totalAvaliacoes,
     );
 
     notifyListeners();
+  }
+
+  void _atualizarProdutosNaLista(
+    List<ProductModel> produtos,
+    String productId,
+    double notaMedia,
+    int totalAvaliacoes,
+  ) {
+    final index = produtos.indexWhere((e) => e.id == productId);
+
+    if (index == -1) return;
+
+    produtos[index] = produtos[index].copyWith(
+      notaMedia: notaMedia,
+      totalAvaliacoes: totalAvaliacoes,
+    );
   }
 
   Future<Result<List<ProductModel>>> _loadProducts() async {
