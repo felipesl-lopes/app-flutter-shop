@@ -37,6 +37,7 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
   late AvaliacaoArgs item;
   final _comentarioController = TextEditingController();
   late double _nota;
+  bool _loading = false;
 
   @override
   void dispose() {
@@ -69,130 +70,162 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    Future<void> _enviarOuEditarAvaliacao() async {
+      setState(() => _loading = true);
+
+      try {
+        if (item.orderId != null) {
+          await _avaliacaoProvider.enviarAvaliacao(
+            comentario: _comentarioController.text,
+            nota: _nota,
+            productId: item.productId,
+            orderId: item.orderId!,
+          );
+
+          Navigator.of(context).pop(
+            "Avaliação enviada com sucesso!",
+          );
+        } else {
+          await _avaliacaoProvider.editarAvaliacao(
+            comentario: _comentarioController.text,
+            nota: _nota,
+            productId: item.productId,
+            avaliacaoId: item.avaliacaoId!,
+          );
+
+          Navigator.of(context).pop(
+            "Avaliação editada com sucesso!",
+          );
+        }
+      } catch (e) {
+        showAppFlushbar(
+          context,
+          message: e.toString(),
+          type: FlushType.error,
+          position: FlushPosition.top,
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _loading = false);
+        }
+      }
+    }
+
+    ;
+
     return Scaffold(
       appBar: BackAppBar(
         title:
             item.avaliacaoId != null ? 'Editar avaliação' : 'Avaliar produto',
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text(
-                  "Diga-nos o que você achou desse produto.",
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              SizedBox(height: 24),
-              Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: colorScheme.outline),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(Icons.inventory_2_outlined),
+      body: Stack(
+        children: [
+          GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Text(
+                      "Diga-nos o que você achou desse produto.",
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: colorScheme.onSurfaceVariant,
                       ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          item.productName,
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(color: colorScheme.outline),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(Icons.inventory_2_outlined),
                           ),
-                        ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              item.productName,
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 28),
+                  Text(
+                    "Sua nota",
+                    style: TextStyle(
+                      fontSize: 17,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      RatingBar.builder(
+                        initialRating: _nota,
+                        minRating: 1,
+                        itemCount: 5,
+                        itemBuilder: (context, _) =>
+                            Icon(Icons.star, color: Colors.amber),
+                        onRatingUpdate: (rating) {
+                          setState(() => _nota = rating);
+                        },
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        _nota.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                ),
-              ),
-              SizedBox(height: 28),
-              Text(
-                "Sua nota",
-                style: TextStyle(
-                  fontSize: 17,
-                ),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  RatingBar.builder(
-                    initialRating: _nota,
-                    minRating: 1,
-                    itemCount: 5,
-                    itemBuilder: (context, _) =>
-                        Icon(Icons.star, color: Colors.amber),
-                    onRatingUpdate: (rating) {
-                      setState(() => _nota = rating);
-                    },
+                  SizedBox(height: 28),
+                  TextField(
+                    maxLines: 5,
+                    controller: _comentarioController,
+                    decoration: getInputDecoration(
+                      context,
+                      "Conte sua experiência com o produto",
+                      activityHint: true,
+                    ),
+                    maxLength: 200,
                   ),
-                  SizedBox(width: 8),
-                  Text(
-                    _nota.toString(),
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  SizedBox(height: 40),
+                  SendButton(
+                    "Enviar avaliação",
+                    _enviarOuEditarAvaliacao,
                   ),
                 ],
               ),
-              SizedBox(height: 28),
-              TextField(
-                maxLines: 5,
-                controller: _comentarioController,
-                decoration: getInputDecoration(
-                  context,
-                  "Conte sua experiência com o produto",
-                  activityHint: true,
-                ),
-              ),
-              SizedBox(height: 40),
-              SendButton("Enviar avaliação", () async {
-                try {
-                  if (item.orderId != null) {
-                    await _avaliacaoProvider.enviarAvaliacao(
-                      comentario: _comentarioController.text,
-                      nota: _nota,
-                      productId: item.productId,
-                      orderId: item.orderId!,
-                    );
-                  } else {
-                    await _avaliacaoProvider.editarAvaliacao(
-                      comentario: _comentarioController.text,
-                      nota: _nota,
-                      productId: item.productId,
-                      avaliacaoId: item.avaliacaoId!,
-                    );
-                  }
-
-                  Navigator.of(context).pop(true);
-                } catch (e) {
-                  showAppFlushbar(context,
-                      message: "Erro ao avaliar produto.!",
-                      type: FlushType.error,
-                      position: FlushPosition.top);
-                }
-              }),
-            ],
+            ),
           ),
-        ),
+          if (_loading)
+            const ColoredBox(
+              color: Color(0x80000000),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }

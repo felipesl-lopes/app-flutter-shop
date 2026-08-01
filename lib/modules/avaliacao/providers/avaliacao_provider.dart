@@ -92,7 +92,7 @@ class AvaliacaoProvider with ChangeNotifier {
     }
   }
 
-  Future<String> editarAvaliacao({
+  Future<void> editarAvaliacao({
     required String comentario,
     required double nota,
     required String productId,
@@ -121,10 +121,8 @@ class AvaliacaoProvider with ChangeNotifier {
       );
 
       notifyListeners();
-
-      return data['avaliacaoId'];
     } catch (e) {
-      return e.toString();
+      rethrow;
     }
   }
 }

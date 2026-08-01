@@ -6,7 +6,7 @@ class AvaliacaoModel {
   final String comentario;
   final DateTime dataCriacao;
   final String nomeUsuario;
-  final bool? minhaAvaliacao;
+  final bool minhaAvaliacao;
 
   AvaliacaoModel({
     required this.id,
@@ -14,7 +14,7 @@ class AvaliacaoModel {
     required this.comentario,
     required this.dataCriacao,
     required this.nomeUsuario,
-    this.minhaAvaliacao,
+    required this.minhaAvaliacao,
   });
 
   AvaliacaoModel copyWith({

@@ -77,7 +77,7 @@ class AvaliacaoRepository {
 
       return response.data;
     } catch (e) {
-      throw Exception('Erro ao atualizar avaliação.');
+      throw Exception("Não foi possível editar a avaliação.");
     }
   }
 }
