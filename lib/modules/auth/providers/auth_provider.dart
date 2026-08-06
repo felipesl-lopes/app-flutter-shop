@@ -34,17 +34,7 @@ class AuthProvider with ChangeNotifier {
     final body = await _repository.registrar(
         name: name, email: email, password: password);
 
-    _token = body['accessToken'];
-    _refreshToken = body['refreshToken'];
-    _email = email;
-    _expiryDate = DateTime.now().add(Duration(seconds: body['expiresIn']));
-
-    _user = UserModel.fromMap(Map<String, dynamic>.from(body['user']));
-
-    await _storage.saveRefreshToken(_refreshToken!);
-
-    _generateNewToken();
-    notifyListeners();
+    await _inicializarSessao(body, email);
   }
 
   Future<void> logar(String email, String password) async {
@@ -56,6 +46,11 @@ class AuthProvider with ChangeNotifier {
       await _storage.saveCredentials(email, password);
     }
 
+    await _inicializarSessao(body, email);
+  }
+
+  Future<void> _inicializarSessao(
+      Map<String, dynamic> body, String email) async {
     _token = body['accessToken'];
     _refreshToken = body['refreshToken'];
     _email = email;
