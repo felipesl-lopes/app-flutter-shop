@@ -56,7 +56,7 @@ class AvaliacaoRepository {
     }
   }
 
-    Future<Map<String, dynamic>> editarAvaliacao({
+  Future<Map<String, dynamic>> editarAvaliacao({
     required String comentario,
     required double nota,
     required String productId,

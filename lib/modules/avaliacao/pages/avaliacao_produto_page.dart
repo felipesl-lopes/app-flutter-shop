@@ -2,28 +2,11 @@ import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/input_decoration.dart';
 import 'package:appshop/core/widgets/send_button.dart';
+import 'package:appshop/modules/avaliacao/models/gerenciar_avaliacao_args.dart';
 import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
-
-class AvaliacaoArgs {
-  final String productId;
-  final String productName;
-  final String? avaliacaoId;
-  final String? comentario;
-  final double? nota;
-  final String? orderId;
-
-  const AvaliacaoArgs({
-    required this.productId,
-    required this.productName,
-    this.avaliacaoId,
-    this.comentario,
-    this.nota,
-    this.orderId,
-  });
-}
 
 class AvaliacaoProdutoPage extends StatefulWidget {
   const AvaliacaoProdutoPage({super.key});
@@ -34,7 +17,7 @@ class AvaliacaoProdutoPage extends StatefulWidget {
 
 class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
   late AvaliacaoProvider _avaliacaoProvider;
-  late AvaliacaoArgs item;
+  late GerenciarAvaliacaoArgs item;
   final _comentarioController = TextEditingController();
   late double _nota;
   bool _loading = false;
@@ -54,7 +37,7 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
     if (_initialized) return;
     _initialized = true;
 
-    item = ModalRoute.of(context)!.settings.arguments as AvaliacaoArgs;
+    item = ModalRoute.of(context)!.settings.arguments as GerenciarAvaliacaoArgs;
 
     _comentarioController.text = item.comentario ?? '';
     _nota = item.nota ?? 3;
@@ -110,8 +93,6 @@ class _AvaliacaoProdutoPageState extends State<AvaliacaoProdutoPage> {
         }
       }
     }
-
-    ;
 
     return Scaffold(
       appBar: BackAppBar(

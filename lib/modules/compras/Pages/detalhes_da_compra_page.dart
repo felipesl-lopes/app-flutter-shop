@@ -2,7 +2,7 @@ import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
-import 'package:appshop/modules/avaliacao/pages/avaliacao_produto_page.dart';
+import 'package:appshop/modules/avaliacao/models/gerenciar_avaliacao_args.dart';
 import 'package:appshop/modules/compras/models/compras_model.dart';
 import 'package:appshop/modules/compras/models/order.dart';
 import 'package:appshop/modules/product/providers/product_provider.dart';
@@ -251,7 +251,7 @@ class _DetalhesDaCompraPageState extends State<DetalhesDaCompraPage> {
                               final resultado =
                                   await Navigator.of(context).pushNamed(
                                 AppRoutes.AVALIACAO_PRODUTO,
-                                arguments: AvaliacaoArgs(
+                                arguments: GerenciarAvaliacaoArgs(
                                   productId: item.id,
                                   productName: item.name,
                                   orderId: order.id,

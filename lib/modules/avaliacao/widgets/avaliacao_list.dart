@@ -2,7 +2,7 @@ import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/modules/avaliacao/enum/scale_size.dart';
 import 'package:appshop/modules/avaliacao/models/avaliacao_model.dart';
-import 'package:appshop/modules/avaliacao/pages/avaliacao_produto_page.dart';
+import 'package:appshop/modules/avaliacao/models/gerenciar_avaliacao_args.dart';
 import 'package:appshop/modules/avaliacao/providers/avaliacao_provider.dart';
 import 'package:appshop/modules/avaliacao/widgets/loading_avaliations.dart';
 import 'package:appshop/modules/avaliacao/widgets/rating_bar_widget.dart';
@@ -29,7 +29,7 @@ class AvaliacaoList extends StatelessWidget {
     Future<void> _editarAvaliacao(AvaliacaoModel avaliacao) async {
       final mensagem = await Navigator.of(context).pushNamed(
         AppRoutes.AVALIACAO_PRODUTO,
-        arguments: AvaliacaoArgs(
+        arguments: GerenciarAvaliacaoArgs(
           productId: productId,
           productName: productName,
           avaliacaoId: avaliacao.id,
