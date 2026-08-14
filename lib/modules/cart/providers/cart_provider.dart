@@ -21,7 +21,11 @@ class CartProvider with ChangeNotifier {
     loadCartCommand = Command0(_loadCart);
   }
 
-  Timer? _debounce;
+  /// Timers de debounce por produto
+  final Map<String, Timer> _debounces = {};
+
+  /// Armazena o estado do item antes do início das alterações otimistas
+  final Map<String, CartProductModel?> _originalItems = {};
 
   List<CartProductModel> _carrinhoDeProdutos = [];
   List<CartProductModel> get carrinhoDeProdutos => [..._carrinhoDeProdutos];
@@ -32,6 +36,11 @@ class CartProvider with ChangeNotifier {
   }
 
   void clear() {
+    for (var timer in _debounces.values) {
+      timer.cancel();
+    }
+    _debounces.clear();
+    _originalItems.clear();
     _carrinhoDeProdutos.clear();
     notifyListeners();
   }
@@ -70,73 +79,82 @@ class CartProvider with ChangeNotifier {
     }
   }
 
-  Future<void> adcItemAoCarrinho(ProductModel product) async {
-    final index =
-        _carrinhoDeProdutos.indexWhere((e) => e.product.id == product.id);
+  Future<void> adcItemAoCarrinho(
+    ProductModel product, {
+    void Function(Object error)? onError,
+  }) async {
+    final productId = product.id;
+    if (productId == null) return;
 
-    late CartProductModel updatedItem;
+    final index =
+        _carrinhoDeProdutos.indexWhere((e) => e.product.id == productId);
 
     if (index >= 0) {
       final existing = _carrinhoDeProdutos[index];
-
-      if (existing.quantity == product.quantity) {
+      if (existing.quantity >= product.quantity) {
         throw Exception("Quantidade máxima atingida.");
       }
+    }
 
-      updatedItem = CartProductModel(
+    // Salva o estado original antes do primeiro clique da sequência
+    if (!_originalItems.containsKey(productId)) {
+      _originalItems[productId] =
+          index >= 0 ? _carrinhoDeProdutos[index] : null;
+    }
+
+    if (index >= 0) {
+      final existing = _carrinhoDeProdutos[index];
+      _carrinhoDeProdutos[index] = CartProductModel(
         product: existing.product,
         quantity: existing.quantity + 1,
       );
-
-      _carrinhoDeProdutos[index] = updatedItem;
     } else {
-      updatedItem = CartProductModel(
-        product: product,
-        quantity: 1,
+      _carrinhoDeProdutos.add(
+        CartProductModel(
+          product: product,
+          quantity: 1,
+        ),
       );
-
-      _carrinhoDeProdutos.add(updatedItem);
     }
 
     notifyListeners();
-    _debounce?.cancel();
 
-    _debounce = Timer(Duration(milliseconds: 400), () async {
+    _debounces[productId]?.cancel();
+    _debounces[productId] = Timer(const Duration(milliseconds: 400), () async {
+      final itemIndex =
+          _carrinhoDeProdutos.indexWhere((e) => e.product.id == productId);
+      final currentQuantity =
+          itemIndex >= 0 ? _carrinhoDeProdutos[itemIndex].quantity : 0;
+
       try {
-        final item = _carrinhoDeProdutos
-            .firstWhere((e) => e.product.id == updatedItem.product.id);
-
         await _cartRepository.atualizarQuantidadeDeItens(
-          productId: item.product.id!,
-          quantity: item.quantity,
+          productId: productId,
+          quantity: currentQuantity,
         );
+        _originalItems.remove(productId);
       } catch (e) {
-        debugPrint('Erro ao adicionar produto: $e');
-
-        final index = _carrinhoDeProdutos
-            .indexWhere((e) => e.product.id == updatedItem.product.id);
-
-        if (index >= 0) {
-          if (_carrinhoDeProdutos[index].quantity > 1) {
-            _carrinhoDeProdutos[index] = CartProductModel(
-              product: updatedItem.product,
-              quantity: _carrinhoDeProdutos[index].quantity - 1,
-            );
-          } else {
-            _carrinhoDeProdutos.removeAt(index);
-          }
-        }
-
-        notifyListeners();
+        _rollback(productId);
+        // Notifica a UI via callback se fornecido
+        onError?.call(e);
+      } finally {
+        _debounces.remove(productId);
       }
     });
   }
 
-  Future<void> removeSingleItem(String productId) async {
+  Future<void> removeSingleItem(
+    String productId, {
+    void Function(Object error)? onError,
+  }) async {
     final index =
         _carrinhoDeProdutos.indexWhere((e) => e.product.id == productId);
 
     if (index < 0) return;
+
+    // Salva o estado original antes do primeiro clique da sequência
+    if (!_originalItems.containsKey(productId)) {
+      _originalItems[productId] = _carrinhoDeProdutos[index];
+    }
 
     final existing = _carrinhoDeProdutos[index];
 
@@ -151,29 +169,53 @@ class CartProvider with ChangeNotifier {
 
     notifyListeners();
 
-    _debounce?.cancel();
+    _debounces[productId]?.cancel();
+    _debounces[productId] = Timer(const Duration(milliseconds: 400), () async {
+      final itemIndex =
+          _carrinhoDeProdutos.indexWhere((e) => e.product.id == productId);
+      final currentQuantity =
+          itemIndex >= 0 ? _carrinhoDeProdutos[itemIndex].quantity : 0;
 
-    _debounce = Timer(Duration(milliseconds: 400), () async {
       try {
-        final itemIndex = _carrinhoDeProdutos.indexWhere(
-          (e) => e.product.id == productId,
-        );
-
-        final quantity =
-            itemIndex >= 0 ? _carrinhoDeProdutos[itemIndex].quantity : 0;
-
         await _cartRepository.atualizarQuantidadeDeItens(
           productId: productId,
-          quantity: quantity,
+          quantity: currentQuantity,
         );
+        _originalItems.remove(productId);
       } catch (e) {
-        debugPrint('Erro ao atualizar produto: $e');
+        _rollback(productId);
+        // Notifica a UI via callback se fornecido
+        onError?.call(e);
+      } finally {
+        _debounces.remove(productId);
       }
     });
   }
 
-  void limparCarrinho() {
-    _carrinhoDeProdutos = [];
+  /// Restaura o item para o estado em que estava antes do início da operação
+  void _rollback(String productId) {
+    if (!_originalItems.containsKey(productId)) return;
+
+    final originalItem = _originalItems.remove(productId);
+    final index =
+        _carrinhoDeProdutos.indexWhere((e) => e.product.id == productId);
+
+    if (originalItem == null) {
+      if (index >= 0) {
+        _carrinhoDeProdutos.removeAt(index);
+      }
+    } else {
+      if (index >= 0) {
+        _carrinhoDeProdutos[index] = originalItem;
+      } else {
+        _carrinhoDeProdutos.add(originalItem);
+      }
+    }
+
     notifyListeners();
+  }
+
+  void limparCarrinho() {
+    clear();
   }
 }

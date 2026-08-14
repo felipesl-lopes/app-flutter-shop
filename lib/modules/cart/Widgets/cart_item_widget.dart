@@ -3,23 +3,23 @@ import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/widgets/image_avatar.dart';
 import 'package:appshop/modules/cart/Widgets/quantity_button.dart';
 import 'package:appshop/modules/cart/models/cart_product_model.dart';
-import 'package:appshop/modules/cart/providers/cart_provider.dart';
-import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CartItemWidget extends StatelessWidget {
   final CartProductModel cartItem;
+  final Future<void> Function() addItem;
+  final Future<void> Function() removeItem;
 
   CartItemWidget({
     required this.cartItem,
+    required this.addItem,
+    required this.removeItem,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final CartProvider cart = context.watch<CartProvider>();
-    final ProductModel product = cartItem.product;
+    final product = cartItem.product;
 
     Future<bool?> showRemoveItemDialog() {
       return showDialog<bool>(
@@ -34,8 +34,8 @@ class CartItemWidget extends StatelessWidget {
               child: Text("Não"),
             ),
             TextButton(
-              onPressed: () {
-                cart.removeSingleItem(product.id!);
+              onPressed: () async {
+                await removeItem();
                 Navigator.of(ctx).pop(true);
               },
               child: Text("Sim"),
@@ -115,7 +115,7 @@ class CartItemWidget extends StatelessWidget {
                                 onTap: () async => {
                                   cartItem.quantity == 1
                                       ? showRemoveItemDialog()
-                                      : await cart.removeSingleItem(product.id!)
+                                      : await removeItem()
                                 },
                                 icon: Icons.remove,
                               ),
@@ -140,7 +140,7 @@ class CartItemWidget extends StatelessWidget {
                               QuantityButton(
                                   onTap: () async {
                                     try {
-                                      await cart.adcItemAoCarrinho(product);
+                                      await addItem();
                                     } catch (e) {
                                       showAppFlushbar(
                                         context,

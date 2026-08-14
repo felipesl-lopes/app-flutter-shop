@@ -1,4 +1,5 @@
 import 'package:appshop/core/constants/app_routes.dart';
+import 'package:appshop/core/utils/flushbar_helper.dart';
 import 'package:appshop/core/utils/formatters.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
 import 'package:appshop/core/widgets/feedback_message.dart';
@@ -110,7 +111,33 @@ class _CartPageState extends State<CartPage> {
 
                         final item = _items[index - 1];
 
-                        return CartItemWidget(cartItem: item);
+                        return CartItemWidget(
+                          cartItem: item,
+                          addItem: () async {
+                            _cart.adcItemAoCarrinho(
+                              item.product,
+                              onError: (error) {
+                                showAppFlushbar(
+                                  context,
+                                  message: "Erro ao adicionar quantidade.",
+                                  type: FlushType.error,
+                                );
+                              },
+                            );
+                          },
+                          removeItem: () async {
+                            _cart.removeSingleItem(
+                              item.product.id!,
+                              onError: (error) {
+                                showAppFlushbar(
+                                  context,
+                                  message: "Erro ao remover quantidade.",
+                                  type: FlushType.error,
+                                );
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
           if (_isLoading)
