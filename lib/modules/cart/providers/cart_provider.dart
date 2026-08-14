@@ -56,7 +56,7 @@ class CartProvider with ChangeNotifier {
         await _productProvider.loadProductsCommand.execute();
       }
 
-      final productsMap = {for (var p in _productProvider.produtos) p.id: p};
+      final productsMap = {for (var p in _productProvider.produtos) p.id!: p};
 
       final data = await _cartRepository.carregarCarrinho(
         productsMap: productsMap,
@@ -65,10 +65,8 @@ class CartProvider with ChangeNotifier {
       setCarrinhoDeProdutos(data);
 
       return Success(data);
-    } catch (e) {
-      return Failure(
-        Exception(e.toString()),
-      );
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -109,7 +107,7 @@ class CartProvider with ChangeNotifier {
             .firstWhere((e) => e.product.id == updatedItem.product.id);
 
         await _cartRepository.atualizarQuantidadeDeItens(
-          productId: item.product.id,
+          productId: item.product.id!,
           quantity: item.quantity,
         );
       } catch (e) {

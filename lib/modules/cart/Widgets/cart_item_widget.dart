@@ -11,12 +11,14 @@ import 'package:provider/provider.dart';
 class CartItemWidget extends StatelessWidget {
   final CartProductModel cartItem;
 
-  CartItemWidget(this.cartItem);
+  CartItemWidget({
+    required this.cartItem,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final CartProvider cart = Provider.of<CartProvider>(context);
+    final CartProvider cart = context.watch<CartProvider>();
     final ProductModel product = cartItem.product;
 
     Future<bool?> showRemoveItemDialog() {
@@ -33,8 +35,7 @@ class CartItemWidget extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Provider.of<CartProvider>(context, listen: false)
-                    .removeSingleItem(product.id);
+                cart.removeSingleItem(product.id!);
                 Navigator.of(ctx).pop(true);
               },
               child: Text("Sim"),
@@ -111,10 +112,10 @@ class CartItemWidget extends StatelessWidget {
                           Row(
                             children: [
                               QuantityButton(
-                                onTap: () => {
+                                onTap: () async => {
                                   cartItem.quantity == 1
                                       ? showRemoveItemDialog()
-                                      : cart.removeSingleItem(product.id)
+                                      : await cart.removeSingleItem(product.id!)
                                 },
                                 icon: Icons.remove,
                               ),

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:appshop/modules/product/models/product_image_model.dart';
 import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:appshop/modules/product/repositories/product_repository.dart';
@@ -109,9 +107,8 @@ class ProductProvider with ChangeNotifier {
       setProdutos(produtos);
 
       return Success(produtos);
-    } catch (e) {
-      debugPrint(e.toString());
-      return Failure(Exception(e.toString()));
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -122,9 +119,8 @@ class ProductProvider with ChangeNotifier {
       setMeusProdutos(produtos);
 
       return Success(produtos);
-    } catch (e) {
-      debugPrint(e.toString());
-      return Failure(Exception(e.toString()));
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -135,9 +131,8 @@ class ProductProvider with ChangeNotifier {
       setProdutosFavoritos(produtos);
 
       return Success(produtos);
-    } catch (e) {
-      debugPrint(e.toString());
-      return Failure(Exception(e.toString()));
+    } catch (_) {
+      rethrow;
     }
   }
 
@@ -159,44 +154,35 @@ class ProductProvider with ChangeNotifier {
     return lista.toList();
   }
 
-  Future<void> salvarProduto(Map<String, Object> data) {
-    bool hasId = data["id"] != null;
+  Future<void> salvarProduto(Map<String, Object> data) async {
+    final hasId = data["id"] != null;
 
-    final isPromotional = data["isPromotional"] == true ||
-        data["discountPercentage"] != null ||
-        data["promotionEndDate"] != null ||
-        data["promotionValidUntil"] != null;
-
-    final promotionDateRaw =
-        data["promotionEndDate"] ?? data["promotionValidUntil"];
-    final DateTime? promotionEndDate = promotionDateRaw != null
-        ? DateTime.parse(promotionDateRaw as String)
-        : null;
-
-    final newProduct = ProductModel(
-      id: hasId ? data["id"].toString() : Random().nextDouble().toString(),
+    final produto = ProductModel(
+      id: hasId ? data["id"].toString() : null,
       name: data["name"] as String,
       description: data["description"] as String,
       price: data["price"] as double,
-      quantity: data['quantity'] as int,
+      quantity: data["quantity"] as int,
       imageUrls: data["imageUrls"] as List<ProductImageModel>,
-      categories: List<String>.from(data['categories'] as List<String>),
-      isPromotional: isPromotional,
+      categories: List<String>.from(data["categories"] as List<String>),
+      isPromotional: data["isPromotional"] as bool,
       discountPercentage: data["discountPercentage"] as int?,
-      promotionEndDate: promotionEndDate,
+      promotionEndDate: data["promotionEndDate"] != null
+          ? DateTime.parse(data["promotionEndDate"] as String)
+          : null,
     );
 
     if (hasId) {
-      return atualizarProduto(newProduct);
+      await atualizarProduto(produto);
     } else {
-      return adicionarProduto(newProduct);
+      await adicionarProduto(produto);
     }
   }
 
   Future<void> adicionarProduto(ProductModel produto) async {
-    final generateId = await _productRepository.adicionarProduto(produto);
+    final id = await _productRepository.adicionarProduto(produto);
 
-    final novoProduto = produto.copyWith(id: generateId);
+    final novoProduto = produto.copyWith(id: id);
 
     setMeusProdutos([..._meusProdutos, novoProduto]);
   }
@@ -213,7 +199,7 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> deletarProduto(ProductModel produto) async {
     try {
-      await _productRepository.deletarProduto(produto.id);
+      await _productRepository.deletarProduto(produto.id!);
       final lista = _produtos.where((p) => p.id != produto.id).toList();
       setMeusProdutos(lista);
     } catch (e) {

@@ -110,7 +110,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     }
 
     if (_editedProduct != null) {
-      data["id"] = _editedProduct!.id;
+      data["id"] = _editedProduct!.id!;
     }
 
     try {

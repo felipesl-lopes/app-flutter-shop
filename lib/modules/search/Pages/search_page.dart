@@ -1,6 +1,7 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/widgets/badgee.dart';
 import 'package:appshop/core/widgets/drawer_app_bar.dart';
+import 'package:appshop/core/widgets/feedback_message.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/product/models/product_model.dart';
 import 'package:appshop/modules/product/providers/product_provider.dart';
@@ -72,8 +73,7 @@ class _SearchPageState extends State<SearchPage> {
         _hasSearched = true;
       }
 
-      final products =
-          _hasSearched ? _filteredProducts : provider.produtos;
+      final products = _hasSearched ? _filteredProducts : provider.produtos;
 
       _allProducts = products;
       _visibleProducts = _allProducts.take(_currentLimit).toList();
@@ -181,53 +181,45 @@ class _SearchPageState extends State<SearchPage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: [
-                if (_searchController.text.isNotEmpty)
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Text(
-                        "Exibindo resultado de pesquisa para: ${_searchController.text}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                productsToShow.isEmpty
-                    ? Expanded(
-                        child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.search_off,
-                                size: 64,
-                                color: colorScheme.onSurface.withOpacity(0.5),
-                              ),
-                              SizedBox(height: 12),
-                              Text(
-                                "Nenhum produto encontrado.",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: colorScheme.onSurface.withOpacity(0.5),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : Expanded(
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: ProductGrid(
-                            list_products: productsToShow,
-                            title: "Produtos para você",
+          : provider.loadProductsCommand.value.isFailure
+              ? Center(
+                  child: FeedbackMessage(
+                  message: "Não foi possível carregar os produtos.",
+                  icon: Icons.error_outline,
+                  iconColor: colorScheme.error,
+                ))
+              : Column(
+                  children: [
+                    if (_searchController.text.isNotEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Text(
+                            "Exibindo resultado de pesquisa para: ${_searchController.text}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16),
                           ),
                         ),
                       ),
-              ],
-            ),
+                    productsToShow.isEmpty
+                        ? Expanded(
+                            child: Center(
+                              child: FeedbackMessage(
+                                  message: "Nenhum produto encontrado.",
+                                  icon: Icons.search_off),
+                            ),
+                          )
+                        : Expanded(
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              child: ProductGrid(
+                                list_products: productsToShow,
+                                title: "Produtos para você",
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
     );
   }
 }

@@ -63,7 +63,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           Provider.of<AvaliacaoProvider>(context, listen: false);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _avaliacaoProvider.carregarAvaliacoesPorProduto(product.id);
+        _avaliacaoProvider.carregarAvaliacoesPorProduto(product.id!);
       });
     }
   }
@@ -136,7 +136,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     Future<void> toggleFavorite() async {
       try {
-        await productList.adicionarOuRemoverFavorito(product.id);
+        await productList.adicionarOuRemoverFavorito(product.id!);
       } catch (e) {
         showAppFlushbar(context,
             message: e.toString().replaceAll('Exception:', ''),
@@ -314,7 +314,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   Divider(),
                   SizedBox(height: 8),
                   AvaliacaoList(
-                    productId: product.id,
+                    productId: product.id!,
                     productName: product.name,
                   ),
                   SizedBox(height: 8),

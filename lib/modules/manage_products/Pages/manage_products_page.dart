@@ -1,5 +1,6 @@
 import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/widgets/back_app_bar.dart';
+import 'package:appshop/core/widgets/feedback_message.dart';
 import 'package:appshop/modules/manage_products/widgets/manage_product_grid.dart';
 import 'package:appshop/modules/product/providers/product_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,6 @@ class ManageProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    final _productList = Provider.of<ProductProvider>(context).meusProdutos;
 
     return Scaffold(
       appBar: BackAppBar(
@@ -23,42 +22,55 @@ class ManageProductsPage extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-          padding: EdgeInsets.only(left: 12, right: 12, top: 8),
-          child: _productList.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Você ainda não possui nenhum produto cadastrado.",
-                        style: TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 24),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                        ),
-                        onPressed: () => Navigator.of(context)
-                            .pushNamed(AppRoutes.MANAGE_PRODUCT_FORM),
-                        child: Text("Cadastre agora",
-                            style: TextStyle(
-                                color: colorScheme.onPrimary, fontSize: 16)),
-                      ),
-                    ],
-                  ),
+      body: Consumer<ProductProvider>(
+        builder: (context, provider, _) {
+          return Padding(
+            padding: EdgeInsets.only(left: 12, right: 12, top: 8),
+            child: provider.loadMyProductsCommand.value.isFailure
+                ? Center(
+                  child: FeedbackMessage(
+                      message:
+                          "Nao foi possível carregar seus produtos no momento.",
+                      icon: Icons.error_outline),
                 )
-              : ListView.builder(
-                  itemCount: _productList.length,
-                  itemBuilder: (ctx, index) => Column(
-                    children: [
-                      ManageProductGrid(_productList[index]),
-                      Divider(),
-                    ],
-                  ),
-                )),
+                : provider.meusProdutos.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Você ainda não possui nenhum produto cadastrado.",
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 24),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: colorScheme.primary,
+                              ),
+                              onPressed: () => Navigator.of(context)
+                                  .pushNamed(AppRoutes.MANAGE_PRODUCT_FORM),
+                              child: Text("Cadastre agora",
+                                  style: TextStyle(
+                                      color: colorScheme.onPrimary,
+                                      fontSize: 16)),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: provider.meusProdutos.length,
+                        itemBuilder: (ctx, index) => Column(
+                          children: [
+                            ManageProductGrid(provider.meusProdutos[index]),
+                            Divider(),
+                          ],
+                        ),
+                      ),
+          );
+        },
+      ),
     );
   }
 }

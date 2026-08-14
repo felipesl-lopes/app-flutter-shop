@@ -2,6 +2,7 @@ import 'package:appshop/core/constants/app_routes.dart';
 import 'package:appshop/core/widgets/app_drawer.dart';
 import 'package:appshop/core/widgets/badgee.dart';
 import 'package:appshop/core/widgets/drawer_app_bar.dart';
+import 'package:appshop/core/widgets/feedback_message.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
 import 'package:appshop/modules/endereco/providers/endereco_provider.dart';
@@ -162,6 +163,13 @@ class _HomePageState extends State<HomePage> {
                         categorias: categorias,
                         onCategorySelected: _searchProductCategory,
                       ),
+                      if (produtosProvider
+                          .loadFavoritesProductsCommand.value.isFailure)
+                        FeedbackMessage(
+                          message: "Não foi possível carregar seus produtos favoritos.",
+                          icon: Icons.error_outline,
+                          iconColor: Theme.of(context).colorScheme.error,
+                        ),
                       if (produtosProvider.produtosFavoritos.isNotEmpty)
                         ProductGrid(
                           list_products: produtosProvider.produtosFavoritos,
@@ -169,10 +177,18 @@ class _HomePageState extends State<HomePage> {
                           title: "Seus favoritos",
                           gridHorizontal: true,
                         ),
-                      CardIncentivoCarrinho(),
-                      if (produtosProvider.produtos.isEmpty)
-                        Text(
-                          "Nenhum produto encontrado",
+                      if (produtosProvider.loadProductsCommand.value.isSuccess)
+                        CardIncentivoCarrinho(),
+                      if (produtosProvider.loadProductsCommand.value.isFailure)
+                        FeedbackMessage(
+                          message: "Não foi possível carregar os produtos.",
+                          icon: Icons.error_outline,
+                          iconColor: Theme.of(context).colorScheme.error,
+                        )
+                      else if (produtosProvider.produtos.isEmpty)
+                        FeedbackMessage(
+                          message: "Nenhum produto encontrado.",
+                          icon: Icons.inventory_2_outlined,
                         )
                       else
                         ProductGrid(

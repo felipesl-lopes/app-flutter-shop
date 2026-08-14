@@ -14,8 +14,8 @@ class ProductRepository {
     try {
       final response = await _client.get('products');
 
-      if (response.statusCode != 200) {
-        throw Exception('Erro na requisição');
+      if (!response.isSuccess) {
+        throw Exception('Não foi possível carregar os produtos.');
       }
 
       final produtos = (response.data as List)
@@ -24,8 +24,8 @@ class ProductRepository {
 
       return produtos;
     } catch (e) {
-      debugPrint(e.toString());
-      throw Exception("Erro ao carregar produtos.");
+      debugPrint('[ProductRepository - carregarProdutos]: ' + e.toString());
+      throw Exception('Não foi possível carregar os produtos.');
     }
   }
 
@@ -45,8 +45,8 @@ class ProductRepository {
 
       return produtos;
     } catch (e) {
-      debugPrint(e.toString());
-      throw Exception("Erro ao carregar produtos.");
+      debugPrint('[ProductRepository - carregarMeusProdutos]: ' + e.toString());
+      throw Exception("Não foi possível carregar seus produtos.");
     }
   }
 
@@ -66,8 +66,9 @@ class ProductRepository {
 
       return produtos;
     } catch (e) {
-      debugPrint(e.toString());
-      throw Exception("Erro ao carregar produtos favoritos.");
+      debugPrint(
+          '[ProductRepository - carregarProdutosFavoritos]: ' + e.toString());
+      throw Exception("Não foi possível carregar produtos favoritos.");
     }
   }
 

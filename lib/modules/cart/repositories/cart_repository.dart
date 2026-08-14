@@ -11,7 +11,7 @@ class CartRepository {
   Future<List<CartProductModel>> carregarCarrinho({
     required Map<String, ProductModel> productsMap,
   }) async {
-    debugPrint('[CartRepository]: getCart');
+    debugPrint('[CartRepository]: carregarCarrinho');
     try {
       final response = await _client.get('cartProducts');
 
@@ -34,8 +34,9 @@ class CartRepository {
         }
       });
       return items;
-    } catch (_) {
-      throw Exception('Erro ao carregar carrinho.');
+    } catch (e) {
+      debugPrint('[CartRepository - carregarCarrinho]: ' + e.toString());
+      throw Exception("Não foi possível carregar o carrinho.");
     }
   }
 
@@ -43,14 +44,16 @@ class CartRepository {
     required String productId,
     required int quantity,
   }) async {
-    debugPrint('[CartRepository]: updateItemQuantity');
+    debugPrint('[CartRepository]: atualizarQuantidadeDeItens');
 
     try {
       await _client.patch('cartProducts/$productId', body: {
         'quantity': quantity,
       });
-    } catch (_) {
-      throw Exception('Erro ao adicionar/remover quantidade.');
+    } catch (e) {
+      debugPrint(
+          '[CartRepository - atualizarQuantidadeDeItens]: ' + e.toString());
+      throw Exception("Não foi possível atualizar quantidade.");
     }
   }
 
