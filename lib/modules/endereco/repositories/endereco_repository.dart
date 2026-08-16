@@ -14,6 +14,7 @@ class EnderecoRepository {
 
     try {
       final response = await _client.get('address');
+      
       final data = response.data;
 
       if (response.statusCode >= 400) {
@@ -22,13 +23,13 @@ class EnderecoRepository {
 
       if (data == null) return [];
 
-      final enderecos = (response.data as List)
+      final enderecos = (data as List)
           .map((e) => EnderecoModel.fromMap(Map<String, dynamic>.from(e)))
           .toList();
 
       return enderecos;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Erro ao carregar endereços.' + e.toString());
       throw Exception('Erro ao carregar endereços.');
     }
   }

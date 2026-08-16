@@ -5,7 +5,6 @@ import 'package:appshop/core/widgets/drawer_app_bar.dart';
 import 'package:appshop/core/widgets/feedback_message.dart';
 import 'package:appshop/modules/cart/providers/cart_provider.dart';
 import 'package:appshop/modules/categorias/providers/categorias_provider.dart';
-import 'package:appshop/modules/endereco/providers/endereco_provider.dart';
 import 'package:appshop/modules/home/providers/banners_provider.dart';
 import 'package:appshop/modules/home/widgets/banner_carousel.dart';
 import 'package:appshop/modules/home/widgets/card_incentivo_carrinho.dart';
@@ -38,7 +37,6 @@ class _HomePageState extends State<HomePage> {
       context.read<CategoriasProvider>().loadCategoriesCommand.execute(),
       context.read<BannersProvider>().loadBannersCommand.execute(),
       context.read<CartProvider>().loadCartCommand.execute(),
-      context.read<EnderecoProvider>().loadAddressCommand.execute(),
       context.read<ProductProvider>().loadProductsCommand.execute(),
       context.read<ProductProvider>().loadMyProductsCommand.execute(),
       context.read<ProductProvider>().loadFavoritesProductsCommand.execute(),

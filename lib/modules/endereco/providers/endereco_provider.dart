@@ -37,11 +37,8 @@ class EnderecoProvider with ChangeNotifier {
       setEnderecos(response);
 
       return Success(response);
-    } catch (e) {
-      debugPrint(e.toString());
-      return Failure(
-        Exception(e.toString()),
-      );
+    } catch (_) {
+      rethrow;
     }
   }
 
