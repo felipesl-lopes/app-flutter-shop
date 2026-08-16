@@ -17,14 +17,13 @@ class CategoriasRepository {
         return [];
       }
 
-      final data = response.data as List;
-
-      final categorias = data.map((e) {
+      final categorias = (response.data as List).map((e) {
         return CategoriasModel.fromJson(Map<String, dynamic>.from(e));
       }).toList();
 
       return categorias;
     } catch (e) {
+      debugPrint('Erro ao carregar categorias: ' + e.toString());
       throw Exception('Erro ao carregar categorias.');
     }
   }

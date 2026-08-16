@@ -32,8 +32,8 @@ class CategoriasProvider with ChangeNotifier {
 
       setCategorias(categorias);
       return Success(categorias);
-    } catch (e) {
-      return Failure(Exception(e.toString()));
+    } catch (_) {
+      rethrow;
     }
   }
 
